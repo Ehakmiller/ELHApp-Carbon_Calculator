@@ -1017,11 +1017,11 @@ header, main{ position:relative; z-index:1; }
       <div class="sectionTitle">Note – 45Z</div>
       <div class="note" id="notes">
       <p>
-  The Section 45Z Clean Fuel Production Credit is a federal tax incentive that rewards producers of transportation fuels based on lifecycle greenhouse gas emissions. Fuels with lower carbon intensity receive larger per-gallon credits, creating a direct financial incentive to reduce emissions through process improvements, feedstock changes, carbon capture, and low-carbon agricultural practices. The credit applies to qualifying fuels produced in the United States for use as transportation fuel and is currently scheduled to run from 2025 through 2027, replacing prior biofuel tax credit programs.
+  The Section 45Z Clean Fuel Production Credit is a federal tax incentive that rewards producers of transportation fuels based on lifecycle greenhouse gas emissions. Fuels with lower carbon intensity receive larger per-gallon credits, creating a direct financial incentive to reduce emissions through process improvements, feedstock changes, carbon capture, and low-carbon agricultural practices. The credit applies to qualifying fuels produced in the United States for use as transportation fuel and is currently scheduled to run from 2025 through 2029, replacing prior biofuel tax credit programs.
 </p>
 
 <p>
-  The credit is earned on each gallon of eligible fuel produced and sold for transportation use. Producers can use the credit to offset federal tax liability or transfer it to other taxpayers under credit transfer provisions, converting it into cash value. Because the credit is calculated per gallon, total financial benefit depends on both the per-gallon rate and the facility’s annual production capacity.
+  The credit applies to qualifying fuels produced in the United States for use as transportation fuel. This calculator assumes 45Z value runs through Dec. 31, 2029 for modeling purposes.
 </p>
 
 <div class="sectionTitle" style="margin-top:18px;">Note – 45Q</div>
@@ -1119,6 +1119,84 @@ The credit applies to qualifying carbon capture projects located in the United S
 </div>
   </div>
 </div>
+
+<div class="hr"></div>
+
+<p class="sectionTitle" id="ckfSectionTitle" style="display:none;">Corn Kernel Fiber</p>
+
+<div id="ckfPanel" class="scoreRow nowrap" style="margin-bottom:10px; display:none;">
+  <div class="scoreBox">
+    <div class="t">Corn Kernel Fiber adjustment (gCO2e/MJ)</div>
+
+    <div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+
+      <div style="font-size:12px; color:var(--text); font-weight:650; line-height:1.2;">
+        <label style="display:flex; align-items:center; gap:8px; margin:0; color:var(--text); font-size:12px; font-weight:650;">
+          <input id="ckf_apply" type="checkbox" />
+          <span>Apply CKF</span>
+        </label>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:flex-start; flex-wrap:nowrap;">
+
+        <div>
+          <input
+            id="ckf_share_pct"
+            class="numBox"
+            type="number"
+            step="0.1"
+            value="3.5"
+            title="CKF share of capacity (%)"
+            style="width:65px;"
+          />
+          <div class="s" style="margin-top:4px;">CKF Gallon Percentage</div>
+        </div>
+        
+       
+
+        <div>
+          <div class="valuePill" style="width:65px;">
+            <span class="value" id="ckf_delta_display">—</span>
+          </div>
+          <div class="s" style="margin-top:4px;">CI Fiber Delta</div>
+        </div>
+
+        <div>
+          <div class="valuePill" style="width:65px;">
+            <span class="value" id="ckf_adjustment_display">—</span>
+          </div>
+          <div class="s" style="margin-top:4px;">LCFS Fiber Adjustment</div>
+        </div>
+
+      </div>
+
+      <div id="ckfStatusLabel" style="font-size:11px; color:var(--accent); line-height:1.2;">
+        ✅ CKF identified
+      </div>
+
+    </div>
+
+  <div class="s" id="ckfAutoNote" style="margin-top:8px;">CA starch and fiber CI required</div>
+</div>
+
+<div class="note scoreNotes">
+    <div style="margin-bottom:6px;">Corn Kernel Fiber notes</div>
+    <div style="font-size:12px; color:var(--muted); line-height:1.4;">
+      Only for facilities registered in CA .
+    </div>
+    <div style="font-size:12px; color:var(--muted); line-height:1.4;">
+     Fiber volume set at 3.5% of production.
+    </div>
+    <div style="font-size:12px; color:var(--muted); line-height:1.4;">
+     Delta equals lowest starch CI minus Fiber CI.
+    </div>
+    <div style="font-size:12px; color:var(--muted); line-height:1.4;">
+     Fiber Adjustment made before conversion to 45Z.
+    </div>
+  </div>
+</div>
+
+
 
 <div class="hr"></div>
 
@@ -1366,7 +1444,7 @@ The credit applies to qualifying carbon capture projects located in the United S
   
   const DATA_URL = "./static_data/LCFS/lcfs_dropdown_v2.json";
     console.log("✅ RUNNING CALC FILE:", window.location.href);
-    console.log("✅ BUILD_STAMP:", "2026-04-20 14:51:12");
+    console.log("✅ BUILD_STAMP:", "2026-04-20 17:31:01");
     console.log("✅ DATA_URL:", DATA_URL);
   
 
@@ -1684,6 +1762,35 @@ function getEnhancements(p){
   return out;
 }
 
+function hasCaliforniaCkf(p){
+  if (!p) return false;
+
+  const fs = getFeedstockCI(p);
+  return (
+    hasCaliforniaCi(p) &&
+    Number.isFinite(fs?.corn) &&
+    Number.isFinite(fs?.fiber)
+  );
+}
+
+function getCkfNumbers(p){
+  const fs = getFeedstockCI(p);
+
+  const starchCi = Number.isFinite(fs?.corn) ? Number(fs.corn) : NaN;
+  const fiberCi  = Number.isFinite(fs?.fiber) ? Number(fs.fiber) : NaN;
+  const delta    = (Number.isFinite(starchCi) && Number.isFinite(fiberCi))
+    ? (starchCi - fiberCi)
+    : NaN;
+
+  return {
+    starchCi,
+    fiberCi,
+    delta
+  };
+}    
+    
+    
+    
 function getFeedstockCI(p){
   const fs = (p && p.ci_by_feedstock) ? p.ci_by_feedstock : null;
 
@@ -1786,7 +1893,48 @@ function startingCI(p){
 }
 
 
+function renderCkfPanel(){
+  const panel = document.getElementById("ckfPanel");
+  const title = document.getElementById("ckfSectionTitle");
+  const apply = document.getElementById("ckf_apply");
+  const share = document.getElementById("ckf_share_pct");
+  const status = document.getElementById("ckfStatusLabel");
+  const deltaEl = document.getElementById("ckf_delta_display");
+  const adjEl = document.getElementById("ckf_adjustment_display");
+  const note = document.getElementById("ckfAutoNote");
 
+  if (!panel || !title || !apply || !share || !status || !deltaEl || !adjEl || !note) return;
+
+  if (!selectedPlant || !hasCaliforniaCkf(selectedPlant)){
+    panel.style.display = "none";
+    title.style.display = "none";
+    apply.checked = false;
+    share.value = "3.5";
+    deltaEl.textContent = "—";
+    adjEl.textContent = "—";
+    note.textContent = "CA starch and fiber CI required";
+    return;
+  }
+
+  const ckf = getCkfNumbers(selectedPlant);
+  const sharePct = getNumber("ckf_share_pct");
+  const shareFrac = Number.isFinite(sharePct) ? (sharePct / 100) : 0;
+  const adjustment = Number.isFinite(ckf.delta) ? (shareFrac * ckf.delta) : NaN;
+
+  title.style.display = "";
+  panel.style.display = "";
+
+  status.textContent = "✅ CKF identified";
+  status.style.color = "var(--accent)";
+
+   if (!apply.dataset.userTouched){
+    apply.checked = true;
+  }
+
+  deltaEl.textContent = Number.isFinite(ckf.delta) ? fmt(ckf.delta, 2) : "—";
+  adjEl.textContent = Number.isFinite(adjustment) ? fmt(adjustment, 2) : "—";
+  note.textContent = "Using California starch and fiber CI";
+}
 
 function renderProgramSummary(){
   const panel = document.getElementById("programSummaryPanel");
@@ -2499,6 +2647,7 @@ function applyFilters(){
     
     renderHubs();
     renderStartingPanel();
+    renderCkfPanel();
     renderProgramSummary();
     renderLcfsDetail();
     renderEnhancedTechnology();
@@ -2739,6 +2888,10 @@ const items = [
 function compute(){
  const res = {
   hasPlant: !!selectedPlant,
+  ckf_eligible: false,
+  ckf_share_pct: NaN,
+  ckf_delta_g_per_mj: NaN,
+  ckf_adjustment_g_per_mj: NaN,
   hasCI: false,
   ciDelivered: NaN,
   miles: NaN,
@@ -2817,6 +2970,24 @@ function compute(){
 
   const doMisc = getChecked("applyMisc");
   const misc = getNumber("ccsReduction");
+  
+  const ckfEligible = hasCaliforniaCkf(selectedPlant);
+const ckfApply = ckfEligible && getChecked("ckf_apply");
+const ckfSharePct = getNumber("ckf_share_pct");
+const ckfShareFrac = Number.isFinite(ckfSharePct) ? (ckfSharePct / 100) : NaN;
+
+const ckfNums = ckfEligible ? getCkfNumbers(selectedPlant) : null;
+const ckfDelta = (ckfNums && Number.isFinite(ckfNums.delta)) ? ckfNums.delta : NaN;
+const ckfAdjustment = (
+  ckfApply &&
+  Number.isFinite(ckfDelta) &&
+  Number.isFinite(ckfShareFrac)
+) ? (ckfShareFrac * ckfDelta) : 0;
+
+res.ckf_eligible = ckfEligible;
+res.ckf_share_pct = ckfSharePct;
+res.ckf_delta_g_per_mj = ckfDelta;
+res.ckf_adjustment_g_per_mj = ckfAdjustment;
 
   const bench_kg_per_mmbtu = getNumber("ciBenchmark");  // user enters kg/MMBtu
 const bench_g_per_mj = Number.isFinite(bench_kg_per_mmbtu)
@@ -2992,10 +3163,12 @@ if (Number.isFinite(res.startCi)){
     // Misc applies to ALL plants when checked
    if (doMisc && Number.isFinite(misc)) ci += misc;
 
-    // ✅ Chapter 2 pipeline reduction
+   // ✅ Chapter 2 pipeline reduction
     ci -= pipelineScore;
     // ✅ Agricultural practices reduction
     ci -= agReduction;
+    // ✅ Corn Kernel Fiber reduction
+    ci -= ckfAdjustment;
 
     
 
@@ -3380,6 +3553,7 @@ function wireEvents(){
 
     // Starting CI + feedstock/enhancement panel
     renderStartingPanel();
+    renderCkfPanel();
     renderProgramSummary();
     renderLcfsDetail();
     
@@ -3422,26 +3596,27 @@ function wireEvents(){
  });
 
   // All other calc-driving inputs: recompute only
-const calcIds = [
-  "caHub",
-  "freightMultiplier","gPerMjPerMile",
-  "subtractIluc","ilucValue",
-  "applyMisc","ccsReduction",
-  "ciBenchmark","maxRate",
-  "ch2_pipeline_apply","ch2_pipeline_score",
-  "ccs_in_service_date","ccs_ci_effective_date",
-  "fortyfiveqStorageType",
-  "ag_apply","ag_score",
-  "discountRate",
-  "creditDiscountCombined"
-];
+  const calcIds = [
+    "caHub",
+    "freightMultiplier","gPerMjPerMile",
+    "subtractIluc","ilucValue",
+    "ckf_apply","ckf_share_pct",
+    "applyMisc","ccsReduction",
+    "ciBenchmark","maxRate",
+    "ch2_pipeline_apply","ch2_pipeline_score",
+    "ccs_in_service_date","ccs_ci_effective_date",
+    "fortyfiveqStorageType",
+    "ag_apply","ag_score",
+    "discountRate",
+    "creditDiscountCombined"
+  ];
 
   for (const id of calcIds){
     onInput(id, () => {
+      renderCkfPanel();
       renderOutputs();
     });
   }
-
 
 
 
@@ -3665,6 +3840,9 @@ allPlants = rows.map((p, i) => {
       .slice(0, 5)
       .map(p => ({ name: p.plant_name, cap: p.ethanol_capacity_mgy }));
     console.log("Capacity samples:", capSamples);
+    
+    const ckfEligibleCount = allPlants.filter(p => hasCaliforniaCkf(p)).length;
+    console.log("CKF CA-eligible plants:", ckfEligibleCount);
 
     // 4) Wire + render
     wireEvents();

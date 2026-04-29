@@ -1477,9 +1477,9 @@ The credit applies to qualifying carbon capture projects located in the United S
   // SETTINGS
   // ----------------------------
   
-  const DATA_URL = "./static_data/LCFS/lcfs_dropdown_v2.json";
+  const DATA_URL = "./static_data/LCFS/lcfs_dropdown_v2_epm_subset.json";
     console.log("✅ RUNNING CALC FILE:", window.location.href);
-    console.log("✅ BUILD_STAMP:", "2026-04-29 10:45:39");
+    console.log("✅ BUILD_STAMP:", "2026-04-28 16:51:25");
     console.log("✅ DATA_URL:", DATA_URL);
   
 
@@ -3001,12 +3001,7 @@ const items = [
       ? `${fmt(Number(selectedPlant.ethanol_capacity_mgy), 1)} MGY`
       : "—"
   ],
-["Gas supply",
-  selectedPlant.epa_ghg_derived?.gas_supply_effective
-  || selectedPlant.fuel_summary?.fuel_type_master
-  || selectedPlant.tech_flags?.gas_supply
-  || "—"
-],
+  ["Gas supply", selectedPlant.gas_supply],
   ["Technology", selectedPlant.technology],
  ["Total BTU per Gal (2023)",
   (() => {

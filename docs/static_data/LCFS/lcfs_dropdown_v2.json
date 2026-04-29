@@ -52,6 +52,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -68,8 +69,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -135,7 +136,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -252,6 +253,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 29.68,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -363,7 +365,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -435,6 +437,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -451,8 +454,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -518,7 +521,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -590,6 +593,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -606,8 +610,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -673,7 +677,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -768,6 +772,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -865,7 +870,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -982,6 +987,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 26.86,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -1093,7 +1099,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -1165,6 +1171,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -1181,8 +1188,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "BPA / WECC",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -1248,7 +1255,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -1320,6 +1327,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "Harvesting Tech HI PRO",
       "chp": null,
@@ -1336,7 +1344,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -1403,7 +1411,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -1475,6 +1483,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -1491,8 +1500,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -1558,7 +1567,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -1630,6 +1639,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -1646,8 +1656,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -1713,7 +1723,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -1785,6 +1795,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -1801,8 +1812,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -1868,7 +1879,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -1940,6 +1951,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -1956,8 +1968,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -2023,7 +2035,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -2095,6 +2107,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -2111,8 +2124,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -2178,7 +2191,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -2250,6 +2263,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -2266,8 +2280,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -2318,7 +2332,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -2390,6 +2404,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -2406,8 +2421,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -2458,7 +2473,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -2530,6 +2545,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -2546,8 +2562,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -2613,7 +2629,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -2685,6 +2701,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -2701,8 +2718,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -2753,7 +2770,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -2825,6 +2842,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -2841,8 +2859,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -2893,7 +2911,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -2965,6 +2983,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -2981,8 +3000,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -3033,7 +3052,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -3275,6 +3294,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 24.39,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -3463,7 +3483,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -3602,6 +3622,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 27.22,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -3727,7 +3748,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -3799,6 +3820,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -3815,8 +3837,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -3882,7 +3904,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -3954,6 +3976,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -3970,8 +3993,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -4037,7 +4060,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -4109,6 +4132,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -4125,8 +4149,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -4192,7 +4216,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -4264,6 +4288,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -4280,8 +4305,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -4347,7 +4372,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -4376,7 +4401,7 @@
       "city": "Peoria",
       "latitude": 40.6776,
       "longitude": -89.6069,
-      "rail_lines": "UP",
+      "rail_lines": "UP/NS/CN/BNSF",
       "ethanol_capacity_mgy": 61.0,
       "year_build": 1982
     },
@@ -4419,6 +4444,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -4435,8 +4461,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -4502,7 +4528,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -4574,6 +4600,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -4590,8 +4617,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -4657,7 +4684,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -4830,6 +4857,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.44,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -4976,7 +5004,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -5025,8 +5053,8 @@
       }
     },
     "co2_info": {
-      "co2_pipeline_direct": null,
-      "co2_pipeline_3rd_party": "Carbon America",
+      "co2_pipeline_direct": "Direct",
+      "co2_pipeline_3rd_party": "",
       "co2_sponsor": "Carbon America"
     },
     "lcfs_detail": {
@@ -5083,6 +5111,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -5180,7 +5209,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -5264,6 +5293,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -5281,7 +5311,7 @@
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
       "electricity_type": "Cogeneration",
-      "electrical_grid_designation": null,
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -5354,7 +5384,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -5449,6 +5479,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -5465,7 +5496,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": "CAISO",
       "fiber_technology": null,
       "dryer_used": null,
@@ -5546,7 +5577,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -5618,6 +5649,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -5634,8 +5666,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -5701,7 +5733,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -5773,6 +5805,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "ICM HI PRO",
       "chp": null,
@@ -5789,8 +5822,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -5856,7 +5889,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -5928,6 +5961,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -5944,8 +5978,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -6011,7 +6045,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -6083,6 +6117,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -6099,8 +6134,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -6151,7 +6186,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -6223,6 +6258,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -6239,8 +6275,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -6291,7 +6327,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -6363,6 +6399,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -6379,8 +6416,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -6446,7 +6483,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -6518,6 +6555,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -6534,8 +6572,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -6601,7 +6639,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -6740,6 +6778,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 40.14,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -6865,7 +6904,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -6982,6 +7021,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 36.17,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -7093,7 +7133,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -7257,6 +7297,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 29.0,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -7396,7 +7437,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -7468,6 +7509,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -7484,8 +7526,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -7551,7 +7593,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -7623,6 +7665,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -7639,8 +7682,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -7706,7 +7749,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -7778,6 +7821,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -7794,8 +7838,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "PJM/MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -7861,7 +7905,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -7933,6 +7977,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "ICM HI PRO",
       "chp": null,
@@ -7949,8 +7994,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -8016,7 +8061,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -8224,6 +8269,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 25.62,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -8391,7 +8437,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -8463,6 +8509,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -8479,8 +8526,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -8546,7 +8593,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -8687,6 +8734,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 30.3,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -8812,7 +8860,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -8884,6 +8932,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -8900,8 +8949,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "ERCOT",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -8967,7 +9016,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -9039,6 +9088,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -9055,8 +9105,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -9122,7 +9172,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -9251,6 +9301,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 30.47,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -9369,7 +9420,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -9441,6 +9492,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -9457,8 +9509,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -9524,7 +9576,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -9641,6 +9693,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 28.35,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -9752,7 +9805,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -9824,6 +9877,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -9840,8 +9894,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -9907,7 +9961,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -9979,6 +10033,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -9995,7 +10050,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -10062,7 +10117,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -10134,6 +10189,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -10150,8 +10206,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -10217,7 +10273,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -10403,6 +10459,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 29.31,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -10542,7 +10599,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -10614,6 +10671,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -10630,8 +10688,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -10697,7 +10755,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -10848,6 +10906,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 34.31,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -10973,7 +11032,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -11045,6 +11104,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "ICM HI PRO",
       "chp": null,
@@ -11061,8 +11121,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -11128,7 +11188,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -11200,6 +11260,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -11216,8 +11277,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -11268,7 +11329,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -11340,6 +11401,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -11356,8 +11418,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -11408,7 +11470,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -11547,6 +11609,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 23.22,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -11672,7 +11735,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -11767,6 +11830,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -11864,7 +11928,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -11981,6 +12045,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 26.66,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -12092,7 +12157,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -12275,6 +12340,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 29.5,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -12428,7 +12494,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -12500,6 +12566,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -12516,8 +12583,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -12583,7 +12650,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -12655,6 +12722,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -12671,8 +12739,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -12738,7 +12806,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -12810,6 +12878,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -12826,8 +12895,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -12893,7 +12962,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -12965,6 +13034,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -12981,7 +13051,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -13048,7 +13118,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -13143,6 +13213,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -13240,7 +13311,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -13312,6 +13383,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -13328,8 +13400,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -13395,7 +13467,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -13490,6 +13562,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -13587,7 +13660,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -13704,6 +13777,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 35.0,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -13815,7 +13889,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -13887,6 +13961,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -13903,8 +13978,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -13970,7 +14045,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -14042,6 +14117,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -14058,8 +14134,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -14125,7 +14201,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -14242,6 +14318,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.5,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -14353,7 +14430,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -14526,6 +14603,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 26.0,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -14651,7 +14729,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -14723,6 +14801,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -14739,8 +14818,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -14806,7 +14885,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -14923,6 +15002,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.0,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -15034,7 +15114,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -15173,6 +15253,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 27.0,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -15298,7 +15379,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -15437,6 +15518,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.83,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -15562,7 +15644,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -15701,6 +15783,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.13,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -15826,7 +15909,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -15943,6 +16026,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.68,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -16054,7 +16138,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -16216,6 +16300,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.83,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -16327,7 +16412,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -16399,6 +16484,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -16415,8 +16501,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -16482,7 +16568,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -16554,6 +16640,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -16570,8 +16657,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -16637,7 +16724,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -16777,6 +16864,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 23.0,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -16902,7 +16990,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -17077,6 +17165,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 25.15,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -17202,7 +17291,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -17343,6 +17432,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 27.39,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -17468,7 +17558,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -17654,6 +17744,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 21.93,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -17807,7 +17898,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -17879,6 +17970,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "ICM HI PRO",
       "chp": "CHP",
@@ -17895,8 +17987,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -17962,7 +18054,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -18079,6 +18171,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 23.7,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -18190,7 +18283,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -18353,6 +18446,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.0,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -18492,7 +18586,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -18631,6 +18725,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.19,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -18756,7 +18851,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -18828,6 +18923,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "Marquis HI PRO",
       "chp": null,
@@ -18844,8 +18940,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -18911,7 +19007,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -18983,6 +19079,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -18999,8 +19096,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -19066,7 +19163,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -19138,6 +19235,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -19154,8 +19252,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -19221,7 +19319,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -19293,6 +19391,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -19309,8 +19408,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -19361,7 +19460,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -19501,6 +19600,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 27.99,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -19612,7 +19712,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -19729,6 +19829,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 22.92,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -19840,7 +19941,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -19935,6 +20036,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -20032,7 +20134,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -20127,6 +20229,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -20224,7 +20327,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -20341,6 +20444,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -20452,7 +20556,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -20524,6 +20628,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -20540,8 +20645,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -20607,7 +20712,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -20702,6 +20807,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -20718,7 +20824,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": "CAISO",
       "fiber_technology": null,
       "dryer_used": null,
@@ -20770,7 +20876,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -20842,6 +20948,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -20858,8 +20965,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "PJM/MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -20910,7 +21017,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -20982,6 +21089,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -20998,8 +21106,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "CAISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -21065,7 +21173,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -21137,6 +21245,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -21153,8 +21262,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -21220,7 +21329,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -21292,6 +21401,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -21308,7 +21418,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -21375,7 +21485,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -21447,6 +21557,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -21463,8 +21574,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -21530,7 +21641,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -21625,6 +21736,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -21722,7 +21834,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -21861,6 +21973,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 26.95,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -21986,7 +22099,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -22149,6 +22262,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.89,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -22288,7 +22402,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -22429,6 +22543,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 25.42,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -22554,7 +22669,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -22762,6 +22877,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 28.31,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -22887,7 +23003,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -23028,6 +23144,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 30.0,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -23153,7 +23270,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -23294,6 +23411,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 28.59,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -23419,7 +23537,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -23581,6 +23699,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 23.48,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -23723,7 +23842,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -23864,6 +23983,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 31.05,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -23989,7 +24109,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -24197,6 +24317,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.63,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -24322,7 +24443,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -24530,6 +24651,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.96,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -24655,7 +24777,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -24818,6 +24940,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 25.94,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -24957,7 +25080,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -25120,6 +25243,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 30.1,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -25259,7 +25383,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -25400,6 +25524,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.96,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -25525,7 +25650,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -25664,6 +25789,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 30.39,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -25789,7 +25915,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -25928,6 +26054,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.96,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -26053,7 +26180,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -26261,6 +26388,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 28.95,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -26386,7 +26514,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -26527,6 +26655,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 27.88,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -26652,7 +26781,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -26860,6 +26989,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.85,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -26985,7 +27115,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -27146,6 +27276,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.25,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -27285,7 +27416,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -27493,6 +27624,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 27.18,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -27618,7 +27750,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -27759,6 +27891,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 24.02,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -27776,7 +27909,7 @@
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
       "electricity_type": "Cogeneration",
-      "electrical_grid_designation": null,
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": "BPX",
       "dryer_used": null,
       "dryer_confidence": "low",
@@ -27884,7 +28017,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -28025,6 +28158,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 28.01,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -28150,7 +28284,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -28291,6 +28425,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 28.07,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -28416,7 +28551,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -28557,6 +28692,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 25.11,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -28682,7 +28818,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -28823,6 +28959,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 27.76,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -28948,7 +29085,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -29111,6 +29248,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.6,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -29250,7 +29388,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -29458,6 +29596,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.48,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -29625,7 +29764,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -29766,6 +29905,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 25.32,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -29891,7 +30031,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -30032,6 +30172,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.78,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -30157,7 +30298,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -30298,6 +30439,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 27.92,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -30423,7 +30565,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -30564,6 +30706,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 24.91,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -30689,7 +30832,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -30852,6 +30995,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 28.31,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -30991,7 +31135,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -31063,6 +31207,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -31079,8 +31224,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -31146,7 +31291,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -31332,6 +31477,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 23.25,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -31485,7 +31631,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -31694,6 +31840,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -31861,7 +32008,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -31933,6 +32080,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -31949,8 +32097,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -32001,7 +32149,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -32073,6 +32221,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -32089,8 +32238,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -32156,7 +32305,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -32228,6 +32377,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -32244,8 +32394,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -32311,7 +32461,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -32462,6 +32612,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 29.06,
     "tech_flags": {
       "high_pro": "ICM HI PRO",
       "chp": null,
@@ -32573,7 +32724,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -32645,6 +32796,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -32661,8 +32813,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -32728,7 +32880,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -32970,6 +33122,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.13,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -33158,7 +33311,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -33230,6 +33383,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -33246,8 +33400,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "CAISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -33313,7 +33467,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -33385,6 +33539,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -33401,8 +33556,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -33468,7 +33623,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -33608,6 +33763,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 22.23,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -33719,7 +33875,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -33859,6 +34015,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.0,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -33984,7 +34141,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -34056,6 +34213,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -34072,8 +34230,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -34139,7 +34297,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -34280,6 +34438,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 23.33,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -34405,7 +34564,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -34512,6 +34671,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -34609,7 +34769,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -34681,6 +34841,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -34697,7 +34858,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -34749,7 +34910,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -34821,6 +34982,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -34837,8 +34999,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -34904,7 +35066,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -34976,6 +35138,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -34992,8 +35155,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -35059,7 +35222,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -35131,6 +35294,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -35147,8 +35311,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -35214,7 +35378,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -35420,6 +35584,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -35573,7 +35738,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -35645,6 +35810,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -35661,8 +35827,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -35728,7 +35894,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -35800,6 +35966,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -35816,8 +35983,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -35883,7 +36050,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -36058,6 +36225,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 26.52,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -36204,7 +36372,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -36276,6 +36444,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -36292,8 +36461,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -36359,7 +36528,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -36431,6 +36600,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "FQPT HI PRO",
       "chp": null,
@@ -36447,8 +36617,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -36514,7 +36684,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -36653,6 +36823,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.01,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -36778,7 +36949,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -36917,6 +37088,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.29,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -37042,7 +37214,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -37181,6 +37353,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 26.27,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -37306,7 +37479,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -37378,6 +37551,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -37394,8 +37568,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -37461,7 +37635,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -37533,6 +37707,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -37549,8 +37724,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -37616,7 +37791,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -37755,6 +37930,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.25,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -37880,7 +38056,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -38019,6 +38195,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 26.8,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -38144,7 +38321,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -38283,6 +38460,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.15,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -38408,7 +38586,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -38480,6 +38658,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -38496,8 +38675,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -38563,7 +38742,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -38702,6 +38881,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 26.35,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -38827,7 +39007,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -38899,6 +39079,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -38915,8 +39096,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -38982,7 +39163,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -39054,6 +39235,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -39070,8 +39252,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -39137,7 +39319,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -39276,6 +39458,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 25.28,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -39401,7 +39584,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -39473,6 +39656,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -39489,8 +39673,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -39541,7 +39725,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -39613,6 +39797,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -39629,8 +39814,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "NYISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -39696,7 +39881,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -39858,6 +40043,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 24.36,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -39983,7 +40169,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -40122,6 +40308,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": 23.13,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -40247,7 +40434,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -40433,6 +40620,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 24.89,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -40586,7 +40774,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -40693,6 +40881,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": "CHP",
@@ -40790,7 +40979,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -40931,6 +41120,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": 27.51,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -41056,7 +41246,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -41128,6 +41318,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "Front End Frac",
       "chp": null,
@@ -41144,8 +41335,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -41211,7 +41402,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -41330,6 +41521,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": 11199.999999999995,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": 12573.584905660387
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": "ICM HI PRO",
       "chp": "CHP",
@@ -41441,7 +41633,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": "US_Ethanol_CI_ByFeedstock",
       "desc_raw": "",
       "primary_join_key": "epm",
@@ -41513,6 +41705,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -41529,8 +41722,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/PJM",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -41596,7 +41789,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -41668,6 +41861,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -41684,8 +41878,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -41736,7 +41930,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -41808,6 +42002,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -41824,7 +42019,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -41891,7 +42086,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -41963,6 +42158,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -41979,8 +42175,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -42031,7 +42227,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -42103,6 +42299,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -42119,7 +42316,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -42171,7 +42368,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -42243,6 +42440,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -42259,8 +42457,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -42311,7 +42509,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -42383,6 +42581,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -42399,7 +42598,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -42451,7 +42650,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -42523,6 +42722,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -42539,8 +42739,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "NYISO",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -42591,7 +42791,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -42663,6 +42863,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -42679,8 +42880,8 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
-      "electrical_grid_designation": null,
+      "electricity_type": "Grid Electricity",
+      "electrical_grid_designation": "MISO/SPP",
       "fiber_technology": null,
       "dryer_used": null,
       "dryer_confidence": null,
@@ -42746,7 +42947,7 @@
       ]
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",
@@ -42818,6 +43019,7 @@
       "relative_dryer_efficiency_cutoff_low_btu_per_gal": null,
       "relative_dryer_efficiency_cutoff_high_btu_per_gal": null
     },
+    "ckf_ci_score": null,
     "tech_flags": {
       "high_pro": null,
       "chp": null,
@@ -42834,7 +43036,7 @@
       "boiler_fuel": null,
       "dryer_fuel": null,
       "thermal_oxidizer_fuel": null,
-      "electricity_type": null,
+      "electricity_type": "Grid Electricity",
       "electrical_grid_designation": null,
       "fiber_technology": null,
       "dryer_used": null,
@@ -42886,7 +43088,7 @@
       "fuel_evidence": []
     },
     "meta": {
-      "record_built_at": "2026-04-20 14:50:37",
+      "record_built_at": "2026-04-29 10:30:04",
       "source_table": null,
       "desc_raw": "nan",
       "primary_join_key": "epm",

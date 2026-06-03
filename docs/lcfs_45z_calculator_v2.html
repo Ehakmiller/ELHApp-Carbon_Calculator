@@ -1479,7 +1479,7 @@ The credit applies to qualifying carbon capture projects located in the United S
   
   const DATA_URL = "./static_data/LCFS/lcfs_dropdown_v2.json";
     console.log("✅ RUNNING CALC FILE:", window.location.href);
-    console.log("✅ BUILD_STAMP:", "2026-04-29 10:45:39");
+    console.log("✅ BUILD_STAMP:", "2026-05-22 10:56:53");
     console.log("✅ DATA_URL:", DATA_URL);
   
 
@@ -1689,11 +1689,110 @@ function parseLooseNumber(x){
   const n = Number(m[0]);
   return Number.isFinite(n) ? n : null;
 }  
+
+function cleanKey(v){
+  return String(v ?? "")
+    .trim()
+    .toLowerCase();
+}
+
+function getDryerText(p){
+  const d = p?.dryer_types ?? p?.dryer_used ?? "";
+  if (Array.isArray(d)) return d.join(" ");
+  return String(d ?? "");
+}
+
+function lookupNonThermalBase(p){
+  const tech = cleanKey(p?.technology);
+  const dryer = cleanKey(getDryerText(p));
+
+  // 1) exact technology + dryer match
+  let match = NON_THERMAL_BASE_BY_TECH_DRYER.find(r =>
+    cleanKey(r.technology) === tech &&
+    r.dryer &&
+    dryer.includes(cleanKey(r.dryer))
+  );
+
+  if (match) {
+    return {
+      base: match.base,
+      source: `${match.technology} + ${match.dryer}`,
+      count: match.count
+    };
+  }
+
+  // 2) technology-only fallback
+  const techRows = NON_THERMAL_BASE_BY_TECH_DRYER.filter(r =>
+    cleanKey(r.technology) === tech
+  );
+
+  if (techRows.length){
+    const totalCount = techRows.reduce((s, r) => s + r.count, 0);
+    const weightedBase = techRows.reduce((s, r) => s + r.base * r.count, 0) / totalCount;
+
+    return {
+      base: weightedBase,
+      source: `${p?.technology || "Technology"} average`,
+      count: totalCount
+    };
+  }
+
+  // 3) global fallback
+  return {
+    base: GLOBAL_NON_THERMAL_BASE,
+    source: "global non-thermal fallback",
+    count: null
+  };
+}
+
+function getThermalBtuPerGal(p){
+  const v =
+    p?.thermal_btu_per_gal_est ??
+    p?.epa_ghg_derived?.thermal_btu_per_gal_est ??
+    null;
+
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+function proxy45zStartFromBtu(p){
+  const btu = getThermalBtuPerGal(p);
+  if (btu === null) return null;
+
+  const nt = lookupNonThermalBase(p);
+  const thermalCi = btu * THERMAL_CI_PER_BTU_GAL;
+
+  return {
+    value: nt.base + thermalCi,
+    nonThermalBase: nt.base,
+    thermalBtu: btu,
+    thermalCi,
+    source: nt.source,
+    count: nt.count
+  };
+}
+
+
   // ----------------------------
 // TECH SCORING (NO-LCFS PROXY)
 // ----------------------------
 // If no LCFS CI, start at 70 and reduce by tech score.
 const DEFAULT_NO_LCFS_PROXY = 70.0;
+
+const THERMAL_CI_PER_BTU_GAL = 0.001114; // BTU/gal → gCO2e/MJ
+
+const NON_THERMAL_BASE_BY_TECH_DRYER = [
+  { technology: "ICM", dryer: "Rotary Dryer", count: 52, base: 22.244267 },
+  { technology: "Poet", dryer: "Ring Dryer", count: 23, base: 18.671043 },
+  { technology: "Delta-T", dryer: "Ring Dryer", count: 9, base: 22.066911 },
+  { technology: "Vogelbusch", dryer: "", count: 4, base: 22.264423 },
+  { technology: "ICM", dryer: "Steam Tube Dryer", count: 2, base: 21.466744 },
+  { technology: "Lurgi", dryer: "", count: 1, base: 15.363190 },
+  { technology: "Wheat", dryer: "", count: 1, base: 24.841754 },
+  { technology: "Lurgi", dryer: "Rotary Dryer", count: 1, base: 29.680744 }
+];
+
+const GLOBAL_NON_THERMAL_BASE = 22.0;
 
 // ----------------------------
 // UNIT CONVERSION (LCFS -> 45Z)
@@ -1764,7 +1863,7 @@ const TECH_FIELDS = [
   { key: "high_pro",        label: "High Pro",        fields: ["high_pro", "High Pro", "HIGH_PRO"] },
   { key: "chp",             label: "CHP",             fields: ["chp", "CHP"] },
   { key: "white_fox",       label: "White Fox",       fields: ["white_fox", "White Fox", "WHITE_FOX"] },
-  { key: "dco_enhancement", label: "DCO Enhancement", fields: ["dco_enhancement", "DCO Enhancement", "DCO Enhancement\n(lb/bu)"] },
+  { key: "dco_enhancement", label: "DCO Enhancement", fields: ["dco_enhancement", "DCO Enhancement", "DCO Enhancement\n(lb/bu)", "ICM FOT"] },
   { key: "icm_p10",         label: "ICM P10",         fields: ["icm_p10", "ICM\nP10", "ICM P10"] },
   { key: "low_ci_corn",     label: "Low CI Corn",     fields: ["low_ci_corn", "LowCICorn", "Low CI Corn"] },
   { key: "wind_turbine",    label: "Wind Turbine",    fields: ["wind_turbine", "Wind Turbine", "WIND_TURBINE"] },
@@ -1807,7 +1906,16 @@ function asBool(v){
 
 function pickFirstField(p, fields){
   for (const f of fields){
-    if (p && Object.prototype.hasOwnProperty.call(p, f)) return p[f];
+    if (!p || !Object.prototype.hasOwnProperty.call(p, f)) continue;
+
+    const v = p[f];
+
+    if (v === null || v === undefined || v === "") continue;
+
+    const s = String(v).trim().toLowerCase();
+    if (s === "nan" || s === "none" || s === "null" || s === "<na>" || s === "—" || s === "-") continue;
+
+    return v;
   }
   return undefined;
 }
@@ -1964,23 +2072,47 @@ function startingCI(p){
     };
   }
 
-  const enh = getEnhancements(p);
-  const totalRed = enh.reduce((s, e) => s + (e.reduction || 0), 0);
-  const v = DEFAULT_NO_LCFS_PROXY - totalRed;
+const btuProxy = proxy45zStartFromBtu(p);
 
+if (btuProxy){
   return {
-      mode: "proxy",
-      source: "proxy",
-      value: v,
-      note: `Proxy start ${DEFAULT_NO_LCFS_PROXY.toFixed(1)} − enhancements (${totalRed.toFixed(1)})`,
-      enhancements: enh,
-      proxyStart: DEFAULT_NO_LCFS_PROXY,
-      totalRed: totalRed,
-      ilucDefaultChecked: true,
-      ilucDefaultValue: 19.9
-    };
+    mode: "proxy_45z_btu",
+    source: "proxy_45z_btu",
+    value: btuProxy.value + 19.9,
+    note: `LCFS-equivalent display: 45Z BTU proxy ${btuProxy.value.toFixed(2)} + ILUC 19.90`,
+    enhancements: [],
+    proxyStart: btuProxy.nonThermalBase,
+    thermalBtu: btuProxy.thermalBtu,
+    thermalCi: btuProxy.thermalCi,
+    nonThermalBase: btuProxy.nonThermalBase,
+    nonThermalSource: btuProxy.source,
+    nonThermalCount: btuProxy.count,
+
+    // 45Z proxy should not include ILUC
+    ilucDefaultChecked: true,
+    ilucDefaultValue: 19.9
+  };
 }
 
+const enh = getEnhancements(p);
+const totalRed = enh.reduce((s, e) => s + (e.reduction || 0), 0);
+const v = DEFAULT_NO_LCFS_PROXY - totalRed;
+
+return {
+  mode: "proxy",
+  source: "proxy",
+  value: v,
+  note: `Fallback proxy start ${DEFAULT_NO_LCFS_PROXY.toFixed(1)} − enhancements (${totalRed.toFixed(1)})`,
+  enhancements: enh,
+  proxyStart: DEFAULT_NO_LCFS_PROXY,
+  totalRed: totalRed,
+
+  // 45Z should not include ILUC for fallback proxy either
+  ilucDefaultChecked: false,
+  ilucDefaultValue: 0
+};
+
+} // ✅ closes startingCI()
 
 function renderCkfPanel(){
   const panel = document.getElementById("ckfPanel");
@@ -2237,9 +2369,6 @@ function renderEnhancedTechnology(){
   }
 
 
-
-
-
   const enh = getEnhancements(selectedPlant) || [];
 
   if (!enh.length){
@@ -2376,18 +2505,40 @@ function renderStartingPanel(){
     return;
   }
 
-  const enh = getEnhancements(selectedPlant) || [];
-  enh.sort((a,b) => (b.reduction||0) - (a.reduction||0));
+if (s.mode === "proxy_45z_btu") {
+  const btuProxyBase = s.value - 19.9;
 
-  const lines = enh.map(e => {
-    const r = Number.isFinite(e.reduction) ? e.reduction : 0;
-    const suffix = (r > 0) ? `: −${fmt(r, 1)} g/MJ` : "";
-    return `<div>• <span class="mono">${e.label}</span>${suffix}</div>`;
-  }).join("");
+  boxEl.innerHTML =
+    `<div style="margin-bottom:6px;">
+      45Z BTU proxy: <span class="mono">
+      ${fmt(s.nonThermalBase,2)} non-thermal + ${fmt(s.thermalCi,2)} thermal = ${fmt(btuProxyBase,2)}
+      </span>
+    </div>
+    <div style="margin-bottom:6px;">
+      ILUC display add-back: <span class="mono">+19.90</span>
+    </div>
+    <div style="margin-bottom:6px;">
+      BTU/gal: <span class="mono">${Number(s.thermalBtu).toLocaleString("en-US", {maximumFractionDigits:0})}</span>
+    </div>`;
 
-  const math = `<div style="margin-bottom:6px;">Proxy math: <span class="mono">${s.proxyStart.toFixed(1)} − ${s.totalRed.toFixed(1)} = ${fmt(s.value, 2)}</span></div>`;
+  return;
+}
 
-  boxEl.innerHTML = math + lines;
+const enh = getEnhancements(selectedPlant) || [];
+enh.sort((a,b) => (b.reduction||0) - (a.reduction||0));
+
+const lines = enh.map(e => {
+  const r = Number.isFinite(e.reduction) ? e.reduction : 0;
+  const suffix = (r > 0) ? `: −${fmt(r, 1)} g/MJ` : "";
+  return `<div>• <span class="mono">${e.label}</span>${suffix}</div>`;
+}).join("");
+
+const math =
+  `<div style="margin-bottom:6px;">
+    Proxy math: <span class="mono">${s.proxyStart.toFixed(1)} − ${s.totalRed.toFixed(1)} = ${fmt(s.value, 2)}</span>
+  </div>`;
+
+boxEl.innerHTML = math + lines;
 }
   // Great-circle distance (Haversine) in miles
   function haversineMiles(lat1, lon1, lat2, lon2){
@@ -2942,6 +3093,8 @@ function renderPlantDetails(){
     }
 
 badges.appendChild(pill);
+
+
 
    let sourcePillText = "";
 if (s.mode === "lcfs" && s.source === "ca") {
@@ -3795,12 +3948,11 @@ function wireEvents(){
       freightCb.checked = (mode === "lcfs");
     }
     syncFreightUI();
-
-
-
+    syncElectricityBridgeUI();
+    
     renderPlantDetails();
     renderOutputs();
-  }
+  } // closes handlePlantSelectChange
 
   // --- Wire inputs ---
 
@@ -3985,6 +4137,16 @@ allPlants = rows.map((p, i) => {
     chp: p.chp ?? tech.chp ?? null,
     white_fox: p.white_fox ?? tech.white_fox ?? null,
     icm_p10: p.icm_p10 ?? tech.icm_p10 ?? null,
+    
+    dco_enhancement:
+      p.dco_enhancement ??
+      tech.dco_enhancement ??
+      p["DCO Enhancement"] ??
+      p["DCO Enhancement\n(lb/bu)"] ??
+      p["ICM FOT"] ??
+      tech["ICM FOT"] ??
+      null,
+    
     special_tech: p.special_tech ?? tech.special_tech ?? null,
     wind_turbine: p.wind_turbine ?? tech.wind_turbine ?? null,
     waste_heat: p.waste_heat ?? tech.waste_heat ?? null,

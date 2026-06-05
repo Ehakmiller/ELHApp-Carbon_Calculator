@@ -10,7 +10,7 @@
     --bg:#0b0f14; --card:#121825; --muted:#8ea0b8; --text:#e8eef7; --accent:#6fb1ff;
     --line:#223049; --good:#52d273; --bad:#ff6b6b; --warn:#ffcc66;
   }
-  #outRateDetail, #outRateDetailNote { white-space: pre-line; }
+  #outRateDetail, #outRateDetailNote, #outConvLine { white-space: pre-line; }
   
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text);}
   header{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;justify-content:space-between;}
@@ -19,11 +19,24 @@
   main{padding:16px;max-width:1200px;margin:0 auto;}
   .grid{
   display:grid;
-  grid-template-columns: 0.85fr 1.15fr;  /* LEFT smaller, RIGHT bigger */
+  grid-template-columns: 1.05fr 0.95fr;  /* LEFT slightly wider for inputs */
   column-gap: 10px;                      /* small, controlled gap */
   row-gap: 14px;
 }
   @media (max-width: 980px){.grid{grid-template-columns:1fr;}}
+  .grid.calculatorLayout{
+    grid-template-columns:minmax(420px,1.05fr) minmax(0,0.95fr);
+    align-items:start;
+  }
+  .calculatorColumn{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-width:0;
+  }
+  @media (max-width: 980px){
+    .grid.calculatorLayout{grid-template-columns:1fr;}
+  }
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;}
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
   /* Freight: two pills on one line, evenly split */
@@ -250,6 +263,13 @@
   max-width: 320px;
 }
 
+#stateBox{
+  flex:0 0 76px;
+  min-width:76px;
+  max-width:76px;
+  text-align:center;
+}
+
 /* Mobile: stack */
 @media (max-width: 720px){
   .row.plant-row-inline{
@@ -262,6 +282,10 @@
     flex: 1 1 auto;
     max-width:none;
     width:100%;
+  }
+  #stateBox{
+    flex:0 0 76px;
+    width:76px;
   }
 }
   
@@ -819,9 +843,18 @@ header, main{ position:relative; z-index:1; }
           <input
             id="searchBox"
             class="plantSearch"
-            placeholder="Search plants…"
+            placeholder="Plant Name"
             autocomplete="off"
             spellcheck="false"
+          />
+
+          <input
+            id="stateBox"
+            class="plantSearch"
+            placeholder="State"
+            autocomplete="off"
+            spellcheck="false"
+            maxlength="2"
           />
         </div>
       </div>
@@ -840,6 +873,8 @@ header, main{ position:relative; z-index:1; }
         
        
 
+<div id="outputPanelStart" hidden></div>
+
  <p class="sectionTitle">45Z Credit Value</p>
 
 <div class="metricGrid">
@@ -851,7 +886,7 @@ header, main{ position:relative; z-index:1; }
   </div>
 
   <div class="metric">
-    <div class="metricLabel">Estimated rate ($/gal)</div>
+    <div class="metricLabel">45Z Credit Rate ($/gal)</div>
     <div class="valuePill"><span class="value" id="outRate">—</span></div>
     <div class="metricSub" id="outRateDetail">—</div>
   </div>
@@ -873,7 +908,7 @@ header, main{ position:relative; z-index:1; }
     <div class="metric">
       <div class="metricLabel">Estimated Biogenic CO2</div>
       <div class="valuePill"><span class="value" id="outBiogenicCo2">—</span></div>
-      <div class="metricSub">Capacity × 1,000,000 × 6.29 ÷ 2,204.62</div>
+      <div class="metricSub">Capacity x 2,853 metric tons CO2/MMGY</div>
     </div>
 
     <div class="metric">
@@ -912,7 +947,7 @@ header, main{ position:relative; z-index:1; }
     <div class="valuePill">
       <input id="discountRate" type="number" step="0.1" min="0" max="100" value="10.0" />
     </div>
-    <div class="metricSub">Used to discount forward 45Z and 45Q credits</div>
+    <div class="metricSub"></div>
   </div>
 
 </div>
@@ -924,7 +959,7 @@ header, main{ position:relative; z-index:1; }
   <div class="metric">
     <div class="metricLabel">Total discounted value ($)</div>
     <div class="valuePill"><span class="value" id="outTotalDiscountedValue">—</span></div>
-    <div class="metricSub" id="outTotalDiscountedValueNote">45Z + 45Q values discounted at 10.0%</div>
+    <div class="metricSub" id="outTotalDiscountedValueNote">Discounted 45Z & 45Q Value</div>
   </div>
 
   <div class="metric">
@@ -1059,6 +1094,7 @@ The credit applies to qualifying carbon capture projects located in the United S
   <!-- keep ONLY if JS uses it -->
   <div id="modelSection"></div>
 </div> <!-- closes #notes -->
+<div id="outputPanelEnd" hidden></div>
 </div> <!-- closes LEFT .card -->
 
 <!-- RIGHT column card: Scenario inputs -->
@@ -1476,11 +1512,55 @@ The credit applies to qualifying carbon capture projects located in the United S
   // ----------------------------
   // SETTINGS
   // ----------------------------
+
+  function arrangeCalculatorLayout(){
+    const grid = document.querySelector("main > .grid");
+    if (!grid || grid.dataset.arranged === "1") return;
+
+    const cards = Array.from(grid.children).filter((el) => el.classList && el.classList.contains("card"));
+    const plantCard = cards[0];
+    const scenarioCard = cards[1];
+    const outputStart = document.getElementById("outputPanelStart");
+    const outputEnd = document.getElementById("outputPanelEnd");
+    if (!plantCard || !scenarioCard || !outputStart || !outputEnd) return;
+
+    const outputCard = document.createElement("div");
+    outputCard.className = "card outputCard";
+
+    let node = outputStart.nextSibling;
+    while (node && node !== outputEnd) {
+      const next = node.nextSibling;
+      outputCard.appendChild(node);
+      node = next;
+    }
+    outputStart.remove();
+    outputEnd.remove();
+
+    const leftColumn = document.createElement("div");
+    leftColumn.className = "calculatorColumn inputColumn";
+    const rightColumn = document.createElement("div");
+    rightColumn.className = "calculatorColumn outputColumn";
+
+    leftColumn.appendChild(plantCard);
+    leftColumn.appendChild(scenarioCard);
+    rightColumn.appendChild(outputCard);
+
+    grid.textContent = "";
+    grid.classList.add("calculatorLayout");
+    grid.appendChild(leftColumn);
+    grid.appendChild(rightColumn);
+    grid.dataset.arranged = "1";
+  }
+
+  arrangeCalculatorLayout();
   
-  const DATA_URL = "./static_data/LCFS/lcfs_dropdown_v2.json";
+  const WORKER_BASE_URL = "https://flat-silence-a8a3.elhakmiller.workers.dev";
+  const SEARCH_URL = `${WORKER_BASE_URL}/search`;
+  const PLANT_URL = `${WORKER_BASE_URL}/plant`;
+  const DATA_URL = SEARCH_URL;
     console.log("✅ RUNNING CALC FILE:", window.location.href);
-    console.log("✅ BUILD_STAMP:", "2026-05-22 10:56:53");
-    console.log("✅ DATA_URL:", DATA_URL);
+    console.log("✅ BUILD_STAMP:", "2026-06-05 13:06:37");
+    console.log("✅ SEARCH_URL:", SEARCH_URL);
   
 
 
@@ -1665,6 +1745,103 @@ function round45zEmissionsFactor(emissionsRate, benchmark){
 
   // IRS-style nearest 0.1
   return roundToNearestTenthHalfUp(flooredFactor);
+}
+
+function compute45zRateBlock({
+  startCi,
+  freightCi,
+  iluc,
+  miscReduction,
+  pipelineScore,
+  agReduction,
+  ckfAdjustment,
+  electricityBridge,
+  benchmarkKgPerMmbtu,
+  maxRate
+}){
+  let ci = Number.isFinite(startCi) ? startCi : NaN;
+
+  if (!Number.isFinite(ci)){
+    return {
+      ci45z_g_per_mj: NaN,
+      emissions_kg_per_mmbtu: NaN,
+      emissions_factor_raw: NaN,
+      emissions_factor_rounded: NaN,
+      next_band_ci_reduction_kg_per_mmbtu: NaN,
+      rate: NaN,
+      rateDetail: ""
+    };
+  }
+
+  if (Number.isFinite(freightCi)) ci -= freightCi;
+  if (Number.isFinite(iluc)) ci -= iluc;
+  if (Number.isFinite(miscReduction)) ci -= miscReduction;
+  if (Number.isFinite(pipelineScore)) ci -= pipelineScore;
+  if (Number.isFinite(agReduction)) ci -= agReduction;
+  if (Number.isFinite(ckfAdjustment)) ci -= ckfAdjustment;
+  if (Number.isFinite(electricityBridge)) ci += electricityBridge;
+
+  const emissionsKgmmbtu = Number.isFinite(ci)
+    ? (ci * CONV_G_PER_MJ_TO_KG_PER_MMBTU)
+    : NaN;
+
+  const rawFactor = (
+    Number.isFinite(emissionsKgmmbtu) &&
+    Number.isFinite(benchmarkKgPerMmbtu) &&
+    benchmarkKgPerMmbtu > 0
+  )
+    ? Math.max(0, (benchmarkKgPerMmbtu - emissionsKgmmbtu) / benchmarkKgPerMmbtu)
+    : NaN;
+
+  const roundedFactor = Number.isFinite(rawFactor)
+    ? roundToNearestTenthHalfUp(rawFactor)
+    : NaN;
+
+  const rate = (
+    Number.isFinite(roundedFactor) &&
+    Number.isFinite(maxRate)
+  )
+    ? clamp(roundedFactor * maxRate, 0, maxRate)
+    : NaN;
+
+  let nextBand = NaN;
+  let nextBandRate = NaN;
+  let ciReductionNeeded = NaN;
+  let bandPosition = "";
+  if (
+    Number.isFinite(rawFactor) &&
+    Number.isFinite(roundedFactor) &&
+    Number.isFinite(benchmarkKgPerMmbtu) &&
+    Number.isFinite(maxRate)
+  ) {
+    nextBand = Math.min(1.0, roundedFactor + 0.1);
+    nextBandRate = clamp(nextBand * maxRate, 0, maxRate);
+    const nextBandThreshold = Math.max(0, nextBand - 0.05);
+    ciReductionNeeded = Math.max(0, (nextBandThreshold - rawFactor) * benchmarkKgPerMmbtu);
+
+    const currentBandLow = Math.max(0, roundedFactor - 0.05);
+    const currentBandHigh = Math.min(1.0, roundedFactor + 0.05);
+    const bandSpan = currentBandHigh - currentBandLow;
+    const pctThroughBand = bandSpan > 0
+      ? clamp((rawFactor - currentBandLow) / bandSpan, 0, 1) * 100
+      : 0;
+    bandPosition = pctThroughBand >= 67 ? "High" : (pctThroughBand <= 33 ? "Low" : "Middle");
+  }
+
+  const rateDetail = Number.isFinite(rate)
+    ? `Band Level: ${fmt(roundedFactor,1)}
+Band Position: ${bandPosition}`
+    : "";
+
+  return {
+    ci45z_g_per_mj: ci,
+    emissions_kg_per_mmbtu: emissionsKgmmbtu,
+    emissions_factor_raw: rawFactor,
+    emissions_factor_rounded: roundedFactor,
+    next_band_ci_reduction_kg_per_mmbtu: ciReductionNeeded,
+    rate,
+    rateDetail
+  };
 }
 
 function toFiniteNumberOrNull(x){
@@ -2582,6 +2759,85 @@ function firstNonEmpty(...vals){
     : `${niceName}${tail ? " ("+tail+")" : ""}`;
 }
 
+function normalizePlantRow(p, i=0){
+  const fac   = p?.fac_info || {};
+  const dryer = p?.dryer_analysis || {};
+  const rin   = p?.rin_info || {};
+  const ci    = p?.ci_summary || {};
+  const detail= p?.lcfs_detail || {};
+  const tech  = p?.tech_flags || {};
+  const co2   = p?.co2_info || {};
+  const meta  = p?.meta || {};
+
+  const out = {
+    ...(p || {}),
+    facility_id: p?.facility_id ?? p?.EPM_NUMBER ?? p?.epm_number ?? p?.epm ?? p?.EPM ?? p?.id ?? fac.epm ?? fac.facility_id ?? null,
+    ca_facility_id: p?.ca_facility_id ?? fac.epm ?? fac.facility_id ?? null,
+    plant_name: p?.plant_name ?? p?.name ?? p?.Name ?? p?.["Plant"] ?? p?.["Plant Name"] ?? fac.plant_name ?? null,
+    ownership: p?.ownership ?? p?.owner ?? p?.Owner ?? fac.ownership ?? null,
+    state: p?.state ?? p?.State ?? fac.state ?? null,
+    city: p?.city ?? p?.City ?? fac.city ?? null,
+    latitude: p?.latitude ?? fac.latitude ?? null,
+    longitude: p?.longitude ?? fac.longitude ?? null,
+    rail_lines: p?.rail_lines ?? fac.rail_lines ?? null,
+    ethanol_capacity_mgy: p?.ethanol_capacity_mgy ?? fac.ethanol_capacity_mgy ?? null,
+    year_build: p?.year_build ?? fac.year_build ?? null,
+    d6_non_cellulosic: p?.d6_non_cellulosic ?? rin.d6_non_cellulosic ?? null,
+    d3_cellulosic: p?.d3_cellulosic ?? rin.d3_cellulosic ?? null,
+    ci_lcfs_delivered_g_per_mj: p?.ci_lcfs_delivered_g_per_mj ?? ci.ci_lcfs_delivered_g_per_mj ?? null,
+    ci_date: p?.ci_date ?? ci.ci_date ?? null,
+    ci_by_feedstock: p?.ci_by_feedstock ?? ci.ci_by_feedstock ?? {},
+    ca_detail: p?.ca_detail ?? detail.ca_detail ?? [],
+    or_detail: p?.or_detail ?? detail.or_detail ?? [],
+    high_pro: p?.high_pro ?? tech.high_pro ?? null,
+    chp: p?.chp ?? tech.chp ?? null,
+    white_fox: p?.white_fox ?? tech.white_fox ?? null,
+    icm_p10: p?.icm_p10 ?? tech.icm_p10 ?? null,
+    dco_enhancement:
+      p?.dco_enhancement ??
+      tech.dco_enhancement ??
+      p?.["DCO Enhancement"] ??
+      p?.["DCO Enhancement\n(lb/bu)"] ??
+      p?.["ICM FOT"] ??
+      tech["ICM FOT"] ??
+      null,
+    special_tech: p?.special_tech ?? tech.special_tech ?? null,
+    wind_turbine: p?.wind_turbine ?? tech.wind_turbine ?? null,
+    waste_heat: p?.waste_heat ?? tech.waste_heat ?? null,
+    dryer_types: p?.dryer_types ?? tech.dryer_types ?? null,
+    technology: p?.technology ?? tech.technology ?? null,
+    reg_pathway: p?.reg_pathway ?? tech.reg_pathway ?? null,
+    gas_supply: p?.gas_supply ?? tech.gas_supply ?? null,
+    electricity_type: p?.electricity_type ?? tech.electricity_type ?? null,
+    electrical_grid_designation: p?.electrical_grid_designation ?? tech.electrical_grid_designation ?? null,
+    fiber_technology: p?.fiber_technology ?? tech.fiber_technology ?? null,
+    implied_dryer_btu_per_gal: p?.implied_dryer_btu_per_gal ?? dryer.implied_dryer_btu_per_gal ?? null,
+    relative_dryer_efficiency_bucket: p?.relative_dryer_efficiency_bucket ?? dryer.relative_dryer_efficiency_bucket ?? null,
+    dryer_used: p?.dryer_used ?? tech.dryer_used ?? null,
+    dryer_confidence: p?.dryer_confidence ?? tech.dryer_confidence ?? null,
+    dryer_conflict: p?.dryer_conflict ?? tech.dryer_conflict ?? false,
+    dryer_tokens: p?.dryer_tokens ?? tech.dryer_tokens ?? [],
+    co2_pipeline_direct: p?.co2_pipeline_direct ?? co2.co2_pipeline_direct ?? null,
+    co2_pipeline_3rd_party: p?.co2_pipeline_3rd_party ?? co2.co2_pipeline_3rd_party ?? null,
+    co2_rail_connect: p?.co2_rail_connect ?? co2.co2_rail_connect ?? null,
+    co2_sponsor: p?.co2_sponsor ?? co2.co2_sponsor ?? null,
+    thermal_btu_per_gal_est: p?.thermal_btu_per_gal_est ?? p?.epa_ghg_derived?.thermal_btu_per_gal_est ?? null,
+    source_table: p?.source_table ?? meta.source_table ?? null,
+    desc_raw: p?.desc_raw ?? meta.desc_raw ?? "",
+    ckf_ci_score: p?.ckf_ci_score ?? null,
+    ckf_distribution: Array.isArray(p?.ckf_distribution) ? p.ckf_distribution : []
+  };
+
+  out.__id = plantId(out) || String(i);
+
+  for (const key of ["latitude", "longitude", "ethanol_capacity_mgy", "thermal_btu_per_gal_est", "year_build", "ckf_ci_score"]){
+    out[key] = (out[key] === null || out[key] === "" || out[key] === undefined) ? null : Number(out[key]);
+    if (!Number.isFinite(out[key])) out[key] = null;
+  }
+
+  return out;
+}
+
   function getNumber(id){
   const el = document.getElementById(id);
   if (!el) return NaN;
@@ -2822,6 +3078,45 @@ function syncFreightUI(){
   let allPlants = [];
   let filteredPlants = [];
   let selectedPlant = null;
+  const plantDetailCache = new Map();
+
+function plantId(p){
+  return String(
+    p?.EPM_NUMBER ??
+    p?.epm_number ??
+    p?.epm ??
+    p?.EPM ??
+    p?.id ??
+    p?.facility_id ??
+    p?.ca_facility_id ??
+    p?.fac_info?.epm ??
+    p?.fac_info?.facility_id ??
+    p?.__id ??
+    ""
+  ).trim();
+}
+
+async function fetchPlantDetail(id){
+  const key = String(id || "").trim();
+  if (!key) return null;
+  if (plantDetailCache.has(key)) return plantDetailCache.get(key);
+
+  const url = `${PLANT_URL}?id=${encodeURIComponent(key)}`;
+  const resp = await fetch(url, { cache: "no-store" });
+  if (!resp.ok){
+    const txt = await resp.text().catch(() => "(no body)");
+    throw new Error(`Plant fetch failed ${resp.status}: ${txt}`);
+  }
+  const raw = await resp.json();
+  const row = Array.isArray(raw)
+    ? raw[0]
+    : raw && typeof raw === "object"
+    ? (raw.plant || raw.row || raw.data || raw)
+    : raw;
+  const plant = normalizePlantRow(row, 0);
+  plantDetailCache.set(key, plant);
+  return plant;
+}
 
   // ----------------------------
   // HUB RENDER (FILTERED BY RAIL)
@@ -2907,19 +3202,53 @@ function currentHub(){
 // ----------------------------
 // PLANT LIST FILTERING
 // ----------------------------
-function applyFilters(){
-  const qEl = document.getElementById("searchBox");
-  const q = (qEl ? qEl.value : "").toLowerCase().trim();
+function buildSearchUrl(){
+  const nameText = String(document.getElementById("searchBox")?.value || "").trim();
+  const stateText = String(document.getElementById("stateBox")?.value || "").trim().toUpperCase();
+  const params = new URLSearchParams();
 
-  filteredPlants = allPlants.filter(p => {
-    if (!q) return true;
-    const hay = (
-      plantLabel(p) + " " + (p.facility_id || "") + " " + (p.ca_facility_id || "")
-    ).toLowerCase();
-    return hay.includes(q);
-  });
+  if (nameText) params.set("name", nameText);
+  if (stateText) params.set("state", stateText);
 
-  filteredPlants.sort((a, b) => plantLabel(a).localeCompare(plantLabel(b)));
+  const qs = params.toString();
+  return qs ? `${SEARCH_URL}?${qs}` : SEARCH_URL;
+}
+
+async function applyFilters(){
+  const url = buildSearchUrl();
+  let resp;
+  try {
+    resp = await fetch(url, { cache: "no-store" });
+  } catch (e) {
+    console.error("SEARCH FETCH ERROR:", e);
+    alert("Plant search failed. See console.");
+    return;
+  }
+
+  if (!resp.ok){
+    const txt = await resp.text().catch(() => "(no body)");
+    console.error("SEARCH FETCH FAILED:", resp.status, txt);
+    alert(`Plant search failed: ${resp.status}. See console.`);
+    return;
+  }
+
+  const raw = await resp.json();
+  let rows = null;
+  if (Array.isArray(raw)) rows = raw;
+  else if (raw && Array.isArray(raw.plants)) rows = raw.plants;
+  else if (raw && Array.isArray(raw.rows)) rows = raw.rows;
+  else if (raw && Array.isArray(raw.data)) rows = raw.data;
+  else if (raw && Array.isArray(raw.results)) rows = raw.results;
+  else if (raw && Array.isArray(raw.items)) rows = raw.items;
+
+  if (!rows){
+    console.error("Search response shape not recognized:", raw);
+    alert("Plant search returned an unexpected shape. See console.");
+    return;
+  }
+
+  allPlants = rows.map((p, i) => normalizePlantRow(p, i));
+  filteredPlants = [...allPlants].sort((a, b) => plantLabel(a).localeCompare(plantLabel(b)));
   renderPlantSelect();
 }
 
@@ -3002,6 +3331,50 @@ function applyFilters(){
         
         
         // <-- CLOSE renderPlantSelect()
+
+function renderPlantSelect(){
+  const sel = document.getElementById("plantSelect");
+  if (!sel) return;
+
+  sel.innerHTML = "";
+
+  if (!filteredPlants.length){
+    const o = document.createElement("option");
+    o.value = "";
+    o.textContent = "No plants match filters";
+    sel.appendChild(o);
+
+    selectedPlant = null;
+    const freightCb = document.getElementById("applyFreight");
+    if (freightCb) freightCb.checked = false;
+
+    renderHubs();
+    syncFreightUI();
+    renderProgramSummary();
+    renderLcfsDetail();
+    renderPlantDetails();
+    renderOutputs();
+    return;
+  }
+
+  for (const p of filteredPlants){
+    const o = document.createElement("option");
+    o.value = plantId(p);
+    o.textContent = plantLabel(p);
+    sel.appendChild(o);
+  }
+
+  if (selectedPlant){
+    const keepId = plantId(selectedPlant);
+    sel.value = filteredPlants.some(p => plantId(p) === keepId)
+      ? keepId
+      : plantId(filteredPlants[0]);
+  } else {
+    sel.value = plantId(filteredPlants[0]);
+  }
+
+  handlePlantSelectChange();
+}
         
 function getNumericDryerValues(){
   return allPlants
@@ -3300,6 +3673,7 @@ function compute(){
   emissions_kg_per_mmbtu: NaN,
   emissions_factor_raw: NaN,
   emissions_factor_rounded: NaN,
+  next_band_ci_reduction_kg_per_mmbtu: NaN,
 
   rate: NaN,
   rateDetail: ""
@@ -3534,88 +3908,60 @@ if (Number.isFinite(res.startCi)){
   res.ciFob = res.startCi - (Number.isFinite(res.freightCi) ? res.freightCi : 0);
 }
 
-  // 45Z proxy CI
-  if (Number.isFinite(res.ciFob)){
-    let ci = res.ciFob;
+  const rateBlock = compute45zRateBlock({
+    startCi: res.ciFob,
+    freightCi: 0,
+    iluc: doIluc ? iluc : 0,
+    miscReduction: doMisc ? misc : 0,
+    pipelineScore,
+    agReduction,
+    ckfAdjustment,
+    electricityBridge,
+    benchmarkKgPerMmbtu: bench_kg_per_mmbtu,
+    maxRate
+  });
 
-    if (doIluc && Number.isFinite(iluc)) ci -= iluc;
+  res.ci45z_g_per_mj = rateBlock.ci45z_g_per_mj;
+  res.emissions_kg_per_mmbtu = rateBlock.emissions_kg_per_mmbtu;
+  res.emissions_factor_raw = rateBlock.emissions_factor_raw;
+  res.emissions_factor_rounded = rateBlock.emissions_factor_rounded;
+  res.next_band_ci_reduction_kg_per_mmbtu = rateBlock.next_band_ci_reduction_kg_per_mmbtu;
+  res.rate = rateBlock.rate;
+  res.rateDetail = rateBlock.rateDetail;
 
-    // Misc applies to ALL plants when checked
-   if (doMisc && Number.isFinite(misc)) ci += misc;
+  // ----------------------------
+  // Discounted 45Z value through Dec 2029
+  // ----------------------------
+  if (Number.isFinite(res.rate) && Number.isFinite(gallonsPerYear) && gallonsPerYear > 0){
+    res.fortyfivez_annual_value = res.rate * gallonsPerYear;
+    res.fortyfivez_remaining_years = remaining45ZYearsFromToday();
 
-   // ✅ Chapter 2 pipeline reduction
-    ci -= pipelineScore;
-    // ✅ Agricultural practices reduction
-    ci -= agReduction;
-    // ✅ Corn Kernel Fiber reduction
-    ci -= ckfAdjustment;
-    ci += electricityBridge;
+    if (res.fortyfivez_remaining_years > 0){
+      const fullYears = Math.floor(res.fortyfivez_remaining_years);
+      const stubYears = res.fortyfivez_remaining_years - fullYears;
 
-    
+      let pv45z = 0;
 
-    res.ci45z_g_per_mj = ci;
+      // partial first period
+      if (stubYears > 0){
+        pv45z += (res.fortyfivez_annual_value * stubYears) / Math.pow(1 + discountRate, stubYears);
+      }
 
-// Convert once at the end for 45Z policy unit system
-res.emissions_kg_per_mmbtu = Number.isFinite(ci)
-  ? (ci * CONV_G_PER_MJ_TO_KG_PER_MMBTU)
-  : NaN;
-  }
+      // full years after the stub
+      for (let i = 1; i <= fullYears; i++){
+        const t = stubYears + i;
+        pv45z += res.fortyfivez_annual_value / Math.pow(1 + discountRate, t);
+      }
 
-// Rate mapping should use 45Z units (kg/MMBtu)
-// Bucketed version: round emissions factor to nearest 0.1, then apply max rate
-if (
-  Number.isFinite(res.emissions_kg_per_mmbtu) &&
-  Number.isFinite(bench_kg_per_mmbtu) &&
-  Number.isFinite(maxRate)
-){
-  const rawFactor = (bench_kg_per_mmbtu - res.emissions_kg_per_mmbtu) / bench_kg_per_mmbtu;
-  const roundedFactor = round45zEmissionsFactor(res.emissions_kg_per_mmbtu, bench_kg_per_mmbtu);
-
-  res.emissions_factor_raw = Math.max(0, rawFactor);
-  res.emissions_factor_rounded = roundedFactor;
-
-  res.rate = clamp(roundedFactor * maxRate, 0, maxRate);
-  
-// ----------------------------
-// Discounted 45Z value through Dec 2029
-// ----------------------------
-if (Number.isFinite(res.rate) && Number.isFinite(gallonsPerYear) && gallonsPerYear > 0){
-  res.fortyfivez_annual_value = res.rate * gallonsPerYear;
-  res.fortyfivez_remaining_years = remaining45ZYearsFromToday();
-
-  if (res.fortyfivez_remaining_years > 0){
-    const fullYears = Math.floor(res.fortyfivez_remaining_years);
-    const stubYears = res.fortyfivez_remaining_years - fullYears;
-
-    let pv45z = 0;
-
-    // partial first period
-    if (stubYears > 0){
-      pv45z += (res.fortyfivez_annual_value * stubYears) / Math.pow(1 + discountRate, stubYears);
+      res.fortyfivez_discounted_value = pv45z;
+    } else {
+      res.fortyfivez_discounted_value = 0;
     }
-
-    // full years after the stub
-    for (let i = 1; i <= fullYears; i++){
-      const t = stubYears + i;
-      pv45z += res.fortyfivez_annual_value / Math.pow(1 + discountRate, t);
-    }
-
-    res.fortyfivez_discounted_value = pv45z;
   } else {
-    res.fortyfivez_discounted_value = 0;
+    res.fortyfivez_annual_value = NaN;
+    res.fortyfivez_remaining_years = 0;
+    res.fortyfivez_discounted_value = NaN;
   }
-} else {
-  res.fortyfivez_annual_value = NaN;
-  res.fortyfivez_remaining_years = 0;
-  res.fortyfivez_discounted_value = NaN;
-}
-
-
- res.rateDetail =
-    `Raw factor = (${fmt(bench_kg_per_mmbtu,2)} − ${fmt(res.emissions_kg_per_mmbtu,2)}) ÷ ${fmt(bench_kg_per_mmbtu,2)} = ${fmt(res.emissions_factor_raw,3)}
-Rounded factor = ${fmt(res.emissions_factor_rounded,1)}
-Rate = ${fmt(res.emissions_factor_rounded,1)} × $${fmt(maxRate,2)} = $${fmt(res.rate,4)}/gal`;
-}
   return res;
 }
 
@@ -3699,7 +4045,7 @@ function renderOutputs(){
     if (outConvLine) outConvLine.textContent = "—";
     if (out45zRemainingYears) out45zRemainingYears.textContent = "—";
     if (out45qEffectiveYearsTop) out45qEffectiveYearsTop.textContent = "—";
-    if (outTotalDiscountedValueNote) outTotalDiscountedValueNote.textContent = "45Z + 45Q values discounted at —";
+    if (outTotalDiscountedValueNote) outTotalDiscountedValueNote.textContent = "Discounted 45Z & 45Q Value";
     return;
   }
 
@@ -3763,9 +4109,7 @@ if (out45qEffectiveYearsTop){
 }
 
 if (outTotalDiscountedValueNote){
-  outTotalDiscountedValueNote.textContent = Number.isFinite(r.discount_rate_pct)
-    ? `45Z + 45Q values discounted at ${fmt(r.discount_rate_pct, 1)}%`
-    : "45Z + 45Q values discounted at —";
+  outTotalDiscountedValueNote.textContent = "Discounted 45Z & 45Q Value";
 }
 
 
@@ -3787,8 +4131,11 @@ if (out45qValuePerGal){
 
   if (outConvLine){
     if (Number.isFinite(r.ci45z_g_per_mj) && Number.isFinite(r.emissions_kg_per_mmbtu)){
+      const nextBandLine = Number.isFinite(r.next_band_ci_reduction_kg_per_mmbtu)
+        ? `\nNext Band: ${fmt(r.next_band_ci_reduction_kg_per_mmbtu, 2)} kg/MMBtu`
+        : "";
       outConvLine.textContent =
-        `Unit Conversion: ${fmt(r.ci45z_g_per_mj, 2)} g/MJ → ${fmt(r.emissions_kg_per_mmbtu, 2)} kg/MMBtu`;
+        `${fmt(r.ci45z_g_per_mj, 2)} g/MJ = ${fmt(r.emissions_kg_per_mmbtu, 2)} kg/MMBtu${nextBandLine}`;
     } else {
       outConvLine.textContent = "—";
     }
@@ -3954,10 +4301,60 @@ function wireEvents(){
     renderOutputs();
   } // closes handlePlantSelectChange
 
+async function handlePlantSelectChange(){
+  const sel = document.getElementById("plantSelect");
+  const chosenId = String(sel ? sel.value : "").trim();
+
+  if (!chosenId){
+    selectedPlant = null;
+    renderPlantDetails();
+    renderOutputs();
+    return;
+  }
+
+  const summaryPlant = filteredPlants.find(p => plantId(p) === chosenId) || null;
+  selectedPlant = summaryPlant;
+  renderPlantDetails();
+  renderOutputs();
+
+  try {
+    selectedPlant = await fetchPlantDetail(chosenId);
+  } catch (e) {
+    console.error("PLANT DETAIL FETCH ERROR:", e);
+    alert("Plant detail fetch failed. See console.");
+    return;
+  }
+
+  resetMiscOverride();
+  syncCcsUI();
+  syncChapter2PipelineUI();
+  renderHubs();
+  renderStartingPanel();
+  renderCkfPanel();
+  renderCkfChart();
+  renderProgramSummary();
+  renderLcfsDetail();
+
+  const freightCb = document.getElementById("applyFreight");
+  if (freightCb){
+    const mode = selectedPlant ? (startingCI(selectedPlant).mode || "proxy") : "proxy";
+    freightCb.checked = (mode === "lcfs");
+  }
+  syncFreightUI();
+  syncElectricityBridgeUI();
+  renderEnhancedTechnology();
+  renderPlantDetails();
+  renderOutputs();
+}
+
   // --- Wire inputs ---
 
   // Search: rebuild plant list
   onInput("searchBox", () => {
+    applyFilters();
+  });
+
+  onInput("stateBox", () => {
     applyFilters();
   });
 
@@ -4067,6 +4464,8 @@ function wireEvents(){
     else if (raw && Array.isArray(raw.plants)) rows = raw.plants;
     else if (raw && Array.isArray(raw.rows)) rows = raw.rows;
     else if (raw && Array.isArray(raw.data)) rows = raw.data;
+    else if (raw && Array.isArray(raw.results)) rows = raw.results;
+    else if (raw && Array.isArray(raw.items)) rows = raw.items;
 
     if (!rows){
       console.error("JSON shape not recognized:", raw);
@@ -4107,8 +4506,8 @@ allPlants = rows.map((p, i) => {
     ...p,
 
     // ---- fac_info ----
-    facility_id: p.facility_id ?? fac.facility_id ?? null,
-    ca_facility_id: p.ca_facility_id ?? fac.facility_id ?? null,
+    facility_id: p.facility_id ?? p.EPM_NUMBER ?? p.epm_number ?? p.epm ?? p.EPM ?? p.id ?? fac.epm ?? fac.facility_id ?? null,
+    ca_facility_id: p.ca_facility_id ?? fac.epm ?? fac.facility_id ?? null,
     plant_name: p.plant_name ?? fac.plant_name ?? null,
     ownership: p.ownership ?? fac.ownership ?? null,
     state: p.state ?? fac.state ?? null,
@@ -4220,12 +4619,6 @@ allPlants = rows.map((p, i) => {
   if (!Number.isFinite(out.thermal_btu_per_gal_est)) out.thermal_btu_per_gal_est = null;
 
   out.year_build =
-    (out.year_build === null || out.year_build === "" || out.year_build === undefined)
-      ? null
-      : Number(out.year_build);
-  if (!Number.isFinite(out.year_build)) out.year_build = null;
-
-   out.year_build =
     (out.year_build === null || out.year_build === "" || out.year_build === undefined)
       ? null
       : Number(out.year_build);

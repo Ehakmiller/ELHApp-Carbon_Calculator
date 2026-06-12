@@ -3562,6 +3562,17 @@ function benchmarkCiValue(program, row){
   return Number.isFinite(n) ? n : null;
 }
 
+function benchmarkDateValue(program, row){
+  const value =
+    program === "WA" ? row?.["Eff. Start Qtr/Yr"] :
+    program === "BC" ? row?.effective_date :
+    program === "Canada" ? row?.approval_date :
+    row?.detail_date;
+
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 function addBenchmarkEntry(entries, plant, program, row){
   if (!isActivePathway(row)) return;
 
@@ -3577,6 +3588,7 @@ function addBenchmarkEntry(entries, plant, program, row){
     feedstock,
     feedstock_key: String(feedstock).trim().toLowerCase(),
     feedstock_source: benchmarkFeedstockSource(program, row),
+    date_value: benchmarkDateValue(program, row),
     ci
   });
 }
@@ -3592,6 +3604,24 @@ function benchmarkEntriesForPlant(plant){
   asArray(plant.canadian_fed_ci_detail).forEach(row => addBenchmarkEntry(entries, plant, "Canada", row));
 
   return entries;
+}
+
+function dedupeBenchmarkEntries(entries){
+  const byKey = new Map();
+
+  entries.forEach(entry => {
+    const key = `${entry.plant_id}||${entry.program}||${entry.feedstock_key}`;
+    const existing = byKey.get(key);
+    if (
+      !existing ||
+      entry.date_value > existing.date_value ||
+      (entry.date_value === existing.date_value && entry.ci < existing.ci)
+    ){
+      byKey.set(key, entry);
+    }
+  });
+
+  return [...byKey.values()];
 }
 
 function groupKey(entry){
@@ -3638,14 +3668,15 @@ async function renderPathwayBenchmark(){
   }
 
   const selectedEntries = benchmarkEntriesForPlant(selectedPlant);
-  if (!selectedEntries.length){
+  const selectedActiveEntries = dedupeBenchmarkEntries(selectedEntries);
+  if (!selectedActiveEntries.length){
     setBenchmarkLoading("—");
     return;
   }
 
   activeEl.innerHTML = benchmarkTable(
-    ["System", "Feedstock", "CI"],
-    selectedEntries.map(entry => `
+    ["System", "Feed", "CI"],
+    selectedActiveEntries.map(entry => `
       <tr>
         <td>${escapeHtml(entry.program)}</td>
         <td>${escapeHtml(entry.feedstock)}${entry.feedstock_source ? `<span class="pathwayBenchmarkSource">${escapeHtml(entry.feedstock_source)}</span>` : ""}</td>
@@ -3666,7 +3697,7 @@ async function renderPathwayBenchmark(){
     return;
   }
 
-  const peerEntries = peers.flatMap(benchmarkEntriesForPlant);
+  const peerEntries = dedupeBenchmarkEntries(peers.flatMap(benchmarkEntriesForPlant));
   const peerGroups = new Map();
   peerEntries.forEach(entry => {
     const key = groupKey(entry);
@@ -3675,8 +3706,8 @@ async function renderPathwayBenchmark(){
   });
 
   avgEl.innerHTML = benchmarkTable(
-    ["System", "Feedstock", "Avg CI"],
-    selectedEntries.map(entry => {
+    ["System", "Feed", "Avg CI"],
+    selectedActiveEntries.map(entry => {
       const group = peerGroups.get(groupKey(entry)) || [];
       const mean = avg(group.map(row => row.ci));
       return `
@@ -3690,8 +3721,8 @@ async function renderPathwayBenchmark(){
   );
 
   rankEl.innerHTML = benchmarkTable(
-    ["System", "Feedstock", "Rank"],
-    selectedEntries.map(entry => {
+    ["System", "Feed", "Rank"],
+    selectedActiveEntries.map(entry => {
       const group = (peerGroups.get(groupKey(entry)) || [])
         .filter(row => Number.isFinite(row.ci))
         .sort((a, b) => a.ci - b.ci);

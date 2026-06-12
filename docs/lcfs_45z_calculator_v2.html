@@ -1229,10 +1229,6 @@ The credit applies to qualifying carbon capture projects located in the United S
       <div id="benchmarkRankRows"></div>
     </div>
   </div>
-  <div class="pathwayBenchmarkCard" style="margin-bottom:10px;">
-    <div class="pathwayBenchmarkTitle">WA &rarr; CA Calibration</div>
-    <div id="waCaCalibrationRows"></div>
-  </div>
   <div class="hr"></div>
 
   <p class="sectionTitle">Scenario inputs</p>
@@ -3653,10 +3649,6 @@ function groupKey(entry){
   return `${entry.program}||${entry.feedstock_key}||${entry.coproduct_key}`;
 }
 
-function calibrationClassKey(entry){
-  return entry.feedstock_key || "unknown";
-}
-
 function avg(values){
   const nums = values.filter(Number.isFinite);
   if (!nums.length) return null;
@@ -3679,112 +3671,17 @@ function benchmarkTable(headers, rows, emptyText="—"){
 }
 
 function setBenchmarkLoading(text){
-  ["benchmarkActiveRows", "benchmarkAverageRows", "benchmarkRankRows", "waCaCalibrationRows"].forEach(id => {
+  ["benchmarkActiveRows", "benchmarkAverageRows", "benchmarkRankRows"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = `<div class="muted" style="font-size:12px;">${escapeHtml(text)}</div>`;
   });
-}
-
-function caMatchForWa(waEntry, caEntries){
-  const sameClass = caEntries.filter(ca => calibrationClassKey(ca) === calibrationClassKey(waEntry));
-  if (!sameClass.length) return null;
-
-  if (waEntry.coproduct_key){
-    const sameCoproduct = sameClass.filter(ca => ca.coproduct_key === waEntry.coproduct_key);
-    if (sameCoproduct.length){
-      return sameCoproduct.sort((a, b) => b.date_value - a.date_value || Math.abs(a.ci - waEntry.ci) - Math.abs(b.ci - waEntry.ci))[0];
-    }
-  }
-
-  return sameClass.sort((a, b) => b.date_value - a.date_value || Math.abs(a.ci - waEntry.ci) - Math.abs(b.ci - waEntry.ci))[0];
-}
-
-function buildWaCaCalibration(peers){
-  const matched = [];
-  const unmatched = [];
-
-  peers.forEach(plant => {
-    const entries = dedupeBenchmarkEntries(benchmarkEntriesForPlant(plant));
-    const waEntries = entries.filter(entry => entry.program === "WA");
-    const caEntries = entries.filter(entry => entry.program === "CA");
-
-    waEntries.forEach(wa => {
-      const ca = caMatchForWa(wa, caEntries);
-      if (ca){
-        matched.push({
-          plant_id: wa.plant_id,
-          class_key: calibrationClassKey(wa),
-          feedstock: wa.feedstock,
-          coproduct: wa.coproduct,
-          wa_ci: wa.ci,
-          ca_ci: ca.ci,
-          diff: wa.ci - ca.ci,
-          match_type: "exact"
-        });
-      } else {
-        unmatched.push({
-          plant_id: wa.plant_id,
-          class_key: calibrationClassKey(wa),
-          feedstock: wa.feedstock,
-          coproduct: wa.coproduct,
-          wa_ci: wa.ci
-        });
-      }
-    });
-  });
-
-  const byClass = new Map();
-  matched.forEach(row => {
-    if (!byClass.has(row.class_key)) byClass.set(row.class_key, []);
-    byClass.get(row.class_key).push(row);
-  });
-
-  const classStats = new Map();
-  byClass.forEach((rows, key) => {
-    classStats.set(key, {
-      count: rows.length,
-      avgDiff: avg(rows.map(row => row.diff))
-    });
-  });
-
-  return { matched, unmatched, classStats };
-}
-
-function renderWaCaCalibration(selectedActiveEntries, peers){
-  const el = document.getElementById("waCaCalibrationRows");
-  if (!el) return;
-
-  const selectedWa = selectedActiveEntries.filter(entry => entry.program === "WA");
-  if (!selectedWa.length){
-    el.innerHTML = `<div class="muted" style="font-size:12px;">—</div>`;
-    return;
-  }
-
-  const calibration = buildWaCaCalibration(peers);
-  el.innerHTML = benchmarkTable(
-    ["Feed", "Matches", "Avg Diff", "Est CA"],
-    selectedWa.map(wa => {
-      const stats = calibration.classStats.get(calibrationClassKey(wa));
-      const avgDiff = stats?.avgDiff ?? null;
-      const est = avgDiff === null ? null : wa.ci - avgDiff;
-      return `
-        <tr>
-          <td>${escapeHtml(wa.feedstock)}${wa.coproduct ? `<span class="pathwayBenchmarkSource">${escapeHtml(wa.coproduct)}</span>` : ""}</td>
-          <td>${stats ? escapeHtml(stats.count) : "—"}</td>
-          <td>${avgDiff === null ? "—" : escapeHtml(displayCi(avgDiff))}</td>
-          <td>${est === null ? "—" : escapeHtml(displayCi(est))}</td>
-        </tr>
-      `;
-    })
-  );
 }
 
 async function renderPathwayBenchmark(){
   const activeEl = document.getElementById("benchmarkActiveRows");
   const avgEl = document.getElementById("benchmarkAverageRows");
   const rankEl = document.getElementById("benchmarkRankRows");
-  const calEl = document.getElementById("waCaCalibrationRows");
-  if (!activeEl || !avgEl || !rankEl || !calEl) return;
+  if (!activeEl || !avgEl || !rankEl) return;
 
   if (!selectedPlant){
     setBenchmarkLoading("—");
@@ -3811,7 +3708,6 @@ async function renderPathwayBenchmark(){
   );
   avgEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers…</div>`;
   rankEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers…</div>`;
-  calEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers…</div>`;
 
   let peers = [];
   try {
@@ -3820,7 +3716,6 @@ async function renderPathwayBenchmark(){
     console.error("Benchmark peer load failed:", e);
     avgEl.innerHTML = `<div class="muted" style="font-size:12px;">Peer load failed</div>`;
     rankEl.innerHTML = `<div class="muted" style="font-size:12px;">Peer load failed</div>`;
-    calEl.innerHTML = `<div class="muted" style="font-size:12px;">Peer load failed</div>`;
     return;
   }
 
@@ -3867,8 +3762,6 @@ async function renderPathwayBenchmark(){
       `;
     })
   );
-
-  renderWaCaCalibration(selectedActiveEntries, peers);
 }
 
   // ----------------------------

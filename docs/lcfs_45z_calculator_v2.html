@@ -3551,6 +3551,19 @@ function benchmarkFeedstockSource(program, row){
   return firstNonEmpty(row?.feedstock_class_source, row?.feedstock_source, row?.grain_source_source);
 }
 
+function benchmarkCoproductLabel(program, row){
+  if (program === "CA" || program === "OR"){
+    return firstNonEmpty(row?.coproduct_type, row?.co_product, row?.coproduct);
+  }
+  if (program === "WA"){
+    const desc = String(row?.["Pathway Description"] || "");
+    if (/\bWDGS\b|Wet DGS|Wet Distillers/i.test(desc)) return "WDGS";
+    if (/\bDDGS\b|Dry DGS|Dry Distillers/i.test(desc)) return "DDGS";
+    if (/Modified Wet/i.test(desc)) return "MWDGS";
+  }
+  return "";
+}
+
 function benchmarkCiValue(program, row){
   const value =
     program === "WA" ? row?.CI :
@@ -3587,6 +3600,8 @@ function addBenchmarkEntry(entries, plant, program, row){
     program,
     feedstock,
     feedstock_key: String(feedstock).trim().toLowerCase(),
+    coproduct: benchmarkCoproductLabel(program, row),
+    coproduct_key: String(benchmarkCoproductLabel(program, row)).trim().toLowerCase(),
     feedstock_source: benchmarkFeedstockSource(program, row),
     date_value: benchmarkDateValue(program, row),
     ci
@@ -3610,7 +3625,7 @@ function dedupeBenchmarkEntries(entries){
   const byKey = new Map();
 
   entries.forEach(entry => {
-    const key = `${entry.plant_id}||${entry.program}||${entry.feedstock_key}`;
+    const key = `${entry.plant_id}||${entry.program}||${entry.feedstock_key}||${entry.coproduct_key}`;
     const existing = byKey.get(key);
     if (
       !existing ||
@@ -3625,7 +3640,7 @@ function dedupeBenchmarkEntries(entries){
 }
 
 function groupKey(entry){
-  return `${entry.program}||${entry.feedstock_key}`;
+  return `${entry.program}||${entry.feedstock_key}||${entry.coproduct_key}`;
 }
 
 function avg(values){
@@ -3675,11 +3690,12 @@ async function renderPathwayBenchmark(){
   }
 
   activeEl.innerHTML = benchmarkTable(
-    ["System", "Feed", "CI"],
+    ["System", "Feed", "Co-prod", "CI"],
     selectedActiveEntries.map(entry => `
       <tr>
         <td>${escapeHtml(entry.program)}</td>
         <td>${escapeHtml(entry.feedstock)}${entry.feedstock_source ? `<span class="pathwayBenchmarkSource">${escapeHtml(entry.feedstock_source)}</span>` : ""}</td>
+        <td>${entry.coproduct ? escapeHtml(entry.coproduct) : "—"}</td>
         <td>${escapeHtml(displayCi(entry.ci))}</td>
       </tr>
     `)

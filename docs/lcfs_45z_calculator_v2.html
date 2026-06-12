@@ -4180,25 +4180,6 @@ if (hasActiveProgramRows(selectedPlant.bc_lcfs_ci_detail)){
   addProgramPill("BC LCFS CI", "#a78bfa");
 }
 
-
-
-   let sourcePillText = "";
-if (s.mode === "lcfs" && s.source === "ca") {
-  sourcePillText = "Source: California LCFS";
-} else if (s.mode === "lcfs" && s.source === "or") {
-  sourcePillText = "Source: Oregon CFP";
-} else {
-  const src = (selectedPlant.source_table || selectedPlant.score_source || "").trim();
-  if (src) sourcePillText = `Source: ${src}`;
-}
-
-if (sourcePillText){
-  const p = document.createElement("span");
-  p.className = "pill";
-  p.textContent = sourcePillText;
-  badges.appendChild(p);
-}
-
   // --- Enhanced Technologies line (plant-level display) ---
 const enhList = getEnhancements(selectedPlant) || [];
 const enhText = enhList.length

@@ -839,7 +839,7 @@ header, main{ position:relative; z-index:1; }
 
 .pathwayBenchmarkGrid{
   display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr);
   gap:10px;
   margin-bottom:10px;
 }
@@ -884,6 +884,12 @@ header, main{ position:relative; z-index:1; }
 .pathwayBenchmarkTable th:last-child,
 .pathwayBenchmarkTable td:last-child{
   text-align:right;
+}
+
+.pathwayBenchmarkTable th:first-child,
+.pathwayBenchmarkTable td:first-child{
+  width:48px;
+  white-space:nowrap;
 }
 
 .pathwayBenchmarkTable tr:last-child td{

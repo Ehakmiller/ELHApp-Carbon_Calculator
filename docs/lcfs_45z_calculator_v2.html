@@ -837,9 +837,73 @@ header, main{ position:relative; z-index:1; }
   margin-bottom:0;
 }
 
+.pathwayBenchmarkGrid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.pathwayBenchmarkCard{
+  min-width:0;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#0f1522;
+}
+
+.pathwayBenchmarkTitle{
+  font-size:12px;
+  color:var(--text);
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+.pathwayBenchmarkTable{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.pathwayBenchmarkTable th,
+.pathwayBenchmarkTable td{
+  padding:5px 4px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  vertical-align:top;
+  overflow-wrap:anywhere;
+}
+
+.pathwayBenchmarkTable th{
+  color:var(--text);
+  font-weight:650;
+  text-align:left;
+}
+
+.pathwayBenchmarkTable th:last-child,
+.pathwayBenchmarkTable td:last-child{
+  text-align:right;
+}
+
+.pathwayBenchmarkTable tr:last-child td{
+  border-bottom:0;
+}
+
+.pathwayBenchmarkSource{
+  display:block;
+  margin-top:2px;
+  font-size:10px;
+  color:var(--accent);
+}
+
 @media (max-width: 900px){
   .lcfsDetailGrid{
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pathwayBenchmarkGrid{
+    grid-template-columns:1fr;
   }
 }
 
@@ -1144,6 +1208,23 @@ The credit applies to qualifying carbon capture projects located in the United S
 
 <!-- RIGHT column card: Scenario inputs -->
 <div class="card">
+  <p class="sectionTitle">Pathway Benchmark</p>
+  <div id="pathwayBenchmark" class="pathwayBenchmarkGrid">
+    <div class="pathwayBenchmarkCard">
+      <div class="pathwayBenchmarkTitle">Active Pathways</div>
+      <div id="benchmarkActiveRows"></div>
+    </div>
+    <div class="pathwayBenchmarkCard">
+      <div class="pathwayBenchmarkTitle">Market Average</div>
+      <div id="benchmarkAverageRows"></div>
+    </div>
+    <div class="pathwayBenchmarkCard">
+      <div class="pathwayBenchmarkTitle">Rank / Percentile</div>
+      <div id="benchmarkRankRows"></div>
+    </div>
+  </div>
+  <div class="hr"></div>
+
   <p class="sectionTitle">Scenario inputs</p>
 
   <p class="sectionTitle">Starting CI</p>
@@ -3365,6 +3446,7 @@ function syncFreightUI(){
   let selectedPlant = null;
   const plantDetailCache = new Map();
   let plantSelectionSeq = 0;
+  let benchmarkUniverseIds = [];
 
 function plantId(p){
   return String(
@@ -3402,6 +3484,231 @@ async function fetchPlantDetail(id){
   const plant = normalizePlantRow(row, 0);
   plantDetailCache.set(key, plant);
   return plant;
+}
+
+let benchmarkPeerPromise = null;
+
+async function loadBenchmarkPeers(){
+  if (benchmarkPeerPromise) return benchmarkPeerPromise;
+
+  benchmarkPeerPromise = (async () => {
+    const ids = benchmarkUniverseIds.length
+      ? benchmarkUniverseIds
+      : [...new Set(allPlants.map(plantId).filter(Boolean))];
+    const peers = [];
+    const batchSize = 8;
+
+    for (let i = 0; i < ids.length; i += batchSize){
+      const batch = ids.slice(i, i + batchSize);
+      const rows = await Promise.all(batch.map(async (id) => {
+        try {
+          return await fetchPlantDetail(id);
+        } catch (e) {
+          console.warn("Benchmark peer fetch failed:", id, e);
+          return null;
+        }
+      }));
+      peers.push(...rows.filter(Boolean));
+    }
+
+    return peers;
+  })();
+
+  return benchmarkPeerPromise;
+}
+
+function isActivePathway(row){
+  const status = String(row?.status ?? row?.Status ?? "").trim().toLowerCase();
+  if (status) return status === "active";
+
+  const active = String(row?.Active ?? "").trim().toLowerCase();
+  if (active) return active === "1" || active === "true" || active === "active";
+
+  const expiry = row?.expiry_date ?? row?.["Eff. End Qtr/Yr"];
+  if (!expiry) return true;
+
+  const parsed = Date.parse(expiry);
+  return Number.isNaN(parsed) ? true : parsed >= Date.now();
+}
+
+function benchmarkFeedstockLabel(program, row){
+  if (program === "CA" || program === "OR"){
+    return firstNonEmpty(row?.feedstock, row?.pathway_type, row?.program);
+  }
+  if (program === "WA"){
+    return firstNonEmpty(row?.feedstock_class, row?.["Fuel Name"], row?.["Fuel Pathway Code"]);
+  }
+  if (program === "BC"){
+    return firstNonEmpty(row?.feedstock_class, row?.feedstock, row?.pathway_base ? `Pathway ${row.pathway_base}` : "");
+  }
+  if (program === "Canada"){
+    return firstNonEmpty(row?.grain_source, row?.fuel_type, "Canada");
+  }
+  return "Pathway";
+}
+
+function benchmarkFeedstockSource(program, row){
+  return firstNonEmpty(row?.feedstock_class_source, row?.feedstock_source, row?.grain_source_source);
+}
+
+function benchmarkCiValue(program, row){
+  const value =
+    program === "WA" ? row?.CI :
+    program === "BC" ? row?.carbon_intensity_gCO2e_per_MJ :
+    program === "Canada" ? row?.approved_ci_gco2e_mj :
+    row?.ci_score;
+
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+function addBenchmarkEntry(entries, plant, program, row){
+  if (!isActivePathway(row)) return;
+
+  const ci = benchmarkCiValue(program, row);
+  if (ci === null) return;
+
+  const feedstock = benchmarkFeedstockLabel(program, row);
+  if (!feedstock || feedstock === "-") return;
+
+  entries.push({
+    plant_id: plantId(plant),
+    program,
+    feedstock,
+    feedstock_key: String(feedstock).trim().toLowerCase(),
+    feedstock_source: benchmarkFeedstockSource(program, row),
+    ci
+  });
+}
+
+function benchmarkEntriesForPlant(plant){
+  const entries = [];
+  if (!plant) return entries;
+
+  asArray(plant.ca_detail).forEach(row => addBenchmarkEntry(entries, plant, "CA", row));
+  asArray(plant.or_detail).forEach(row => addBenchmarkEntry(entries, plant, "OR", row));
+  asArray(plant.wa_lcfs_ci_detail).forEach(row => addBenchmarkEntry(entries, plant, "WA", row));
+  asArray(plant.bc_lcfs_ci_detail).forEach(row => addBenchmarkEntry(entries, plant, "BC", row));
+  asArray(plant.canadian_fed_ci_detail).forEach(row => addBenchmarkEntry(entries, plant, "Canada", row));
+
+  return entries;
+}
+
+function groupKey(entry){
+  return `${entry.program}||${entry.feedstock_key}`;
+}
+
+function avg(values){
+  const nums = values.filter(Number.isFinite);
+  if (!nums.length) return null;
+  return nums.reduce((sum, value) => sum + value, 0) / nums.length;
+}
+
+function percentileFromRank(rank, count){
+  if (!Number.isFinite(rank) || !Number.isFinite(count) || count <= 1) return null;
+  return (1 - ((rank - 1) / (count - 1))) * 100;
+}
+
+function benchmarkTable(headers, rows, emptyText="—"){
+  if (!rows.length) return `<div class="muted" style="font-size:12px;">${emptyText}</div>`;
+  return `
+    <table class="pathwayBenchmarkTable">
+      <thead><tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join("")}</tr></thead>
+      <tbody>${rows.join("")}</tbody>
+    </table>
+  `;
+}
+
+function setBenchmarkLoading(text){
+  ["benchmarkActiveRows", "benchmarkAverageRows", "benchmarkRankRows"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<div class="muted" style="font-size:12px;">${escapeHtml(text)}</div>`;
+  });
+}
+
+async function renderPathwayBenchmark(){
+  const activeEl = document.getElementById("benchmarkActiveRows");
+  const avgEl = document.getElementById("benchmarkAverageRows");
+  const rankEl = document.getElementById("benchmarkRankRows");
+  if (!activeEl || !avgEl || !rankEl) return;
+
+  if (!selectedPlant){
+    setBenchmarkLoading("—");
+    return;
+  }
+
+  const selectedEntries = benchmarkEntriesForPlant(selectedPlant);
+  if (!selectedEntries.length){
+    setBenchmarkLoading("—");
+    return;
+  }
+
+  activeEl.innerHTML = benchmarkTable(
+    ["System", "Feedstock", "CI"],
+    selectedEntries.map(entry => `
+      <tr>
+        <td>${escapeHtml(entry.program)}</td>
+        <td>${escapeHtml(entry.feedstock)}${entry.feedstock_source ? `<span class="pathwayBenchmarkSource">${escapeHtml(entry.feedstock_source)}</span>` : ""}</td>
+        <td>${escapeHtml(displayCi(entry.ci))}</td>
+      </tr>
+    `)
+  );
+  avgEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers…</div>`;
+  rankEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers…</div>`;
+
+  let peers = [];
+  try {
+    peers = await loadBenchmarkPeers();
+  } catch (e) {
+    console.error("Benchmark peer load failed:", e);
+    avgEl.innerHTML = `<div class="muted" style="font-size:12px;">Peer load failed</div>`;
+    rankEl.innerHTML = `<div class="muted" style="font-size:12px;">Peer load failed</div>`;
+    return;
+  }
+
+  const peerEntries = peers.flatMap(benchmarkEntriesForPlant);
+  const peerGroups = new Map();
+  peerEntries.forEach(entry => {
+    const key = groupKey(entry);
+    if (!peerGroups.has(key)) peerGroups.set(key, []);
+    peerGroups.get(key).push(entry);
+  });
+
+  avgEl.innerHTML = benchmarkTable(
+    ["System", "Feedstock", "Avg CI"],
+    selectedEntries.map(entry => {
+      const group = peerGroups.get(groupKey(entry)) || [];
+      const mean = avg(group.map(row => row.ci));
+      return `
+        <tr>
+          <td>${escapeHtml(entry.program)}</td>
+          <td>${escapeHtml(entry.feedstock)}</td>
+          <td>${mean === null ? "—" : escapeHtml(displayCi(mean))}</td>
+        </tr>
+      `;
+    })
+  );
+
+  rankEl.innerHTML = benchmarkTable(
+    ["System", "Feedstock", "Rank"],
+    selectedEntries.map(entry => {
+      const group = (peerGroups.get(groupKey(entry)) || [])
+        .filter(row => Number.isFinite(row.ci))
+        .sort((a, b) => a.ci - b.ci);
+      const rank = group.findIndex(row => row.plant_id === entry.plant_id && row.ci === entry.ci) + 1;
+      const pct = percentileFromRank(rank, group.length);
+      const label = rank > 0
+        ? `${rank}/${group.length}${pct === null ? "" : ` (${fmt(pct,0)}%)`}`
+        : "—";
+      return `
+        <tr>
+          <td>${escapeHtml(entry.program)}</td>
+          <td>${escapeHtml(entry.feedstock)}</td>
+          <td>${escapeHtml(label)}</td>
+        </tr>
+      `;
+    })
+  );
 }
 
   // ----------------------------
@@ -3582,6 +3889,9 @@ async function applyFilters(){
   }
 
   allPlants = rows.map((p, i) => normalizePlantRow(p, i));
+  if (!benchmarkUniverseIds.length){
+    benchmarkUniverseIds = [...new Set(allPlants.map(plantId).filter(Boolean))];
+  }
   filteredPlants = [...allPlants].sort((a, b) => plantLabel(a).localeCompare(plantLabel(b)));
   await renderPlantSelect();
 }
@@ -4636,6 +4946,7 @@ async function handlePlantSelectChange(){
 
   if (!chosenId){
     selectedPlant = null;
+    renderPathwayBenchmark().catch(e => console.error("BENCHMARK RENDER FAILED:", e));
     renderPlantDetails();
     renderOutputs();
     return;
@@ -4643,6 +4954,7 @@ async function handlePlantSelectChange(){
 
   const summaryPlant = filteredPlants.find(p => plantId(p) === chosenId) || null;
   selectedPlant = summaryPlant;
+  renderPathwayBenchmark().catch(e => console.error("BENCHMARK RENDER FAILED:", e));
   renderPlantDetails();
   renderOutputs();
 
@@ -4670,6 +4982,7 @@ async function handlePlantSelectChange(){
   renderCkfChart();
   renderProgramSummary();
   renderLcfsDetail();
+  renderPathwayBenchmark().catch(e => console.error("BENCHMARK RENDER FAILED:", e));
 
   const freightCb = document.getElementById("applyFreight");
   if (freightCb){
@@ -4972,8 +5285,11 @@ allPlants = rows.map((p, i) => {
 
   return out;
 });
-
-
+if (!benchmarkUniverseIds.length){
+  benchmarkUniverseIds = [...new Set(allPlants.map(plantId).filter(Boolean))];
+}
+  
+  
     // ✅ Diagnostics MUST be outside the map
     console.log("Loaded rows:", allPlants.length);
     console.log("Sample keys:", allPlants[0] ? Object.keys(allPlants[0]) : "(none)");

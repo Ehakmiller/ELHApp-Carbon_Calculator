@@ -4156,6 +4156,30 @@ function renderPlantDetails(){
 
 badges.appendChild(pill);
 
+const addProgramPill = (label, color) => {
+  const p = document.createElement("span");
+  p.className = "pill";
+  p.style.color = color;
+  p.style.borderColor = color;
+  p.textContent = `${label}: available`;
+  badges.appendChild(p);
+};
+
+const hasActiveProgramRows = (rows) =>
+  asArray(rows).some(row => isActivePathway(row));
+
+if (hasActiveProgramRows(selectedPlant.wa_lcfs_ci_detail)){
+  addProgramPill("WA LCFS CI", "#38bdf8");
+}
+
+if (hasActiveProgramRows(selectedPlant.canadian_fed_ci_detail)){
+  addProgramPill("Canada Federal CI", "#22c55e");
+}
+
+if (hasActiveProgramRows(selectedPlant.bc_lcfs_ci_detail)){
+  addProgramPill("BC LCFS CI", "#a78bfa");
+}
+
 
 
    let sourcePillText = "";

@@ -2434,6 +2434,50 @@ function bestOregonCi(p){
   return minCiFromDetailRows(p?.or_detail ?? p?.lcfs_detail?.or_detail);
 }
 
+const WA_CA_MEDIAN_ADJUSTMENTS = {
+  "corn starch": 0.19,
+  "fiber/cellulosic": 0.35,
+  "sorghum": 0.00
+};
+
+function waFeedstockClass(row){
+  const code = String(row?.["Fuel Pathway Code"] || "").toUpperCase();
+  const existing = String(row?.feedstock_class || "").trim().toLowerCase();
+  if (code.includes("WA012")) return "fiber/cellulosic";
+  if (code.includes("WA010")) return "sorghum";
+  if (code.includes("WA009")) return "corn starch";
+  if (existing) return existing;
+
+  const text = `${row?.["Fuel Name"] || ""} ${row?.["Pathway Description"] || ""}`.toLowerCase();
+  if (text.includes("fiber") || text.includes("cellulosic")) return "fiber/cellulosic";
+  if (text.includes("sorghum")) return "sorghum";
+  if (text.includes("corn")) return "corn starch";
+  return "";
+}
+
+function bestWashingtonCalibratedCi(p){
+  const rows = asArray(p?.wa_lcfs_ci_detail)
+    .filter(row => isActivePathway(row))
+    .map(row => {
+      const waCi = Number(row?.CI);
+      const feedstockClass = waFeedstockClass(row);
+      const adjustment = WA_CA_MEDIAN_ADJUSTMENTS[feedstockClass];
+      if (!Number.isFinite(waCi) || adjustment === undefined) return null;
+      return {
+        value: waCi + adjustment,
+        waCi,
+        feedstockClass,
+        adjustment,
+        code: row?.["Fuel Pathway Code"] || "",
+        fuelName: row?.["Fuel Name"] || "Washington pathway"
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.value - b.value);
+
+  return rows.length ? rows[0] : null;
+}
+
 function hasCaliforniaCi(p){
   return bestCaliforniaCi(p) !== null;
 }
@@ -2453,6 +2497,21 @@ function startingCI(p){
       enhancements: [],
       ilucDefaultChecked: true,
       ilucDefaultValue: 19.9
+    };
+  }
+
+  const waCalibrated = bestWashingtonCalibratedCi(p);
+  if (waCalibrated !== null){
+    return {
+      mode: "lcfs",
+      source: "wa_calibrated",
+      ci_source: "WA_CALIBRATED",
+      value: waCalibrated.value,
+      note: "Washington-derived CA proxy.",
+      enhancements: [],
+      ilucDefaultChecked: true,
+      ilucDefaultValue: 19.9,
+      waCalibrated
     };
   }
 
@@ -3044,6 +3103,25 @@ function renderStartingPanel(){
           <div style="margin-top:8px; color:var(--muted);">• <span class="mono">Source</span>: Oregon fallback</div>
           <div style="margin-top:4px; color:var(--muted);">• <span class="mono">Freight hub</span>: Portland</div>`
         : `<div class="muted">Oregon fallback CI selected. Freight anchor = Portland.</div>`;
+    } else if (s.source === "wa_calibrated"){
+      const wa = s.waCalibrated || {};
+      const feed = wa.feedstockClass || "Washington pathway";
+      const waCi = Number(wa.waCi);
+      const adjustment = Number(wa.adjustment);
+      const calibrated = Number(s.value);
+
+      boxEl.innerHTML = `
+        <div class="threeColGrid">
+          <div class="gridItem">â€¢ <span class="mono">Source</span>: Washington CI</div>
+          <div class="gridItem">â€¢ <span class="mono">CI source</span>: WA_CALIBRATED</div>
+          <div class="gridItem">â€¢ <span class="mono">Feed</span>: ${escapeHtml(feed)}</div>
+          <div class="gridItem">â€¢ <span class="mono">WA CI</span>: ${Number.isFinite(waCi) ? fmt(waCi,2) : "â€”"}</div>
+          <div class="gridItem">â€¢ <span class="mono">Median spread</span>: ${Number.isFinite(adjustment) ? `+${fmt(adjustment,2)}` : "â€”"}</div>
+          <div class="gridItem">â€¢ <span class="mono">Starting CI</span>: ${Number.isFinite(calibrated) ? fmt(calibrated,2) : "â€”"}</div>
+        </div>
+        <div style="margin-top:8px; color:var(--muted);">â€¢ California score not available; starting score is based on Washington pathway and adjusted using matched WA-to-CA pathway spreads.</div>
+        <div style="margin-top:4px; color:var(--muted);">â€¢ No separate Port of Tacoma freight correction is applied.</div>
+      `;
     } else {
       boxEl.innerHTML = `<div class="muted">LCFS CI selected.</div>`;
     }
@@ -3422,10 +3500,10 @@ function syncFreightUI(){
   if (!cb || !mult || !fac || !hub) return;
 
   // Determine LCFS vs proxy from Starting CI logic
-  const mode = selectedPlant ? (startingCI(selectedPlant).mode || "proxy") : "proxy";
-  const lcfsMode = (mode === "lcfs");
+  const start = selectedPlant ? startingCI(selectedPlant) : null;
+  const freightEligible = !!start && start.mode === "lcfs" && start.ci_source !== "WA_CALIBRATED";
 
-  if (!lcfsMode){
+  if (!freightEligible){
     // Proxy mode: force freight OFF and lock inputs
     cb.checked = false;
     cb.disabled = true;
@@ -4009,8 +4087,8 @@ async function applyFilters(){
     // ✅ Force freight default + sync AFTER selectedPlant is finalized
     const freightCb = document.getElementById("applyFreight");
     if (freightCb){
-      const mode = selectedPlant ? (startingCI(selectedPlant).mode || "proxy") : "proxy";
-      freightCb.checked = (mode === "lcfs");
+      const start = selectedPlant ? startingCI(selectedPlant) : null;
+      freightCb.checked = !!start && start.mode === "lcfs" && start.ci_source !== "WA_CALIBRATED";
     }
     syncFreightUI();
     syncElectricityBridgeUI();
@@ -4149,6 +4227,11 @@ function renderPlantDetails(){
       pill.style.color = "#b91c1c";
       pill.style.borderColor = "#b91c1c";
       pill.textContent = "OR LCFS CI: available";
+    } else if (s.mode === "lcfs" && s.source === "wa_calibrated") {
+      pill.className = "pill";
+      pill.style.color = "#38bdf8";
+      pill.style.borderColor = "#38bdf8";
+      pill.textContent = "Washington-derived CA proxy: available";
     } else {
       pill.className = "pill warn";
       pill.textContent = "LCFS CI: missing";
@@ -4987,8 +5070,8 @@ function wireEvents(){
     // Freight: auto-on for LCFS plants, forced off for proxy plants
     const freightCb = document.getElementById("applyFreight");
     if (freightCb){
-      const mode = selectedPlant ? (startingCI(selectedPlant).mode || "proxy") : "proxy";
-      freightCb.checked = (mode === "lcfs");
+      const start = selectedPlant ? startingCI(selectedPlant) : null;
+      freightCb.checked = !!start && start.mode === "lcfs" && start.ci_source !== "WA_CALIBRATED";
     }
     syncFreightUI();
     syncElectricityBridgeUI();
@@ -5044,8 +5127,8 @@ async function handlePlantSelectChange(){
 
   const freightCb = document.getElementById("applyFreight");
   if (freightCb){
-    const mode = selectedPlant ? (startingCI(selectedPlant).mode || "proxy") : "proxy";
-    freightCb.checked = (mode === "lcfs");
+    const start = selectedPlant ? startingCI(selectedPlant) : null;
+    freightCb.checked = !!start && start.mode === "lcfs" && start.ci_source !== "WA_CALIBRATED";
   }
   syncFreightUI();
   syncElectricityBridgeUI();

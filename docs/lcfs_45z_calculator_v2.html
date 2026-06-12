@@ -653,6 +653,51 @@ input[type="date"]{
   box-sizing:border-box;
 }
 
+.freightCompact{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.freightHubFull label[for="caHub"]{
+  font-size:11px;
+  color:var(--muted);
+  margin:0 0 6px 0;
+  text-transform:none;
+  letter-spacing:normal;
+}
+
+.freightFormulaRow{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:10px;
+  align-items:stretch;
+}
+
+@media (max-width: 620px){
+  .freightFormulaRow{ grid-template-columns:1fr; }
+}
+
+.freightMetric{
+  min-width:0;
+  width:100%;
+  box-sizing:border-box;
+}
+
+.freightMetricInput{
+  width:100%;
+  max-width:132px;
+  height:32px;
+  margin-top:2px;
+  padding:6px 10px;
+  border-radius:999px;
+  text-align:center;
+  box-sizing:border-box;
+  font-size:18px;
+  font-weight:700;
+}
+
   .outputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   @media (max-width: 520px){.outputs{grid-template-columns:1fr;}}
   .out{padding:12px;border:1px solid var(--line);border-radius:12px;background:#0f1522;}
@@ -1499,6 +1544,21 @@ The credit applies to qualifying carbon capture projects located in the United S
     <div style="margin-bottom:6px;"><span class="mono">Oregon detail</span></div>
     <div id="orDetailRows"></div>
   </div>
+
+  <div id="waDetailSection" style="display:none; margin-top:14px;">
+    <div style="margin-bottom:6px;"><span class="mono">Washington detail</span></div>
+    <div id="waDetailRows"></div>
+  </div>
+
+  <div id="canadaDetailSection" style="display:none; margin-top:14px;">
+    <div style="margin-bottom:6px;"><span class="mono">Canada detail</span></div>
+    <div id="canadaDetailRows"></div>
+  </div>
+
+  <div id="bcDetailSection" style="display:none; margin-top:14px;">
+    <div style="margin-bottom:6px;"><span class="mono">British Columbia detail</span></div>
+    <div id="bcDetailRows"></div>
+  </div>
 </div>
 
 <div class="hr"></div>
@@ -1553,13 +1613,82 @@ The credit applies to qualifying carbon capture projects located in the United S
   }
 
   arrangeCalculatorLayout();
+
+  function arrangeFreightLayout(){
+    const apply = document.getElementById("applyFreight");
+    const hub = document.getElementById("caHub");
+    const mult = document.getElementById("freightMultiplier");
+    const factor = document.getElementById("gPerMjPerMile");
+    const miles = document.getElementById("outMilesHub");
+    const impact = document.getElementById("outFreightHub");
+    if (!apply || !hub || !mult || !factor || !miles || !impact) return;
+
+    const title = Array.from(document.querySelectorAll(".sectionTitle"))
+      .find((el) => String(el.textContent || "").trim().toLowerCase() === "freight adjustment hub");
+    const oldBlock = title ? title.nextElementSibling : null;
+    if (!oldBlock || oldBlock.dataset.freightArranged === "1") return;
+
+    const compact = document.createElement("div");
+    compact.className = "freightCompact";
+    compact.dataset.freightArranged = "1";
+
+    const applyBox = document.createElement("div");
+    applyBox.className = "check compact";
+    applyBox.style.margin = "0";
+    applyBox.appendChild(apply);
+    const applyText = document.createElement("div");
+    applyText.style.flex = "1";
+    applyText.innerHTML = '<div class="labelStrong">Apply Freight Adjustment</div>';
+    applyBox.appendChild(applyText);
+
+    const hubBox = document.createElement("div");
+    hubBox.className = "freightHubFull";
+    const hubLabel = document.createElement("label");
+    hubLabel.setAttribute("for", "caHub");
+    hubLabel.textContent = "California delivery hub";
+    hubBox.appendChild(hubLabel);
+    hubBox.appendChild(hub);
+
+    const formula = document.createElement("div");
+    formula.className = "freightFormulaRow";
+
+    const milesBox = document.createElement("div");
+    milesBox.className = "outPill freightMetric";
+    milesBox.innerHTML = '<div class="t">Distance to Hub</div>';
+    milesBox.appendChild(miles);
+
+    const multBox = document.createElement("div");
+    multBox.className = "outPill freightMetric";
+    multBox.innerHTML = '<div class="t">Multiplier</div>';
+    mult.className = "freightMetricInput";
+    multBox.appendChild(mult);
+
+    const impactBox = document.createElement("div");
+    impactBox.className = "outPill freightMetric";
+    impactBox.innerHTML = '<div class="t">Freight CI Impact</div>';
+    impactBox.appendChild(impact);
+
+    formula.appendChild(milesBox);
+    formula.appendChild(multBox);
+    formula.appendChild(impactBox);
+
+    factor.style.display = "none";
+    compact.appendChild(applyBox);
+    compact.appendChild(hubBox);
+    compact.appendChild(formula);
+    compact.appendChild(factor);
+
+    oldBlock.replaceWith(compact);
+  }
+
+  arrangeFreightLayout();
   
   const WORKER_BASE_URL = "https://flat-silence-a8a3.elhakmiller.workers.dev";
   const SEARCH_URL = `${WORKER_BASE_URL}/search`;
   const PLANT_URL = `${WORKER_BASE_URL}/plant`;
   const DATA_URL = SEARCH_URL;
     console.log("✅ RUNNING CALC FILE:", window.location.href);
-    console.log("✅ BUILD_STAMP:", "2026-06-05 13:06:37");
+    console.log("✅ BUILD_STAMP:", "2026-06-08 14:24:38");
     console.log("✅ SEARCH_URL:", SEARCH_URL);
   
 
@@ -2166,7 +2295,9 @@ function getCkfNumbers(p){
     
     
 function getFeedstockCI(p){
-  const fs = (p && p.ci_by_feedstock) ? p.ci_by_feedstock : null;
+  const fs = (p && (p.ci_by_feedstock || p.ci_summary?.ci_by_feedstock))
+    ? (p.ci_by_feedstock || p.ci_summary?.ci_by_feedstock)
+    : null;
 
   const out = {
     corn:    fs?.ci_corn_g_per_mj ?? null,
@@ -2204,14 +2335,16 @@ function bestCaliforniaCi(p){
     return fromFeedstocks;
   }
 
-  const topLevel = toFinitePositiveNumberOrNull(p?.ci_lcfs_delivered_g_per_mj);
+  const topLevel = toFinitePositiveNumberOrNull(
+    p?.ci_lcfs_delivered_g_per_mj ?? p?.ci_summary?.ci_lcfs_delivered_g_per_mj
+  );
   if (topLevel !== null) return topLevel;
 
-  return minCiFromDetailRows(p?.ca_detail);
+  return minCiFromDetailRows(p?.ca_detail ?? p?.lcfs_detail?.ca_detail);
 }
 
 function bestOregonCi(p){
-  return minCiFromDetailRows(p?.or_detail);
+  return minCiFromDetailRows(p?.or_detail ?? p?.lcfs_detail?.or_detail);
 }
 
 function hasCaliforniaCi(p){
@@ -2454,28 +2587,91 @@ function renderProgramSummary(){
   panel.style.display = (hasCA || hasOR) ? "block" : "none";
 }
 
+function asArray(value){
+  if (Array.isArray(value)) return value;
+  return value ? [value] : [];
+}
+
+function displayValue(value){
+  if (value === null || value === undefined || value === "") return "-";
+  return String(value);
+}
+
+function displayCi(value){
+  const n = Number(value);
+  return Number.isFinite(n) ? n.toFixed(2) : displayValue(value);
+}
+
+function escapeHtml(value){
+  return displayValue(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function statusRank(row){
+  const status = String(row?.status ?? row?.Status ?? row?.Active ?? "").toLowerCase();
+  if (status.includes("active") || status === "1" || status === "true") return 0;
+  if (status.includes("pending")) return 1;
+  if (status.includes("expired") || status === "0" || status === "false") return 2;
+  return 3;
+}
+
+function sortedDetailRows(rows){
+  return [...rows].sort((a, b) => statusRank(a) - statusRank(b));
+}
+
+function waCityState(row){
+  const cityRaw = displayValue(row?.["City"]);
+  const stateRaw = displayValue(row?.["State"]);
+  const cityLooksLikeState = /^[A-Z]{2}$/.test(cityRaw);
+  const stateLooksLikeCity = stateRaw.length > 2;
+  return {
+    city: cityLooksLikeState && stateLooksLikeCity ? stateRaw : cityRaw,
+    state: cityLooksLikeState && stateLooksLikeCity ? cityRaw : stateRaw
+  };
+}
+
 function renderLcfsDetail(){
   const panel = document.getElementById("lcfsDetailPanel");
 
   const caSection = document.getElementById("caDetailSection");
   const orSection = document.getElementById("orDetailSection");
+  const waSection = document.getElementById("waDetailSection");
+  const canadaSection = document.getElementById("canadaDetailSection");
+  const bcSection = document.getElementById("bcDetailSection");
 
   const caRowsEl = document.getElementById("caDetailRows");
   const orRowsEl = document.getElementById("orDetailRows");
+  const waRowsEl = document.getElementById("waDetailRows");
+  const canadaRowsEl = document.getElementById("canadaDetailRows");
+  const bcRowsEl = document.getElementById("bcDetailRows");
 
-  if (!panel || !caSection || !orSection || !caRowsEl || !orRowsEl) return;
+  if (!panel || !caSection || !orSection || !waSection || !canadaSection || !bcSection ||
+      !caRowsEl || !orRowsEl || !waRowsEl || !canadaRowsEl || !bcRowsEl) return;
+
+  const clearSection = (section, rowsEl) => {
+    section.style.display = "none";
+    rowsEl.innerHTML = "";
+  };
 
   if (!selectedPlant){
     panel.style.display = "none";
-    caSection.style.display = "none";
-    orSection.style.display = "none";
-    caRowsEl.innerHTML = "";
-    orRowsEl.innerHTML = "";
+    clearSection(caSection, caRowsEl);
+    clearSection(orSection, orRowsEl);
+    clearSection(waSection, waRowsEl);
+    clearSection(canadaSection, canadaRowsEl);
+    clearSection(bcSection, bcRowsEl);
     return;
   }
 
   const caRows = Array.isArray(selectedPlant.ca_detail) ? selectedPlant.ca_detail : [];
   const orRows = Array.isArray(selectedPlant.or_detail) ? selectedPlant.or_detail : [];
+  const waRows = asArray(selectedPlant.wa_lcfs_ci_detail);
+  const canadaRows = asArray(selectedPlant.canadian_fed_ci_detail);
+  const bcRows = asArray(selectedPlant.bc_lcfs_ci_detail);
 
   const buildCards = (rows) => {
     if (!rows.length) return "";
@@ -2503,15 +2699,81 @@ function renderLcfsDetail(){
     );
   };
 
+  const buildWaCards = (rows) => {
+    if (!rows.length) return "";
+
+    return (
+      `<div class="lcfsDetailGrid">` +
+      sortedDetailRows(rows).map(d => {
+        const loc = waCityState(d);
+        return `
+          <div class="lcfsDetailCard">
+            <div><span class="mono">Status:</span> ${escapeHtml(d?.status ?? d?.Active)}</div>
+            <div><span class="mono">Fuel:</span> ${escapeHtml(d?.["Fuel Name"])}</div>
+            <div><span class="mono">Feedstock:</span> ${escapeHtml(d?.feedstock_class)}</div>
+            <div><span class="mono">CI score:</span> ${escapeHtml(displayCi(d?.CI))}</div>
+            <div><span class="mono">Code:</span> ${escapeHtml(d?.["Fuel Pathway Code"])}</div>
+            <div><span class="mono">Effective:</span> ${escapeHtml(d?.["Eff. Start Qtr/Yr"])} to ${escapeHtml(d?.["Eff. End Qtr/Yr"])}</div>
+            <div><span class="mono">Location:</span> ${escapeHtml(loc.city)}, ${escapeHtml(loc.state)}</div>
+          </div>
+        `;
+      }).join("") +
+      `</div>`
+    );
+  };
+
+  const buildCanadaCards = (rows) => {
+    if (!rows.length) return "";
+
+    return (
+      `<div class="lcfsDetailGrid">` +
+      sortedDetailRows(rows).map(d => `
+        <div class="lcfsDetailCard">
+          <div><span class="mono">Status:</span> ${escapeHtml(d?.status)}</div>
+          <div><span class="mono">Facility:</span> ${escapeHtml(d?.facility_name)}</div>
+          <div><span class="mono">Fuel:</span> ${escapeHtml(d?.fuel_type)}</div>
+          <div><span class="mono">Grain source:</span> ${escapeHtml(d?.grain_source)}</div>
+          <div><span class="mono">Feedstock origin:</span> ${escapeHtml(d?.feedstock_origin)}</div>
+          <div><span class="mono">CI score:</span> ${escapeHtml(displayCi(d?.approved_ci_gco2e_mj))}</div>
+          <div><span class="mono">Approval date:</span> ${escapeHtml(d?.approval_date)}</div>
+        </div>
+      `).join("") +
+      `</div>`
+    );
+  };
+
+  const buildBcCards = (rows) => {
+    if (!rows.length) return "";
+
+    return (
+      `<div class="lcfsDetailGrid">` +
+      sortedDetailRows(rows).map(d => `
+        <div class="lcfsDetailCard">
+          <div><span class="mono">Status:</span> ${escapeHtml(d?.status)}</div>
+          <div><span class="mono">Fuel code:</span> ${escapeHtml(d?.fuel_code)}</div>
+          <div><span class="mono">Pathway:</span> ${escapeHtml(d?.pathway_base)}.${escapeHtml(d?.pathway_version)}</div>
+          <div><span class="mono">CI score:</span> ${escapeHtml(displayCi(d?.carbon_intensity_gCO2e_per_MJ))}</div>
+          <div><span class="mono">Effective:</span> ${escapeHtml(d?.effective_date)} to ${escapeHtml(d?.expiry_date)}</div>
+          <div><span class="mono">Company:</span> ${escapeHtml(d?.company)}</div>
+        </div>
+      `).join("") +
+      `</div>`
+    );
+  };
+
   const hasCA = caRows.length > 0;
   const hasOR = orRows.length > 0;
+  const hasWA = waRows.length > 0;
+  const hasCanada = canadaRows.length > 0;
+  const hasBC = bcRows.length > 0;
 
-  if (!hasCA && !hasOR){
+  if (!hasCA && !hasOR && !hasWA && !hasCanada && !hasBC){
     panel.style.display = "none";
-    caSection.style.display = "none";
-    orSection.style.display = "none";
-    caRowsEl.innerHTML = "";
-    orRowsEl.innerHTML = "";
+    clearSection(caSection, caRowsEl);
+    clearSection(orSection, orRowsEl);
+    clearSection(waSection, waRowsEl);
+    clearSection(canadaSection, canadaRowsEl);
+    clearSection(bcSection, bcRowsEl);
     return;
   }
 
@@ -2521,16 +2783,35 @@ function renderLcfsDetail(){
     caSection.style.display = "block";
     caRowsEl.innerHTML = buildCards(caRows);
   } else {
-    caSection.style.display = "none";
-    caRowsEl.innerHTML = "";
+    clearSection(caSection, caRowsEl);
   }
 
   if (hasOR){
     orSection.style.display = "block";
     orRowsEl.innerHTML = buildCards(orRows);
   } else {
-    orSection.style.display = "none";
-    orRowsEl.innerHTML = "";
+    clearSection(orSection, orRowsEl);
+  }
+
+  if (hasWA){
+    waSection.style.display = "block";
+    waRowsEl.innerHTML = buildWaCards(waRows);
+  } else {
+    clearSection(waSection, waRowsEl);
+  }
+
+  if (hasCanada){
+    canadaSection.style.display = "block";
+    canadaRowsEl.innerHTML = buildCanadaCards(canadaRows);
+  } else {
+    clearSection(canadaSection, canadaRowsEl);
+  }
+
+  if (hasBC){
+    bcSection.style.display = "block";
+    bcRowsEl.innerHTML = buildBcCards(bcRows);
+  } else {
+    clearSection(bcSection, bcRowsEl);
   }
 }
 
@@ -2789,6 +3070,10 @@ function normalizePlantRow(p, i=0){
     ci_by_feedstock: p?.ci_by_feedstock ?? ci.ci_by_feedstock ?? {},
     ca_detail: p?.ca_detail ?? detail.ca_detail ?? [],
     or_detail: p?.or_detail ?? detail.or_detail ?? [],
+    wa_lcfs_ci_detail: p?.wa_lcfs_ci_detail ?? detail.wa_lcfs_ci_detail ?? [],
+    canadian_fed_ci: p?.canadian_fed_ci ?? detail.canadian_fed_ci ?? null,
+    canadian_fed_ci_detail: p?.canadian_fed_ci_detail ?? detail.canadian_fed_ci_detail ?? null,
+    bc_lcfs_ci_detail: p?.bc_lcfs_ci_detail ?? detail.bc_lcfs_ci_detail ?? [],
     high_pro: p?.high_pro ?? tech.high_pro ?? null,
     chp: p?.chp ?? tech.chp ?? null,
     white_fox: p?.white_fox ?? tech.white_fox ?? null,
@@ -3079,6 +3364,7 @@ function syncFreightUI(){
   let filteredPlants = [];
   let selectedPlant = null;
   const plantDetailCache = new Map();
+  let plantSelectionSeq = 0;
 
 function plantId(p){
   return String(
@@ -3214,7 +3500,41 @@ function buildSearchUrl(){
   return qs ? `${SEARCH_URL}?${qs}` : SEARCH_URL;
 }
 
+function rowsFromSearchResponse(raw){
+  if (Array.isArray(raw)) return raw;
+  if (raw && Array.isArray(raw.value)) return raw.value;
+  if (raw && Array.isArray(raw.plants)) return raw.plants;
+  if (raw && Array.isArray(raw.rows)) return raw.rows;
+  if (raw && Array.isArray(raw.data)) return raw.data;
+  if (raw && Array.isArray(raw.results)) return raw.results;
+  if (raw && Array.isArray(raw.items)) return raw.items;
+  return null;
+}
+
+function localPlantSearchMatch(row, nameText, stateText){
+  const p = normalizePlantRow(row, 0);
+  const nameNeedle = String(nameText || "").trim().toLowerCase();
+  const stateNeedle = String(stateText || "").trim().toUpperCase();
+
+  if (stateNeedle && String(p.state || "").trim().toUpperCase() !== stateNeedle) return false;
+  if (!nameNeedle) return true;
+
+  return [
+    p.plant_name,
+    p.ownership,
+    p.city,
+    p.state,
+    p.facility_id,
+    p.ca_facility_id,
+    p.epm,
+    p.fac_info?.epm,
+    p.fac_info?.facility_id
+  ].some(v => String(v ?? "").toLowerCase().includes(nameNeedle));
+}
+
 async function applyFilters(){
+  const nameText = String(document.getElementById("searchBox")?.value || "").trim();
+  const stateText = String(document.getElementById("stateBox")?.value || "").trim().toUpperCase();
   const url = buildSearchUrl();
   let resp;
   try {
@@ -3233,13 +3553,7 @@ async function applyFilters(){
   }
 
   const raw = await resp.json();
-  let rows = null;
-  if (Array.isArray(raw)) rows = raw;
-  else if (raw && Array.isArray(raw.plants)) rows = raw.plants;
-  else if (raw && Array.isArray(raw.rows)) rows = raw.rows;
-  else if (raw && Array.isArray(raw.data)) rows = raw.data;
-  else if (raw && Array.isArray(raw.results)) rows = raw.results;
-  else if (raw && Array.isArray(raw.items)) rows = raw.items;
+  let rows = rowsFromSearchResponse(raw);
 
   if (!rows){
     console.error("Search response shape not recognized:", raw);
@@ -3247,9 +3561,29 @@ async function applyFilters(){
     return;
   }
 
+  if (!rows.length && nameText){
+    const fallbackParams = new URLSearchParams();
+    if (stateText) fallbackParams.set("state", stateText);
+    const fallbackQs = fallbackParams.toString();
+    const fallbackUrl = fallbackQs ? `${SEARCH_URL}?${fallbackQs}` : SEARCH_URL;
+
+    try {
+      const fallbackResp = await fetch(fallbackUrl, { cache: "no-store" });
+      if (fallbackResp.ok){
+        const fallbackRaw = await fallbackResp.json();
+        const fallbackRows = rowsFromSearchResponse(fallbackRaw);
+        if (Array.isArray(fallbackRows)){
+          rows = fallbackRows.filter(r => localPlantSearchMatch(r, nameText, stateText));
+        }
+      }
+    } catch (e) {
+      console.warn("Local fallback search failed:", e);
+    }
+  }
+
   allPlants = rows.map((p, i) => normalizePlantRow(p, i));
   filteredPlants = [...allPlants].sort((a, b) => plantLabel(a).localeCompare(plantLabel(b)));
-  renderPlantSelect();
+  await renderPlantSelect();
 }
 
   function renderPlantSelect(){
@@ -3332,7 +3666,7 @@ async function applyFilters(){
         
         // <-- CLOSE renderPlantSelect()
 
-function renderPlantSelect(){
+async function renderPlantSelect(){
   const sel = document.getElementById("plantSelect");
   if (!sel) return;
 
@@ -3364,16 +3698,8 @@ function renderPlantSelect(){
     sel.appendChild(o);
   }
 
-  if (selectedPlant){
-    const keepId = plantId(selectedPlant);
-    sel.value = filteredPlants.some(p => plantId(p) === keepId)
-      ? keepId
-      : plantId(filteredPlants[0]);
-  } else {
-    sel.value = plantId(filteredPlants[0]);
-  }
-
-  handlePlantSelectChange();
+  sel.value = plantId(filteredPlants[0]);
+  sel.dispatchEvent(new Event("change", { bubbles: true }));
 }
         
 function getNumericDryerValues(){
@@ -4056,7 +4382,9 @@ function renderOutputs(){
     outMilesHub.textContent = Number.isFinite(r.milesNet) ? `${fmt(r.milesNet, 0)} mi` : "—";
   }
   if (outFreightHub){
-    outFreightHub.textContent = Number.isFinite(r.freightCi) ? fmt(r.freightCi, 2) : "—";
+    outFreightHub.textContent = Number.isFinite(r.freightCi)
+      ? `${r.freightCi >= 0 ? "+" : ""}${fmt(r.freightCi, 2)} g/MJ`
+      : "—";
   }
 
   if (outBiogenicCo2){
@@ -4304,6 +4632,7 @@ function wireEvents(){
 async function handlePlantSelectChange(){
   const sel = document.getElementById("plantSelect");
   const chosenId = String(sel ? sel.value : "").trim();
+  const requestSeq = ++plantSelectionSeq;
 
   if (!chosenId){
     selectedPlant = null;
@@ -4317,13 +4646,20 @@ async function handlePlantSelectChange(){
   renderPlantDetails();
   renderOutputs();
 
+  let detailPlant = null;
   try {
-    selectedPlant = await fetchPlantDetail(chosenId);
+    detailPlant = await fetchPlantDetail(chosenId);
   } catch (e) {
+    if (requestSeq !== plantSelectionSeq) return;
     console.error("PLANT DETAIL FETCH ERROR:", e);
     alert("Plant detail fetch failed. See console.");
     return;
   }
+
+  if (requestSeq !== plantSelectionSeq) return;
+  const currentId = String(document.getElementById("plantSelect")?.value || "").trim();
+  if (currentId !== chosenId) return;
+  selectedPlant = detailPlant;
 
   resetMiscOverride();
   syncCcsUI();
@@ -4351,16 +4687,16 @@ async function handlePlantSelectChange(){
 
   // Search: rebuild plant list
   onInput("searchBox", () => {
-    applyFilters();
+    applyFilters().catch(e => console.error("FILTER APPLY FAILED:", e));
   });
 
   onInput("stateBox", () => {
-    applyFilters();
+    applyFilters().catch(e => console.error("FILTER APPLY FAILED:", e));
   });
 
   // Plant select: full re-sync
   onInput("plantSelect", () => {
-    handlePlantSelectChange();
+    handlePlantSelectChange().catch(e => console.error("PLANT SELECT FAILED:", e));
   });
 
   // Freight checkbox: enable/disable freight controls + recompute
@@ -4530,6 +4866,10 @@ allPlants = rows.map((p, i) => {
     // ---- lcfs_detail ----
     ca_detail: p.ca_detail ?? detail.ca_detail ?? [],
     or_detail: p.or_detail ?? detail.or_detail ?? [],
+    wa_lcfs_ci_detail: p.wa_lcfs_ci_detail ?? detail.wa_lcfs_ci_detail ?? [],
+    canadian_fed_ci: p.canadian_fed_ci ?? detail.canadian_fed_ci ?? null,
+    canadian_fed_ci_detail: p.canadian_fed_ci_detail ?? detail.canadian_fed_ci_detail ?? null,
+    bc_lcfs_ci_detail: p.bc_lcfs_ci_detail ?? detail.bc_lcfs_ci_detail ?? [],
 
     // ---- tech_flags ----
     high_pro: p.high_pro ?? tech.high_pro ?? null,
@@ -4652,15 +4992,21 @@ allPlants = rows.map((p, i) => {
 
     // 4) Wire + render
     wireEvents();
-    applyFilters();
+    filteredPlants = [...allPlants].sort((a, b) => plantLabel(a).localeCompare(plantLabel(b)));
+    await renderPlantSelect();
     sync45QValueSection();
     
   }
 
   // Kick off load after DOM is ready (ONLY ONCE)
-  window.addEventListener("DOMContentLoaded", () => {
+  const startCalculator = () => {
     init().catch(e => console.error("INIT FAILED:", e));
-  });
+  };
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", startCalculator, { once: true });
+  } else {
+    startCalculator();
+  }
 </script>
 </body>
 </html>

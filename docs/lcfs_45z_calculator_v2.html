@@ -2434,6 +2434,36 @@ function bestOregonCi(p){
   return minCiFromDetailRows(p?.or_detail ?? p?.lcfs_detail?.or_detail);
 }
 
+const OR_CA_CORN_ILUC_CALIBRATION = 12.25;
+
+function oregonFeedstockClass(row){
+  const text = `${row?.feedstock || ""} ${row?.pathway_type || ""}`.toLowerCase();
+  if (text.includes("fiber") || text.includes("cellulosic")) return "fiber/cellulosic";
+  if (text.includes("sorghum")) return "sorghum";
+  if (text.includes("corn") || text.includes("starch")) return "corn starch";
+  return "";
+}
+
+function bestOregonPathway(p){
+  const rows = asArray(p?.or_detail ?? p?.lcfs_detail?.or_detail)
+    .filter(row => isActivePathway(row))
+    .map(row => {
+      const ci = Number(row?.ci_score);
+      if (!Number.isFinite(ci) || ci <= 0) return null;
+      return {
+        value: ci,
+        feedstockClass: oregonFeedstockClass(row),
+        feedstock: row?.feedstock || "Oregon pathway",
+        pathwayType: row?.pathway_type || "",
+        coproduct: row?.coproduct_type || "",
+        detailDate: row?.detail_date || ""
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.value - b.value);
+  return rows.length ? rows[0] : null;
+}
+
 const WA_CA_MEDIAN_ADJUSTMENTS = {
   "corn starch": 0.19,
   "fiber/cellulosic": 0.35,
@@ -2515,16 +2545,25 @@ function startingCI(p){
     };
   }
 
-  const orCi = bestOregonCi(p);
-  if (orCi !== null){
+  const orPathway = bestOregonPathway(p);
+  if (orPathway !== null){
+    const isCorn = orPathway.feedstockClass === "corn starch";
+    const adjustment = isCorn ? OR_CA_CORN_ILUC_CALIBRATION : 0;
     return {
       mode: "lcfs",
       source: "or",
-      value: orCi,
-      note: "Using Oregon CI fallback (Portland freight anchor).",
+      ci_source: isCorn ? "OR_CORN_ILUC_CALIBRATED" : "OR",
+      value: orPathway.value + adjustment,
+      note: isCorn ? "Oregon-to-California corn ILUC calibration." : "Using Oregon CI fallback.",
       enhancements: [],
-      ilucDefaultChecked: false,
-      ilucDefaultValue: 0
+      ilucDefaultChecked: isCorn,
+      ilucDefaultValue: isCorn ? 19.9 : 0,
+      orCalibrated: {
+        ...orPathway,
+        orCi: orPathway.value,
+        adjustment,
+        calibrationLabel: isCorn ? "Oregon-to-California corn ILUC calibration" : "Oregon CI"
+      }
     };
   }
 
@@ -3089,20 +3128,28 @@ function renderStartingPanel(){
           <div style="margin-top:4px; color:var(--muted);">• <span class="mono">Freight hub</span>: selected California hub</div>`
         : `<div class="muted">California LCFS CI selected.</div>`;
     } else if (s.source === "or"){
-      const orRows = Array.isArray(selectedPlant?.or_detail) ? selectedPlant.or_detail : [];
-      const shown = orRows
-        .map(r => [`${r.feedstock || "Feedstock"}`, Number(r.ci_score)])
-        .filter(([_, v]) => Number.isFinite(v));
+      const or = s.orCalibrated || {};
+      const rawOrCi = Number(or.orCi);
+      const adjustment = Number(or.adjustment || 0);
+      const calibrated = Number(s.value);
+      const isCornBridge = s.ci_source === "OR_CORN_ILUC_CALIBRATED";
 
-      boxEl.innerHTML = shown.length
-        ? `<div class="threeColGrid">` +
-            shown.map(([k,v]) =>
-              `<div class="gridItem">• <span class="mono">${k}</span>: ${fmt(v,2)}</div>`
-            ).join("") +
-          `</div>
-          <div style="margin-top:8px; color:var(--muted);">• <span class="mono">Source</span>: Oregon fallback</div>
-          <div style="margin-top:4px; color:var(--muted);">• <span class="mono">Freight hub</span>: Portland</div>`
-        : `<div class="muted">Oregon fallback CI selected. Freight anchor = Portland.</div>`;
+      boxEl.innerHTML = `
+        <div class="threeColGrid">
+          <div class="gridItem">&bull; <span class="mono">Source</span>: Oregon CI</div>
+          <div class="gridItem">&bull; <span class="mono">CI source</span>: ${escapeHtml(s.ci_source || "OR")}</div>
+          <div class="gridItem">&bull; <span class="mono">Feed</span>: ${escapeHtml(or.feedstockClass || or.feedstock || "Oregon pathway")}</div>
+          <div class="gridItem">&bull; <span class="mono">OR CI</span>: ${Number.isFinite(rawOrCi) ? fmt(rawOrCi,2) : "&mdash;"}</div>
+          <div class="gridItem">&bull; <span class="mono">Adjustment</span>: ${Number.isFinite(adjustment) ? `+${fmt(adjustment,2)}` : "&mdash;"}</div>
+          <div class="gridItem">&bull; <span class="mono">Starting CI</span>: ${Number.isFinite(calibrated) ? fmt(calibrated,2) : "&mdash;"}</div>
+        </div>
+        <div style="margin-top:8px; color:var(--muted);">&bull; <span class="mono">${escapeHtml(or.calibrationLabel || "Oregon CI fallback")}</span></div>
+        ${
+          isCornBridge
+            ? `<div style="margin-top:4px; color:var(--muted);">&bull; Oregon corn pathways appear to include an approximately 7.8 CI ILUC factor, while California corn pathways use approximately 19.8 CI; the ~12 CI difference is applied to make Oregon corn comparable to California.</div>`
+            : `<div style="margin-top:4px; color:var(--muted);">&bull; California score not available; starting score is based on Oregon pathway data.</div>`
+        }
+      `;
     } else if (s.source === "wa_calibrated"){
       const wa = s.waCalibrated || {};
       const feed = wa.feedstockClass || "Washington pathway";

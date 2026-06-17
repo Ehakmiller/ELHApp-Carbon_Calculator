@@ -377,6 +377,150 @@
   
   .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted);}
 
+.operatingDetailAction{
+  justify-content:flex-start;
+  margin:0 0 8px 0;
+}
+.operatingDetailBtn{
+  height:32px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  color:var(--text);
+  padding:0 12px;
+  font-size:12px;
+  font-weight:650;
+  cursor:pointer;
+}
+.operatingDetailBtn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.operatingModalOverlay{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  background:rgba(3,7,18,.78);
+  padding:28px 14px;
+  overflow:auto;
+}
+.operatingModalOverlay.open{display:flex;}
+.operatingModal{
+  width:min(1080px, 100%);
+  max-height:calc(100vh - 56px);
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--card);
+  box-shadow:0 18px 50px rgba(0,0,0,.45);
+}
+.operatingModalHeader{
+  position:sticky;
+  top:0;
+  z-index:1;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+  background:var(--card);
+}
+.operatingModalTitle{
+  margin:0;
+  font-size:16px;
+  font-weight:750;
+}
+.operatingModalSub{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:12px;
+}
+.operatingModalClose{
+  width:32px;
+  height:32px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  color:var(--text);
+  cursor:pointer;
+  font-size:18px;
+  line-height:1;
+}
+.operatingModalBody{
+  padding:14px 16px 16px;
+}
+.operatingDetailGrid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:12px;
+}
+.operatingDetailBlock{
+  min-width:0;
+}
+.operatingDetailBlock h3{
+  margin:0 0 8px;
+  font-size:13px;
+  color:var(--text);
+}
+.operatingDetailTable{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  font-size:12px;
+}
+.operatingDetailTable th,
+.operatingDetailTable td{
+  border-top:1px solid var(--line);
+  padding:7px 6px;
+  vertical-align:top;
+  overflow-wrap:anywhere;
+}
+.operatingDetailTable th{
+  width:42%;
+  color:var(--muted);
+  font-weight:600;
+  text-align:left;
+}
+.operatingFlagList{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.operatingFlag{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:3px 8px;
+  color:var(--text);
+  background:#0f1522;
+  font-size:11px;
+}
+.operatingSourceNotes{
+  margin-top:14px;
+  border-top:1px solid var(--line);
+  padding-top:10px;
+}
+.operatingSourceNotes summary{
+  cursor:pointer;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:650;
+}
+.operatingSourceNotes ul{
+  margin:8px 0 0 18px;
+  padding:0;
+  color:var(--muted);
+  font-size:12px;
+}
+@media (max-width: 920px){
+  .operatingDetailGrid{grid-template-columns:1fr;}
+}
+
   /* =========================
    METRIC GRID (3 columns, aligned)
    ========================= */
@@ -977,6 +1121,9 @@ header, main{ position:relative; z-index:1; }
       <div class="hr"></div>
 
       <div id="plantBadges" class="row" style="margin-bottom:6px;"></div>
+      <div class="row operatingDetailAction">
+        <button id="operatingDetailBtn" type="button" class="operatingDetailBtn" disabled>View Operating Detail</button>
+      </div>
       <div class="kv" id="plantKv"></div>
 
       <div class="hr"></div>
@@ -1654,6 +1801,19 @@ The credit applies to qualifying carbon capture projects located in the United S
 
 </div>  <!-- closes .grid -->
 </main>
+
+<div id="operatingDetailModal" class="operatingModalOverlay" role="dialog" aria-modal="true" aria-labelledby="operatingDetailTitle">
+  <div class="operatingModal">
+    <div class="operatingModalHeader">
+      <div>
+        <h2 id="operatingDetailTitle" class="operatingModalTitle">Operating Detail</h2>
+        <div id="operatingDetailSubtitle" class="operatingModalSub">—</div>
+      </div>
+      <button id="operatingDetailClose" type="button" class="operatingModalClose" aria-label="Close operating detail">×</button>
+    </div>
+    <div id="operatingDetailBody" class="operatingModalBody"></div>
+  </div>
+</div>
 
 <script>
   // ----------------------------
@@ -4238,15 +4398,19 @@ function classifyImpliedDryerFigure(v){
 function renderPlantDetails(){
   const badges = document.getElementById("plantBadges");
   const kv = document.getElementById("plantKv");
+  const operatingBtn = document.getElementById("operatingDetailBtn");
   if (!badges || !kv) return;
 
     badges.innerHTML = "";
     kv.innerHTML = "";
+    if (operatingBtn) operatingBtn.disabled = true;
 
     if (!selectedPlant){
       badges.innerHTML = `<span class="pill warn">No plant selected</span>`;
       return;
     }
+
+    if (operatingBtn) operatingBtn.disabled = !hasOperatingPermitDetail(selectedPlant);
 
     
     const s = startingCI(selectedPlant);
@@ -4444,6 +4608,214 @@ const items = [
       kv.appendChild(blankK);
       kv.appendChild(blankV);
     }
+}
+
+function hasOperatingPermitDetail(plant){
+  const op = plant?.operating_permit;
+  return !!op && typeof op === "object" && (
+    !!op.equipment || !!op.limits || !!op.derivatives || !!op.permit_missing
+  );
+}
+
+function operatingMetricValue(metric){
+  if (!metric || typeof metric !== "object") return null;
+  return metric.value ?? null;
+}
+
+function operatingValueText(value, units=""){
+  if (value === null || value === undefined || value === "") return "";
+  const n = Number(value);
+  let text;
+  if (Number.isFinite(n)){
+    text = Math.abs(n) >= 1000
+      ? n.toLocaleString("en-US", { maximumFractionDigits: 1 })
+      : n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  } else {
+    text = String(value);
+  }
+  return units ? `${text} ${units}` : text;
+}
+
+function operatingMetricText(metric){
+  if (!metric || typeof metric !== "object") return "";
+  return operatingValueText(metric.value, metric.units || "");
+}
+
+function operatingListText(lines, limit=4){
+  const arr = asArray(lines).map(x => String(x || "").trim()).filter(Boolean);
+  if (!arr.length) return "";
+  const clipped = arr.slice(0, limit);
+  const suffix = arr.length > limit ? `; +${arr.length - limit} more` : "";
+  return clipped.join("; ") + suffix;
+}
+
+function addOperatingRow(rows, label, value, units=""){
+  const text = operatingValueText(value, units);
+  if (text) rows.push([label, text]);
+}
+
+function addOperatingMetricRow(rows, label, metric){
+  const text = operatingMetricText(metric);
+  if (text) rows.push([label, text]);
+}
+
+function renderOperatingTable(rows){
+  if (!rows.length) return `<div class="muted">Not available</div>`;
+  return `
+    <table class="operatingDetailTable">
+      <tbody>
+        ${rows.map(([k,v]) => `
+          <tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderOperatingFlags(flags){
+  if (!flags || typeof flags !== "object") return "";
+  const labels = [
+    ["chp", "CHP"],
+    ["white_fox_membrane", "White Fox membrane"],
+    ["molecular_sieve_only", "Molecular sieve only"],
+    ["waste_heat_recovery", "Waste heat recovery"],
+    ["fiber_to_ethanol", flags.fiber_to_ethanol_technology ? `Fiber-to-ethanol: ${flags.fiber_to_ethanol_technology}` : "Fiber-to-ethanol"],
+    ["generic_fiber_separation", "Generic fiber separation"],
+    ["d3_capable", "D3 capable"],
+    ["edeniq", "Edeniq"],
+    ["fluid_quip", "Fluid Quip"],
+    ["high_protein", "High protein"],
+    ["corn_oil_extraction", "Corn oil extraction"],
+    ["co2_capture", "CO2 capture"],
+    ["rng_biogas", "RNG / biogas"],
+    ["icm_selective_milling", "ICM selective milling"],
+    ["icm_fst", "ICM FST"]
+  ].filter(([key]) => !!flags[key]);
+  if (!labels.length) return "";
+  return `<div class="operatingFlagList">${labels.map(([,label]) => `<span class="operatingFlag">${escapeHtml(label)}</span>`).join("")}</div>`;
+}
+
+function operatingSectionRows(op){
+  const equipment = op?.equipment || {};
+  const limits = op?.limits || {};
+  const derivatives = op?.derivatives || {};
+  const fermenters = equipment.fermenters || {};
+  const dryers = equipment.dryers || {};
+  const boilers = equipment.boilers_process_heaters || {};
+  const rtos = equipment.thermal_oxidizers_rtos || {};
+  const scrubbers = equipment.scrubbers || {};
+  const baghouses = equipment.baghouses || {};
+  const cornOil = equipment.corn_oil_systems || {};
+  const decanters = equipment.decanters_centrifuges || {};
+  const tanks = equipment.tanks || {};
+  const whb = equipment.waste_heat_boilers || {};
+
+  const equipmentRows = [];
+  addOperatingRow(equipmentRows, "Fermenter count", fermenters.count);
+  addOperatingRow(equipmentRows, "Fermenter size", fermenters.size_gal_each, "gal each");
+  addOperatingRow(equipmentRows, "Total fermenter volume", fermenters.total_volume_gal, "gal");
+  addOperatingRow(equipmentRows, "Beer well volume", fermenters.beer_well_volume_gal, "gal");
+  addOperatingRow(equipmentRows, "Decanters / centrifuges", decanters.count);
+  addOperatingRow(equipmentRows, "Dryer type", dryers.type || dryers.type_from_technology_flags);
+  addOperatingRow(equipmentRows, "Dryer count", dryers.count);
+  addOperatingMetricRow(equipmentRows, "Dryer heat input", dryers.heat_input_mmbtu_hr);
+  addOperatingRow(equipmentRows, "Boilers / heaters", boilers.count);
+  addOperatingRow(equipmentRows, "Boiler fuel", boilers.fuel);
+  addOperatingMetricRow(equipmentRows, "Boiler heat input", boilers.heat_input_mmbtu_hr);
+  addOperatingRow(equipmentRows, "RTO / thermal oxidizers", rtos.count);
+  addOperatingMetricRow(equipmentRows, "RTO heat input", rtos.heat_input_mmbtu_hr);
+  addOperatingMetricRow(equipmentRows, "Waste heat boiler", whb.heat_input_mmbtu_hr);
+  addOperatingRow(equipmentRows, "Scrubbers", scrubbers.count);
+  addOperatingRow(equipmentRows, "Baghouses", baghouses.count);
+  addOperatingRow(equipmentRows, "Corn oil system", cornOil.present ? "Present" : "");
+  addOperatingRow(equipmentRows, "Storage tanks", tanks.count);
+
+  const limitRows = [];
+  addOperatingMetricRow(limitRows, "Corn grind", limits.corn_grind);
+  addOperatingMetricRow(limitRows, "Ethanol production", limits.ethanol_production);
+  addOperatingMetricRow(limitRows, "DDGS / dryer limit", limits.dryer_ddgs);
+  addOperatingMetricRow(limitRows, "Beer well", limits.beer_well);
+  addOperatingMetricRow(limitRows, "Boiler / natural gas", limits.natural_gas_boiler);
+  addOperatingRow(limitRows, "Corn grind source", limits.corn_grind?.source_line);
+  addOperatingRow(limitRows, "Ethanol source", limits.ethanol_production?.source_line);
+  addOperatingRow(limitRows, "DDGS source", limits.dryer_ddgs?.source_line);
+  addOperatingRow(limitRows, "Emission limits", operatingListText(limits.key_emissions?.source_lines, 5));
+
+  const derivativeRows = [];
+  addOperatingMetricRow(derivativeRows, "Ethanol yield", derivatives.ethanol_yield);
+  addOperatingMetricRow(derivativeRows, "Corn grind per gallon", derivatives.corn_grind_per_gallon);
+  addOperatingMetricRow(derivativeRows, "DDGS yield", derivatives.ddgs_lb_per_bu);
+  addOperatingMetricRow(derivativeRows, "Corn oil yield", derivatives.corn_oil_lb_per_bu);
+  addOperatingMetricRow(derivativeRows, "Total thermal", derivatives.total_thermal_mmbtu_hr);
+  addOperatingMetricRow(derivativeRows, "Thermal per MGY", derivatives.total_thermal_mmbtu_hr_per_mgy);
+  addOperatingMetricRow(derivativeRows, "Estimated BTU/gal", derivatives.estimated_btu_per_gal_from_heat_input || derivatives.thermal_btu_per_gal);
+  addOperatingMetricRow(derivativeRows, "Dryer BTU/gal", derivatives.dryer_btu_per_gal);
+  addOperatingMetricRow(derivativeRows, "Fermentation time", derivatives.estimated_fermentation_time);
+  addOperatingMetricRow(derivativeRows, "Beer well hold time", derivatives.beer_well_hold_time);
+  addOperatingMetricRow(derivativeRows, "Total corn storage", derivatives.total_corn_storage);
+  addOperatingMetricRow(derivativeRows, "Daily grain", derivatives.grain_throughput_per_day);
+  addOperatingMetricRow(derivativeRows, "Grain storage days", derivatives.grain_storage_days);
+  addOperatingMetricRow(derivativeRows, "DDGS tons/day", derivatives.ddgs_tons_per_day);
+  addOperatingMetricRow(derivativeRows, "Utilization", derivatives.utilization_against_permitted_capacity);
+
+  return { equipmentRows, limitRows, derivativeRows };
+}
+
+function renderOperatingDetailModal(){
+  const body = document.getElementById("operatingDetailBody");
+  const sub = document.getElementById("operatingDetailSubtitle");
+  if (!body || !sub) return;
+  const op = selectedPlant?.operating_permit;
+  sub.textContent = selectedPlant ? plantLabel(selectedPlant) : "No plant selected";
+  if (!op || typeof op !== "object"){
+    body.innerHTML = `<div class="muted">Operating permit detail is not available for this plant.</div>`;
+    return;
+  }
+  const equipment = op.equipment || {};
+  const flagsHtml = renderOperatingFlags(equipment.technology_flags || equipment.special_equipment || {});
+  const { equipmentRows, limitRows, derivativeRows } = operatingSectionRows(op);
+  const notes = [
+    op.source_file ? `Source file: ${op.source_file}` : "",
+    op.summary_file ? `Summary file: ${op.summary_file}` : "",
+    op.permit_number ? `Permit number: ${op.permit_number}` : "",
+    op.permit_type ? `Permit type: ${op.permit_type}` : "",
+    op.confidence ? `Confidence: ${op.confidence}` : "",
+    ...asArray(op.notes)
+  ].filter(Boolean);
+  body.innerHTML = `
+    ${op.permit_missing ? `<div class="pill warn" style="margin-bottom:10px;">Permit summary missing; technology backfilled from LCFS detail</div>` : ""}
+    ${flagsHtml ? `<div style="margin-bottom:12px;">${flagsHtml}</div>` : ""}
+    <div class="operatingDetailGrid">
+      <section class="operatingDetailBlock">
+        <h3>Equipment</h3>
+        ${renderOperatingTable(equipmentRows)}
+      </section>
+      <section class="operatingDetailBlock">
+        <h3>Limits</h3>
+        ${renderOperatingTable(limitRows)}
+      </section>
+      <section class="operatingDetailBlock">
+        <h3>Derivatives</h3>
+        ${renderOperatingTable(derivativeRows)}
+      </section>
+    </div>
+    <details class="operatingSourceNotes">
+      <summary>Source / Confidence Notes</summary>
+      ${notes.length ? `<ul>${notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>` : `<div class="muted" style="margin-top:8px;">No notes available</div>`}
+    </details>
+  `;
+}
+
+function openOperatingDetailModal(){
+  const modal = document.getElementById("operatingDetailModal");
+  if (!modal) return;
+  renderOperatingDetailModal();
+  modal.classList.add("open");
+}
+
+function closeOperatingDetailModal(){
+  const modal = document.getElementById("operatingDetailModal");
+  if (modal) modal.classList.remove("open");
 }
 
 function compute(){
@@ -5198,6 +5570,24 @@ async function handlePlantSelectChange(){
   // Plant select: full re-sync
   onInput("plantSelect", () => {
     handlePlantSelectChange().catch(e => console.error("PLANT SELECT FAILED:", e));
+  });
+
+  const operatingBtn = document.getElementById("operatingDetailBtn");
+  if (operatingBtn){
+    operatingBtn.addEventListener("click", openOperatingDetailModal);
+  }
+  const operatingClose = document.getElementById("operatingDetailClose");
+  if (operatingClose){
+    operatingClose.addEventListener("click", closeOperatingDetailModal);
+  }
+  const operatingModal = document.getElementById("operatingDetailModal");
+  if (operatingModal){
+    operatingModal.addEventListener("click", (event) => {
+      if (event.target === operatingModal) closeOperatingDetailModal();
+    });
+  }
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeOperatingDetailModal();
   });
 
   // Freight checkbox: enable/disable freight controls + recompute

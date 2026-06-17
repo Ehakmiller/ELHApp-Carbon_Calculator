@@ -485,6 +485,32 @@
   font-weight:600;
   text-align:left;
 }
+.operatingNestedTable{
+  margin:0;
+}
+.operatingNestedTable th,
+.operatingNestedTable td{
+  padding:4px 0;
+  border-top:0;
+}
+.operatingInlineList{
+  margin:0;
+  padding-left:16px;
+}
+.operatingInlineList li{
+  margin:2px 0;
+}
+.operatingListMore{
+  margin-top:4px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--accent);
+  font:inherit;
+  font-size:12px;
+  cursor:pointer;
+  text-decoration:underline;
+}
 .operatingFlagList{
   display:flex;
   flex-wrap:wrap;
@@ -3446,6 +3472,7 @@ function normalizePlantRow(p, i=0){
     canadian_fed_ci: p?.canadian_fed_ci ?? detail.canadian_fed_ci ?? null,
     canadian_fed_ci_detail: p?.canadian_fed_ci_detail ?? detail.canadian_fed_ci_detail ?? null,
     bc_lcfs_ci_detail: p?.bc_lcfs_ci_detail ?? detail.bc_lcfs_ci_detail ?? [],
+    operating_permit: p?.operating_permit ?? p?.operatingPermit ?? p?.operating_permit_detail ?? p?.operatingPermitDetail ?? null,
     high_pro: p?.high_pro ?? tech.high_pro ?? null,
     chp: p?.chp ?? tech.chp ?? null,
     white_fox: p?.white_fox ?? tech.white_fox ?? null,
@@ -3772,7 +3799,38 @@ async function fetchPlantDetail(id){
     : raw && typeof raw === "object"
     ? (raw.plant || raw.row || raw.data || raw)
     : raw;
+  const rawKeys = raw && typeof raw === "object" ? Object.keys(raw) : [];
+  const rowKeys = row && typeof row === "object" ? Object.keys(row) : [];
+  console.log("[Operating Detail] Worker plant response", {
+    requestedId: key,
+    rawKeys,
+    rowKeys,
+    rawHasOperatingPermit: !!(
+      raw?.operating_permit ||
+      raw?.operatingPermit ||
+      raw?.operating_permit_detail ||
+      raw?.operatingPermitDetail ||
+      raw?.plant?.operating_permit ||
+      raw?.plant?.operatingPermit ||
+      raw?.row?.operating_permit ||
+      raw?.row?.operatingPermit ||
+      raw?.data?.operating_permit ||
+      raw?.data?.operatingPermit
+    ),
+    rowHasOperatingPermit: !!(
+      row?.operating_permit ||
+      row?.operatingPermit ||
+      row?.operating_permit_detail ||
+      row?.operatingPermitDetail
+    )
+  });
   const plant = normalizePlantRow(row, 0);
+  const opBlock = getOperatingPermitBlock(plant);
+  console.log("[Operating Detail] normalized plant detail", {
+    epm: plantId(plant),
+    hasOperatingPermit: !!opBlock,
+    operatingPermitKeys: opBlock && typeof opBlock === "object" ? Object.keys(opBlock) : []
+  });
   plantDetailCache.set(key, plant);
   return plant;
 }
@@ -4410,7 +4468,19 @@ function renderPlantDetails(){
       return;
     }
 
-    if (operatingBtn) operatingBtn.disabled = !hasOperatingPermitDetail(selectedPlant);
+    if (operatingBtn) {
+      const operatingInfo = operatingPermitDebugInfo(selectedPlant);
+      operatingBtn.disabled = !hasOperatingPermitDetail(selectedPlant);
+      console.log("[Operating Detail] button state", {
+        epm: operatingInfo.epm,
+        hasOperatingPermit: operatingInfo.hasOperatingPermit,
+        operatingPermitType: operatingInfo.operatingPermitType,
+        operatingPermitKeys: operatingInfo.operatingPermitKeys,
+        disabled: operatingBtn.disabled,
+        reason: operatingBtn.disabled ? operatingInfo.reason : "enabled",
+        selectedPlantKeys: selectedPlant ? Object.keys(selectedPlant) : []
+      });
+    }
 
     
     const s = startingCI(selectedPlant);
@@ -4610,53 +4680,147 @@ const items = [
     }
 }
 
+function getOperatingPermitBlock(plant){
+  if (!plant || typeof plant !== "object") return null;
+  return plant.operating_permit ||
+    plant.operatingPermit ||
+    plant.operating_permit_detail ||
+    plant.operatingPermitDetail ||
+    null;
+}
+
+function operatingPermitDebugInfo(plant){
+  const epm =
+    plantId(plant) ||
+    plant?.fac_info?.epm ||
+    plant?.EPM_NUMBER ||
+    plant?.epm_number ||
+    plant?.epm ||
+    "";
+  const op = getOperatingPermitBlock(plant);
+  let reason = "enabled";
+  if (!plant) reason = "no selectedPlant";
+  else if (!op) reason = "missing operating_permit/operatingPermit on selectedPlant";
+  else if (typeof op !== "object") reason = `operating_permit is ${typeof op}`;
+  else if (!(op.equipment || op.limits || op.derivatives || op.permit_missing)) {
+    reason = "operating_permit has no equipment/limits/derivatives/permit_missing";
+  }
+  return {
+    epm,
+    hasOperatingPermit: !!op,
+    operatingPermitType: op ? typeof op : "missing",
+    operatingPermitKeys: op && typeof op === "object" ? Object.keys(op) : [],
+    reason
+  };
+}
+
 function hasOperatingPermitDetail(plant){
-  const op = plant?.operating_permit;
+  const op = getOperatingPermitBlock(plant);
   return !!op && typeof op === "object" && (
     !!op.equipment || !!op.limits || !!op.derivatives || !!op.permit_missing
   );
 }
 
-function operatingMetricValue(metric){
-  if (!metric || typeof metric !== "object") return null;
-  return metric.value ?? null;
+function operatingIsBlank(value){
+  if (value === null || value === undefined || value === "") return true;
+  if (value === false) return true;
+  if (Array.isArray(value)) return !value.some(item => !operatingIsBlank(item));
+  if (typeof value === "object") return !Object.values(value).some(item => !operatingIsBlank(item));
+  return false;
 }
 
-function operatingValueText(value, units=""){
-  if (value === null || value === undefined || value === "") return "";
+function operatingTitle(key){
+  const acronyms = new Map([
+    ["ddgs", "DDGS"],
+    ["rto", "RTO"],
+    ["rtos", "RTOs"],
+    ["mmbtu", "MMBtu"],
+    ["mgy", "MGY"],
+    ["btu", "BTU"],
+    ["bu", "bu"],
+    ["hr", "hr"],
+    ["gpm", "gpm"],
+    ["rng", "RNG"],
+    ["chp", "CHP"],
+    ["ccs", "CCS"],
+    ["co2", "CO2"],
+    ["d3", "D3"],
+    ["icm", "ICM"],
+    ["fst", "FST"],
+    ["bpx", "BPX"]
+  ]);
+  return String(key || "")
+    .replace(/_/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .map(word => acronyms.get(word.toLowerCase()) || word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function operatingScalarText(value){
+  if (typeof value === "boolean") return value ? "Yes" : "";
   const n = Number(value);
-  let text;
-  if (Number.isFinite(n)){
-    text = Math.abs(n) >= 1000
+  if (Number.isFinite(n) && String(value).trim() !== ""){
+    return Math.abs(n) >= 1000
       ? n.toLocaleString("en-US", { maximumFractionDigits: 1 })
-      : n.toLocaleString("en-US", { maximumFractionDigits: 2 });
-  } else {
-    text = String(value);
+      : n.toLocaleString("en-US", { maximumFractionDigits: 3 });
   }
-  return units ? `${text} ${units}` : text;
+  return String(value);
 }
 
-function operatingMetricText(metric){
-  if (!metric || typeof metric !== "object") return "";
-  return operatingValueText(metric.value, metric.units || "");
+const operatingExpandedListKeys = new Set();
+const OPERATING_LIST_PREVIEW_LIMIT = 10;
+
+function operatingHtmlValue(value, pathKey=""){
+  if (operatingIsBlank(value)) return "";
+  if (Array.isArray(value)){
+    const items = value.filter(item => !operatingIsBlank(item));
+    if (!items.length) return "";
+    const key = pathKey || `list-${items.join("|").slice(0, 80)}`;
+    const expanded = operatingExpandedListKeys.has(key);
+    const visible = expanded ? items : items.slice(0, OPERATING_LIST_PREVIEW_LIMIT);
+    const moreCount = items.length - visible.length;
+    const moreButton = moreCount > 0
+      ? `<button type="button" class="operatingListMore" data-operating-list-key="${escapeHtml(key)}">+${moreCount} more</button>`
+      : "";
+    return `<ul class="operatingInlineList">${visible.map((item, index) => `<li>${operatingHtmlValue(item, `${key}.${index}`)}</li>`).join("")}</ul>${moreButton}`;
+  }
+  if (typeof value === "object"){
+    const rows = operatingFlattenRows(value, "", pathKey);
+    if (!rows.length) return "";
+    return `<table class="operatingDetailTable operatingNestedTable"><tbody>${rows.map(([k, v]) => `<tr><th>${escapeHtml(k)}</th><td>${v}</td></tr>`).join("")}</tbody></table>`;
+  }
+  return escapeHtml(operatingScalarText(value));
 }
 
-function operatingListText(lines, limit=4){
-  const arr = asArray(lines).map(x => String(x || "").trim()).filter(Boolean);
-  if (!arr.length) return "";
-  const clipped = arr.slice(0, limit);
-  const suffix = arr.length > limit ? `; +${arr.length - limit} more` : "";
-  return clipped.join("; ") + suffix;
-}
-
-function addOperatingRow(rows, label, value, units=""){
-  const text = operatingValueText(value, units);
-  if (text) rows.push([label, text]);
-}
-
-function addOperatingMetricRow(rows, label, metric){
-  const text = operatingMetricText(metric);
-  if (text) rows.push([label, text]);
+function operatingFlattenRows(obj, prefix="", pathPrefix=""){
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return [];
+  const rows = [];
+  for (const [key, value] of Object.entries(obj)){
+    if (operatingIsBlank(value)) continue;
+    const label = prefix ? `${prefix} ${operatingTitle(key)}` : operatingTitle(key);
+    const childPath = pathPrefix ? `${pathPrefix}.${key}` : key;
+    if (Array.isArray(value)){
+      const html = operatingHtmlValue(value, childPath);
+      if (html) rows.push([label, html]);
+    } else if (value && typeof value === "object"){
+      const metricLike = Object.prototype.hasOwnProperty.call(value, "value") || Object.prototype.hasOwnProperty.call(value, "units");
+      if (metricLike && !operatingIsBlank(value.value)){
+        const metricText = `${operatingScalarText(value.value)}${value.units ? ` ${escapeHtml(value.units)}` : ""}`;
+        rows.push([label, metricText]);
+        for (const [childKey, childValue] of Object.entries(value)){
+          if (childKey === "value" || childKey === "units" || operatingIsBlank(childValue)) continue;
+          rows.push([`${label} ${operatingTitle(childKey)}`, operatingHtmlValue(childValue, `${childPath}.${childKey}`)]);
+        }
+      } else {
+        rows.push(...operatingFlattenRows(value, label, childPath));
+      }
+    } else {
+      const html = operatingHtmlValue(value, childPath);
+      if (html) rows.push([label, html]);
+    }
+  }
+  return rows;
 }
 
 function renderOperatingTable(rows){
@@ -4665,7 +4829,7 @@ function renderOperatingTable(rows){
     <table class="operatingDetailTable">
       <tbody>
         ${rows.map(([k,v]) => `
-          <tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>
+          <tr><th>${escapeHtml(k)}</th><td>${v}</td></tr>
         `).join("")}
       </tbody>
     </table>
@@ -4695,77 +4859,41 @@ function renderOperatingFlags(flags){
   return `<div class="operatingFlagList">${labels.map(([,label]) => `<span class="operatingFlag">${escapeHtml(label)}</span>`).join("")}</div>`;
 }
 
-function operatingSectionRows(op){
-  const equipment = op?.equipment || {};
-  const limits = op?.limits || {};
-  const derivatives = op?.derivatives || {};
-  const fermenters = equipment.fermenters || {};
-  const dryers = equipment.dryers || {};
-  const boilers = equipment.boilers_process_heaters || {};
-  const rtos = equipment.thermal_oxidizers_rtos || {};
-  const scrubbers = equipment.scrubbers || {};
-  const baghouses = equipment.baghouses || {};
-  const cornOil = equipment.corn_oil_systems || {};
-  const decanters = equipment.decanters_centrifuges || {};
-  const tanks = equipment.tanks || {};
-  const whb = equipment.waste_heat_boilers || {};
+function operatingGetPath(obj, path){
+  return String(path || "").split(".").filter(Boolean).reduce((current, part) => (
+    current && typeof current === "object" ? current[part] : undefined
+  ), obj);
+}
 
-  const equipmentRows = [];
-  addOperatingRow(equipmentRows, "Fermenter count", fermenters.count);
-  addOperatingRow(equipmentRows, "Fermenter size", fermenters.size_gal_each, "gal each");
-  addOperatingRow(equipmentRows, "Total fermenter volume", fermenters.total_volume_gal, "gal");
-  addOperatingRow(equipmentRows, "Beer well volume", fermenters.beer_well_volume_gal, "gal");
-  addOperatingRow(equipmentRows, "Decanters / centrifuges", decanters.count);
-  addOperatingRow(equipmentRows, "Dryer type", dryers.type || dryers.type_from_technology_flags);
-  addOperatingRow(equipmentRows, "Dryer count", dryers.count);
-  addOperatingMetricRow(equipmentRows, "Dryer heat input", dryers.heat_input_mmbtu_hr);
-  addOperatingRow(equipmentRows, "Boilers / heaters", boilers.count);
-  addOperatingRow(equipmentRows, "Boiler fuel", boilers.fuel);
-  addOperatingMetricRow(equipmentRows, "Boiler heat input", boilers.heat_input_mmbtu_hr);
-  addOperatingRow(equipmentRows, "RTO / thermal oxidizers", rtos.count);
-  addOperatingMetricRow(equipmentRows, "RTO heat input", rtos.heat_input_mmbtu_hr);
-  addOperatingMetricRow(equipmentRows, "Waste heat boiler", whb.heat_input_mmbtu_hr);
-  addOperatingRow(equipmentRows, "Scrubbers", scrubbers.count);
-  addOperatingRow(equipmentRows, "Baghouses", baghouses.count);
-  addOperatingRow(equipmentRows, "Corn oil system", cornOil.present ? "Present" : "");
-  addOperatingRow(equipmentRows, "Storage tanks", tanks.count);
+function operatingRowsFromPaths(op, paths){
+  const rows = [];
+  for (const path of paths){
+    const value = operatingGetPath(op, path);
+    if (operatingIsBlank(value)) continue;
+    const leaf = path.split(".").pop();
+    const flattened = operatingFlattenRows(value, "", path);
+    if (flattened.length) rows.push(...flattened);
+    else rows.push([operatingTitle(leaf), operatingHtmlValue(value, path)]);
+  }
+  return rows;
+}
 
-  const limitRows = [];
-  addOperatingMetricRow(limitRows, "Corn grind", limits.corn_grind);
-  addOperatingMetricRow(limitRows, "Ethanol production", limits.ethanol_production);
-  addOperatingMetricRow(limitRows, "DDGS / dryer limit", limits.dryer_ddgs);
-  addOperatingMetricRow(limitRows, "Beer well", limits.beer_well);
-  addOperatingMetricRow(limitRows, "Boiler / natural gas", limits.natural_gas_boiler);
-  addOperatingRow(limitRows, "Corn grind source", limits.corn_grind?.source_line);
-  addOperatingRow(limitRows, "Ethanol source", limits.ethanol_production?.source_line);
-  addOperatingRow(limitRows, "DDGS source", limits.dryer_ddgs?.source_line);
-  addOperatingRow(limitRows, "Emission limits", operatingListText(limits.key_emissions?.source_lines, 5));
-
-  const derivativeRows = [];
-  addOperatingMetricRow(derivativeRows, "Ethanol yield", derivatives.ethanol_yield);
-  addOperatingMetricRow(derivativeRows, "Corn grind per gallon", derivatives.corn_grind_per_gallon);
-  addOperatingMetricRow(derivativeRows, "DDGS yield", derivatives.ddgs_lb_per_bu);
-  addOperatingMetricRow(derivativeRows, "Corn oil yield", derivatives.corn_oil_lb_per_bu);
-  addOperatingMetricRow(derivativeRows, "Total thermal", derivatives.total_thermal_mmbtu_hr);
-  addOperatingMetricRow(derivativeRows, "Thermal per MGY", derivatives.total_thermal_mmbtu_hr_per_mgy);
-  addOperatingMetricRow(derivativeRows, "Estimated BTU/gal", derivatives.estimated_btu_per_gal_from_heat_input || derivatives.thermal_btu_per_gal);
-  addOperatingMetricRow(derivativeRows, "Dryer BTU/gal", derivatives.dryer_btu_per_gal);
-  addOperatingMetricRow(derivativeRows, "Fermentation time", derivatives.estimated_fermentation_time);
-  addOperatingMetricRow(derivativeRows, "Beer well hold time", derivatives.beer_well_hold_time);
-  addOperatingMetricRow(derivativeRows, "Total corn storage", derivatives.total_corn_storage);
-  addOperatingMetricRow(derivativeRows, "Daily grain", derivatives.grain_throughput_per_day);
-  addOperatingMetricRow(derivativeRows, "Grain storage days", derivatives.grain_storage_days);
-  addOperatingMetricRow(derivativeRows, "DDGS tons/day", derivatives.ddgs_tons_per_day);
-  addOperatingMetricRow(derivativeRows, "Utilization", derivatives.utilization_against_permitted_capacity);
-
-  return { equipmentRows, limitRows, derivativeRows };
+function renderOperatingSection(op, title, paths){
+  const rows = operatingRowsFromPaths(op, paths);
+  if (!rows.length) return "";
+  return `
+    <section class="operatingDetailBlock">
+      <h3>${escapeHtml(title)}</h3>
+      ${renderOperatingTable(rows)}
+    </section>
+  `;
 }
 
 function renderOperatingDetailModal(){
   const body = document.getElementById("operatingDetailBody");
   const sub = document.getElementById("operatingDetailSubtitle");
   if (!body || !sub) return;
-  const op = selectedPlant?.operating_permit;
+  const op = getOperatingPermitBlock(selectedPlant);
   sub.textContent = selectedPlant ? plantLabel(selectedPlant) : "No plant selected";
   if (!op || typeof op !== "object"){
     body.innerHTML = `<div class="muted">Operating permit detail is not available for this plant.</div>`;
@@ -4773,7 +4901,19 @@ function renderOperatingDetailModal(){
   }
   const equipment = op.equipment || {};
   const flagsHtml = renderOperatingFlags(equipment.technology_flags || equipment.special_equipment || {});
-  const { equipmentRows, limitRows, derivativeRows } = operatingSectionRows(op);
+  const sectionHtml = [
+    renderOperatingSection(op, "Grain Handling", ["equipment.grain_handling", "derivatives.total_corn_storage", "derivatives.grain_storage_days"]),
+    renderOperatingSection(op, "Grinding", ["equipment.grinding"]),
+    renderOperatingSection(op, "Fermentation", ["equipment.fermenters", "equipment.decanters_centrifuges", "derivatives.estimated_fermentation_time", "derivatives.beer_well_hold_time"]),
+    renderOperatingSection(op, "DDGS System", ["equipment.ddgs_system", "equipment.dryers", "limits.dryer_ddgs", "derivatives.ddgs_tons_per_day", "derivatives.ddgs_lb_per_bu"]),
+    renderOperatingSection(op, "Corn Oil Recovery", ["equipment.corn_oil_systems", "derivatives.corn_oil_lb_per_bu"]),
+    renderOperatingSection(op, "Energy System", ["equipment.boilers_process_heaters", "equipment.waste_heat_boilers", "derivatives.boiler_mmbtu_hr", "derivatives.waste_heat_boiler_mmbtu_hr", "derivatives.total_thermal_mmbtu_hr", "derivatives.total_thermal_mmbtu_hr_per_mgy", "derivatives.estimated_btu_per_gal_from_heat_input", "derivatives.thermal_btu_per_gal", "derivatives.dryer_btu_per_gal"]),
+    renderOperatingSection(op, "Environmental Controls", ["equipment.environmental_controls", "equipment.thermal_oxidizers_rtos", "equipment.scrubbers", "equipment.baghouses", "limits.key_emissions", "derivatives.rto_thermal_oxidizer_mmbtu_hr"]),
+    renderOperatingSection(op, "Storage", ["equipment.tanks", "equipment.grain_handling", "derivatives.total_corn_storage", "derivatives.grain_storage_days"]),
+    renderOperatingSection(op, "Transportation", ["equipment.transportation"]),
+    renderOperatingSection(op, "Permit Limits", ["limits"]),
+    renderOperatingSection(op, "Derived Metrics", ["derivatives"])
+  ].filter(Boolean).join("");
   const notes = [
     op.source_file ? `Source file: ${op.source_file}` : "",
     op.summary_file ? `Summary file: ${op.summary_file}` : "",
@@ -4786,24 +4926,20 @@ function renderOperatingDetailModal(){
     ${op.permit_missing ? `<div class="pill warn" style="margin-bottom:10px;">Permit summary missing; technology backfilled from LCFS detail</div>` : ""}
     ${flagsHtml ? `<div style="margin-bottom:12px;">${flagsHtml}</div>` : ""}
     <div class="operatingDetailGrid">
-      <section class="operatingDetailBlock">
-        <h3>Equipment</h3>
-        ${renderOperatingTable(equipmentRows)}
-      </section>
-      <section class="operatingDetailBlock">
-        <h3>Limits</h3>
-        ${renderOperatingTable(limitRows)}
-      </section>
-      <section class="operatingDetailBlock">
-        <h3>Derivatives</h3>
-        ${renderOperatingTable(derivativeRows)}
-      </section>
+      ${sectionHtml || `<div class="muted">No populated operating permit fields are available.</div>`}
     </div>
     <details class="operatingSourceNotes">
       <summary>Source / Confidence Notes</summary>
       ${notes.length ? `<ul>${notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>` : `<div class="muted" style="margin-top:8px;">No notes available</div>`}
     </details>
   `;
+  body.querySelectorAll(".operatingListMore").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.getAttribute("data-operating-list-key");
+      if (key) operatingExpandedListKeys.add(key);
+      renderOperatingDetailModal();
+    });
+  });
 }
 
 function openOperatingDetailModal(){

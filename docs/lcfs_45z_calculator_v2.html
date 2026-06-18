@@ -454,16 +454,23 @@
   padding:14px 16px 16px;
 }
 .operatingDetailGrid{
-  display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:12px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
 .operatingDetailBlock{
   min-width:0;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  padding:12px;
 }
 .operatingDetailBlock h3{
-  margin:0 0 8px;
-  font-size:13px;
+  margin:0 0 10px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+  font-weight:750;
   color:var(--text);
 }
 .operatingDetailTable{
@@ -542,11 +549,7 @@
   padding:0;
   color:var(--muted);
   font-size:12px;
-}
-.operatingDetailBlock.wide{
-  grid-column:1 / -1;
-}
-.operatingDetailTable td.operatingNullValue,
+}`r`n.operatingDetailTable td.operatingNullValue,
 .operatingNullValue{
   color:var(--muted);
   font-style:italic;
@@ -602,11 +605,7 @@
 }
 @media (max-width: 640px){
   .operatingSummaryGrid{grid-template-columns:1fr;}
-}
-@media (max-width: 920px){
-  .operatingDetailGrid{grid-template-columns:1fr;}
-}
-
+}`r`n
   /* =========================
    METRIC GRID (3 columns, aligned)
    ========================= */
@@ -1892,7 +1891,7 @@ The credit applies to qualifying carbon capture projects located in the United S
   <div class="operatingModal">
     <div class="operatingModalHeader">
       <div>
-        <h2 id="operatingDetailTitle" class="operatingModalTitle">Operating Detail</h2>
+        <h2 id="operatingDetailTitle" class="operatingModalTitle">Operating Profile</h2>
         <div id="operatingDetailSubtitle" class="operatingModalSub">—</div>
       </div>
       <button id="operatingDetailClose" type="button" class="operatingModalClose" aria-label="Close operating detail">×</button>

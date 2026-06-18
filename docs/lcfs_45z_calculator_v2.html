@@ -543,6 +543,44 @@
   color:var(--muted);
   font-size:12px;
 }
+.operatingSummaryGrid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:10px;
+}
+.operatingMetric{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px 12px;
+  background:#0f1522;
+}
+.operatingMetricLabel{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:5px;
+}
+.operatingMetricValue{
+  color:var(--text);
+  font-size:16px;
+  font-weight:700;
+}
+.operatingTechnicalItem{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.operatingTechnicalLabel{
+  color:var(--text);
+  font-weight:650;
+}
+.operatingTechnicalLines{
+  margin:6px 0 0 18px;
+  padding:0;
+}
+@media (max-width: 640px){
+  .operatingSummaryGrid{grid-template-columns:1fr;}
+}
 @media (max-width: 920px){
   .operatingDetailGrid{grid-template-columns:1fr;}
 }
@@ -4889,59 +4927,173 @@ function renderOperatingSection(op, title, paths){
   `;
 }
 
-function renderOperatingDetailModal(){
-  const body = document.getElementById("operatingDetailBody");
-  const sub = document.getElementById("operatingDetailSubtitle");
-  if (!body || !sub) return;
-  const op = getOperatingPermitBlock(selectedPlant);
-  sub.textContent = selectedPlant ? plantLabel(selectedPlant) : "No plant selected";
-  if (!op || typeof op !== "object"){
-    body.innerHTML = `<div class="muted">Operating permit detail is not available for this plant.</div>`;
-    return;
+function operatingMetricValue(metric){
+  if (!metric || typeof metric !== "object") return null;
+  if (String(metric.confidence || "").toLowerCase() === "missing_inputs") return null;
+  const raw = metric.value;
+  if (raw === null || raw === undefined || raw === "") return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+}
+
+function formatOperatingSummaryValue(value, units){
+  const u = String(units || "").trim();
+  const abs = Math.abs(value);
+  if (u === "bu"){
+    if (abs >= 1_000_000) return `${fmt(value / 1_000_000, 1)} million bu`;
+    return `${Math.round(value).toLocaleString("en-US")} bu`;
   }
-  const equipment = op.equipment || {};
-  const flagsHtml = renderOperatingFlags(equipment.technology_flags || equipment.special_equipment || {});
-  const sectionHtml = [
-    renderOperatingSection(op, "Grain Handling", ["equipment.grain_handling", "derivatives.total_corn_storage", "derivatives.grain_storage_days"]),
-    renderOperatingSection(op, "Grinding", ["equipment.grinding"]),
-    renderOperatingSection(op, "Fermentation", ["equipment.fermenters", "equipment.decanters_centrifuges", "derivatives.estimated_fermentation_time", "derivatives.beer_well_hold_time"]),
-    renderOperatingSection(op, "DDGS System", ["equipment.ddgs_system", "equipment.dryers", "limits.dryer_ddgs", "derivatives.ddgs_tons_per_day", "derivatives.ddgs_lb_per_bu"]),
-    renderOperatingSection(op, "Corn Oil Recovery", ["equipment.corn_oil_systems", "derivatives.corn_oil_lb_per_bu"]),
-    renderOperatingSection(op, "Energy System", ["equipment.boilers_process_heaters", "equipment.waste_heat_boilers", "derivatives.boiler_mmbtu_hr", "derivatives.waste_heat_boiler_mmbtu_hr", "derivatives.total_thermal_mmbtu_hr", "derivatives.total_thermal_mmbtu_hr_per_mgy", "derivatives.estimated_btu_per_gal_from_heat_input", "derivatives.thermal_btu_per_gal", "derivatives.dryer_btu_per_gal"]),
-    renderOperatingSection(op, "Environmental Controls", ["equipment.environmental_controls", "equipment.thermal_oxidizers_rtos", "equipment.scrubbers", "equipment.baghouses", "limits.key_emissions", "derivatives.rto_thermal_oxidizer_mmbtu_hr"]),
-    renderOperatingSection(op, "Storage", ["equipment.tanks", "equipment.grain_handling", "derivatives.total_corn_storage", "derivatives.grain_storage_days"]),
-    renderOperatingSection(op, "Transportation", ["equipment.transportation"]),
-    renderOperatingSection(op, "Permit Limits", ["limits"]),
-    renderOperatingSection(op, "Derived Metrics", ["derivatives"])
-  ].filter(Boolean).join("");
+  if (u === "bu/day") return `${Math.round(value).toLocaleString("en-US")} bu/day`;
+  if (u === "days") return `${fmt(value, 1)} days`;
+  if (u === "hours") return `${fmt(value, 1)} hours`;
+  if (u === "gal/bu") return `${fmt(value, 2)} gal/bu`;
+  if (u === "bu/gal") return `${fmt(value, 3)} bu/gal`;
+  if (u === "lb/bu") return `${fmt(value, 2)} lb/bu`;
+  if (u === "tons/day") return `${fmt(value, 1)} tons/day`;
+  if (u === "gal/min") return `${Math.round(value).toLocaleString("en-US")} gal/min`;
+  if (u === "gal/year") return `${Math.round(value).toLocaleString("en-US")} gal/year`;
+  if (u === "BTU/gal") return `${Math.round(value).toLocaleString("en-US")} BTU/gal`;
+  if (u === "MMBtu/hr") return `${fmt(value, 1)} MMBtu/hr`;
+  if (u === "MMBtu/hr/MGY") return `${fmt(value, 2)} MMBtu/hr/MGY`;
+  if (u === "percent") return `${fmt(value, 1)}%`;
+  return `${fmt(value, 2)}${u ? ` ${u}` : ""}`;
+}
+
+const OPERATING_SUMMARY_METRICS = [
+  ["total_corn_storage", "Total Grain Storage"],
+  ["grain_storage_days", "Estimated Storage Days"],
+  ["grain_throughput_per_day", "Daily Grain Grind"],
+  ["estimated_fermentation_time", "Fermentation Time"],
+  ["estimated_btu_per_gal_from_heat_input", "BTU/Gal"],
+  ["thermal_btu_per_gal", "Thermal BTU/Gal"],
+  ["dryer_btu_per_gal", "Dryer BTU/Gal"],
+  ["ethanol_yield", "Yield"],
+  ["corn_grind_per_gallon", "Corn Grind Per Gallon"],
+  ["ddgs_lb_per_bu", "DDGS Yield"],
+  ["corn_oil_lb_per_bu", "Corn Oil Yield"],
+  ["ddgs_tons_per_day", "DDGS Tons Per Day"],
+  ["beer_feed_gpm", "Beer Feed"],
+  ["beer_well_hold_time", "Beer Well Hold Time"],
+  ["centrifuge_total_flow_gpm", "Centrifuge Flow"],
+  ["centrifuge_total_flow_gal_per_year", "Centrifuge Annual Flow"],
+  ["dryer_mmbtu_hr", "Dryer Heat Input"],
+  ["boiler_mmbtu_hr", "Boiler Heat Input"],
+  ["rto_thermal_oxidizer_mmbtu_hr", "RTO Heat Input"],
+  ["waste_heat_boiler_mmbtu_hr", "Waste Heat Boiler"],
+  ["total_thermal_mmbtu_hr", "Total Heat Input"],
+  ["total_thermal_mmbtu_hr_per_mgy", "Heat Input Per MGY"],
+  ["utilization_against_permitted_capacity", "Utilization"]
+];
+
+function operatingSummaryRows(derivatives){
+  const known = new Set(OPERATING_SUMMARY_METRICS.map(([key]) => key));
+  const primary = OPERATING_SUMMARY_METRICS
+    .map(([key, label]) => {
+      const metric = derivatives[key];
+      const value = operatingMetricValue(metric);
+      return value === null ? null : { key, label, value: formatOperatingSummaryValue(value, metric.units) };
+    })
+    .filter(Boolean);
+
+  const extras = Object.entries(derivatives)
+    .filter(([key]) => !known.has(key))
+    .map(([key, metric]) => {
+      const value = operatingMetricValue(metric);
+      return value === null ? null : { key, label: operatingTitle(key), value: formatOperatingSummaryValue(value, metric.units) };
+    })
+    .filter(Boolean);
+
+  return [...primary, ...extras];
+}
+
+function renderOperatingTechnicalDetails(op, rows){
+  const derivatives = op?.derivatives && typeof op.derivatives === "object" ? op.derivatives : {};
+  const rowLabels = new Map(rows.map(row => [row.key, row.label]));
+  const rowKeys = new Set(rows.map(row => row.key));
+  const items = [];
+
+  for (const [key, metric] of Object.entries(derivatives)){
+    if (!rowKeys.has(key) || !metric || typeof metric !== "object") continue;
+    const details = [];
+    if (metric.confidence) details.push(`<div><span class="mono">Confidence:</span> ${escapeHtml(metric.confidence)}</div>`);
+    if (metric.formula) details.push(`<div><span class="mono">Formula:</span> ${escapeHtml(metric.formula)}</div>`);
+    if (metric.notes) details.push(`<div><span class="mono">Assumptions:</span> ${escapeHtml(metric.notes)}</div>`);
+    if (metric.method) details.push(`<div><span class="mono">Method:</span> ${escapeHtml(metric.method)}</div>`);
+    const sourceLines = asArray(metric.source_lines || metric.source_line).filter(Boolean);
+    if (sourceLines.length){
+      details.push(
+        `<div><span class="mono">Source evidence:</span><ul class="operatingTechnicalLines">` +
+        sourceLines.slice(0, 8).map(line => `<li>${escapeHtml(line)}</li>`).join("") +
+        `</ul></div>`
+      );
+    }
+    if (!details.length) continue;
+    items.push(`
+      <div class="operatingTechnicalItem">
+        <div class="operatingTechnicalLabel">${escapeHtml(rowLabels.get(key) || operatingTitle(key))}</div>
+        ${details.join("")}
+      </div>
+    `);
+  }
+
   const notes = [
     op.source_file ? `Source file: ${op.source_file}` : "",
     op.summary_file ? `Summary file: ${op.summary_file}` : "",
     op.permit_number ? `Permit number: ${op.permit_number}` : "",
     op.permit_type ? `Permit type: ${op.permit_type}` : "",
-    op.confidence ? `Confidence: ${op.confidence}` : "",
-    ...asArray(op.notes)
+    op.confidence ? `Permit match confidence: ${op.confidence}` : "",
+    ...asArray(op.parsing_notes),
+    ...asArray(op.notes),
+    ...asArray(op.assumptions)
   ].filter(Boolean);
-  body.innerHTML = `
-    ${op.permit_missing ? `<div class="pill warn" style="margin-bottom:10px;">Permit summary missing; technology backfilled from LCFS detail</div>` : ""}
-    ${flagsHtml ? `<div style="margin-bottom:12px;">${flagsHtml}</div>` : ""}
-    <div class="operatingDetailGrid">
-      ${sectionHtml || `<div class="muted">No populated operating permit fields are available.</div>`}
-    </div>
-    <details class="operatingSourceNotes">
-      <summary>Source / Confidence Notes</summary>
-      ${notes.length ? `<ul>${notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>` : `<div class="muted" style="margin-top:8px;">No notes available</div>`}
-    </details>
-  `;
-  body.querySelectorAll(".operatingListMore").forEach((button) => {
-    button.addEventListener("click", () => {
-      const key = button.getAttribute("data-operating-list-key");
-      if (key) operatingExpandedListKeys.add(key);
-      renderOperatingDetailModal();
-    });
-  });
+
+  if (notes.length){
+    items.push(`
+      <div class="operatingTechnicalItem">
+        <div class="operatingTechnicalLabel">Permit Notes</div>
+        <ul class="operatingTechnicalLines">${notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+      </div>
+    `);
+  }
+
+  return items.length
+    ? `<details class="operatingSourceNotes"><summary>Technical Details</summary>${items.join("")}</details>`
+    : "";
 }
 
+function renderOperatingDetailModal(){
+  const body = document.getElementById("operatingDetailBody");
+  const sub = document.getElementById("operatingDetailSubtitle");
+  if (!body || !sub) return;
+
+  const op = getOperatingPermitBlock(selectedPlant);
+  sub.textContent = selectedPlant ? plantLabel(selectedPlant) : "No plant selected";
+
+  if (!op || typeof op !== "object"){
+    body.innerHTML = `<div class="muted">Operating permit detail is not available for this plant.</div>`;
+    return;
+  }
+
+  const derivatives = op.derivatives && typeof op.derivatives === "object" ? op.derivatives : {};
+  const rows = operatingSummaryRows(derivatives);
+
+  body.innerHTML = `
+    ${op.permit_missing ? `<div class="pill warn" style="margin-bottom:10px;">Permit summary missing; calculated operating metrics are unavailable.</div>` : ""}
+    ${
+      rows.length
+        ? `<div class="operatingSummaryGrid">` +
+          rows.map(row => `
+            <div class="operatingMetric">
+              <div class="operatingMetricLabel">${escapeHtml(row.label)}</div>
+              <div class="operatingMetricValue">${escapeHtml(row.value)}</div>
+            </div>
+          `).join("") +
+          `</div>`
+        : `<div class="muted">No calculated operating metrics are available for this plant.</div>`
+    }
+    ${renderOperatingTechnicalDetails(op, rows)}
+  `;
+}
 function openOperatingDetailModal(){
   const modal = document.getElementById("operatingDetailModal");
   if (!modal) return;

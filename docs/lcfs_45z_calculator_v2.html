@@ -500,6 +500,15 @@
 .operatingNestedTable{
   margin:0;
 }
+.operatingLimitSummary{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.operatingLimitMeta{
+  color:var(--muted);
+  font-size:11px;
+}
 .operatingNestedTable th,
 .operatingNestedTable td{
   padding:4px 0;
@@ -5544,9 +5553,33 @@ function operatingEquipmentRows(op){
   );
 }
 
+function operatingLimitItemRows(op){
+  const items = asArray(op?.operational_limits || op?.limits?.operational_limits);
+  const rows = [];
+  const seen = new Set();
+  for (const item of items){
+    if (!item || typeof item !== "object") continue;
+    const limitType = operatingCleanText(item.limit_type || item.type || item.kind) || "Operational Constraint";
+    if (/emission/i.test(limitType)) continue;
+    const label = operatingCleanText(item.label || item.name || item.category || item.metric) || "Operational Constraint";
+    const valueText = operatingFormatValue(item.value, item.units || item.unit || "") || operatingCleanText(item.description || item.text);
+    const period = operatingCleanText(item.period || item.frequency || item.basis);
+    const key = [label, valueText, limitType, period].join("|").toLowerCase();
+    if (!valueText || seen.has(key)) continue;
+    seen.add(key);
+    const meta = [limitType, period].filter(Boolean).join(" | ");
+    rows.push([
+      label,
+      `<span class="operatingLimitSummary"><span>${escapeHtml(valueText)}</span>${meta ? `<span class="operatingLimitMeta">${escapeHtml(meta)}</span>` : ""}</span>`
+    ]);
+  }
+  return rows;
+}
+
 function operatingLimitRows(op){
   const limits = op?.limits || {};
   return operatingRows(
+    ...operatingLimitItemRows(op),
     operatingMetricRow("Ethanol Production Limit", limits.ethanol_production, "MGY", { always: true, limit: true }),
     operatingMetricRow("Corn Throughput Limit", limits.corn_grind, "bu/year", { always: true, limit: true }),
     operatingMetricRow("DDGS Throughput Limit", limits.dryer_ddgs, "tons/year", { always: true, limit: true }),

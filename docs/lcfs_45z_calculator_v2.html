@@ -613,7 +613,29 @@
   .operatingSummaryGrid{grid-template-columns:1fr;}
 }
 
-  /* =========================
+  .marketPathways{
+  margin-top:12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  padding:10px 12px;
+}
+.marketPathways summary{
+  cursor:pointer;
+  color:var(--text);
+  font-size:13px;
+  font-weight:750;
+}
+.marketPathways[open] summary{
+  margin-bottom:10px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+}
+.marketPathways .pathwayBenchmarkTable{
+  font-size:12px;
+}
+
+/* =========================
    METRIC GRID (3 columns, aligned)
    ========================= */
 .metricGrid{
@@ -1217,6 +1239,10 @@ header, main{ position:relative; z-index:1; }
         <button id="operatingDetailBtn" type="button" class="operatingDetailBtn" disabled>View Operating Detail</button>
       </div>
       <div class="kv" id="plantKv"></div>
+      <details id="marketPathwaysPanel" class="marketPathways" style="display:none;">
+        <summary>Market Pathways</summary>
+        <div id="marketPathwaysRows"></div>
+      </details>
 
       <div class="hr"></div>
 
@@ -4516,6 +4542,154 @@ function classifyImpliedDryerFigure(v){
   return "Medium";
 }
 
+
+function ciNumber(value){
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+function ciSame(a, b){
+  const x = ciNumber(a);
+  const y = ciNumber(b);
+  return x !== null && y !== null && Math.abs(x - y) < 0.005;
+}
+
+function marketPathwayClass(text){
+  const raw = String(text || "").toLowerCase();
+  if (raw.includes("fiber") || raw.includes("ckf") || raw.includes("cellulosic")) return "Fiber / CKF";
+  if (raw.includes("corn") || raw.includes("starch")) return "Corn / Starch";
+  return text ? String(text) : "Pathway";
+}
+
+function marketPathwayDate(program, row){
+  if (program === "Washington") return row?.["Eff. Start Qtr/Yr"] || row?.effective_date || "";
+  if (program === "British Columbia") return row?.effective_date || "";
+  if (program === "Canadian Federal") return row?.approval_date || row?.effective_date || "";
+  return row?.detail_date || row?.effective_date || "";
+}
+
+function marketPathwayFeedstock(program, row){
+  if (program === "Washington") return row?.feedstock_class || row?.["Fuel Name"] || "";
+  if (program === "British Columbia") return row?.pathway_base ? `Pathway ${row.pathway_base}.${row.pathway_version ?? ""}` : "";
+  if (program === "Canadian Federal") return [row?.fuel_type, row?.grain_source, row?.feedstock_origin].filter(Boolean).join(" / ");
+  return [row?.pathway_type, row?.feedstock, row?.coproduct_type].filter(Boolean).join(" / ");
+}
+
+function addMarketPathway(rows, program, pathway, ci, source, date="", status=""){
+  const n = ciNumber(ci);
+  if (n === null) return;
+  const isObj = pathway && typeof pathway === "object";
+  const pathwayText = isObj
+    ? [pathway.pathway_type, pathway.feedstock, pathway.feedstock_class, pathway["Fuel Name"], pathway.fuel_type, pathway.pathway_base].filter(Boolean).join(" ")
+    : String(pathway || "");
+  rows.push({
+    program,
+    pathway: marketPathwayClass(pathwayText),
+    detail: marketPathwayFeedstock(program, isObj ? pathway : {}) || pathwayText,
+    ci: n,
+    source,
+    date: date || "",
+    status: status || ""
+  });
+}
+
+function marketPathwayRowsForPlant(plant){
+  const rows = [];
+  if (!plant) return rows;
+
+  asArray(plant.ca_detail ?? plant.lcfs_detail?.ca_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "California", row, row?.ci_score, "California LCFS", marketPathwayDate("California", row), row?.status || "Approved");
+  });
+  asArray(plant.or_detail ?? plant.lcfs_detail?.or_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "Oregon", row, row?.ci_score, "Oregon CFP", marketPathwayDate("Oregon", row), row?.status || "Approved");
+  });
+  asArray(plant.wa_lcfs_ci_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "Washington", row, row?.CI, "Washington CFS", marketPathwayDate("Washington", row), row?.status ?? row?.Active ?? "Approved");
+  });
+  asArray(plant.bc_lcfs_ci_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "British Columbia", row, row?.carbon_intensity_gCO2e_per_MJ, "BC LCFS", marketPathwayDate("British Columbia", row), row?.status || "Approved");
+  });
+  asArray(plant.canadian_fed_ci_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "Canadian Federal", row, row?.approved_ci_gco2e_mj, "Canadian Federal CFR", marketPathwayDate("Canadian Federal", row), row?.status || "Approved");
+  });
+
+  const feed = plant.ci_by_feedstock || plant.ci_summary?.ci_by_feedstock || {};
+  addMarketPathway(rows, "Estimated / Summary", "Corn / Starch", feed.ci_corn_g_per_mj, "Estimated summary");
+  addMarketPathway(rows, "Estimated / Summary", "Fiber / CKF", feed.ci_fiber_g_per_mj, "Estimated summary");
+  addMarketPathway(rows, "Estimated / Summary", "Sorghum", feed.ci_sorghum_g_per_mj, "Estimated summary");
+  addMarketPathway(rows, "Estimated / Summary", "Wheat", feed.ci_wheat_g_per_mj, "Estimated summary");
+  addMarketPathway(rows, "Estimated / Summary", "Sugar", feed.ci_sugar_g_per_mj, "Estimated summary");
+  addMarketPathway(rows, "Estimated / Summary", "Delivered", plant.ci_lcfs_delivered_g_per_mj ?? plant.ci_summary?.ci_lcfs_delivered_g_per_mj, "Estimated summary");
+  addMarketPathway(rows, "Estimated / Summary", "Fiber / CKF", plant.ckf_ci_score, "Estimated CKF model");
+  addMarketPathway(rows, "Canadian Federal", "Federal CI", plant.canadian_fed_ci, "Canadian Federal");
+
+  const byKey = new Map();
+  rows.forEach(row => {
+    const key = [row.program, row.pathway, row.detail, row.ci.toFixed(3), row.source].join("||").toLowerCase();
+    if (!byKey.has(key)) byKey.set(key, row);
+  });
+
+  return [...byKey.values()].sort((a, b) => {
+    const programOrder = ["California", "Oregon", "Washington", "British Columbia", "Canadian Federal", "Estimated / Summary"];
+    const ap = programOrder.indexOf(a.program);
+    const bp = programOrder.indexOf(b.program);
+    if (ap !== bp) return (ap < 0 ? 99 : ap) - (bp < 0 ? 99 : bp);
+    if (a.pathway !== b.pathway) return a.pathway.localeCompare(b.pathway);
+    return a.ci - b.ci;
+  });
+}
+
+function renderMarketPathways(){
+  const panel = document.getElementById("marketPathwaysPanel");
+  const rowsEl = document.getElementById("marketPathwaysRows");
+  if (!panel || !rowsEl) return;
+
+  const rows = marketPathwayRowsForPlant(selectedPlant);
+  if (!selectedPlant || !rows.length){
+    panel.style.display = "none";
+    rowsEl.innerHTML = "";
+    return;
+  }
+
+  panel.style.display = "block";
+  rowsEl.innerHTML = benchmarkTable(
+    ["Market", "Pathway", "Detail", "CI", "Source", "Date"],
+    rows.map(row => `
+      <tr>
+        <td>${escapeHtml(row.program)}</td>
+        <td>${escapeHtml(row.pathway)}</td>
+        <td>${escapeHtml(row.detail || row.status || "-")}</td>
+        <td>${escapeHtml(displayCi(row.ci))}</td>
+        <td>${escapeHtml(row.source)}</td>
+        <td>${escapeHtml(row.date || "-")}</td>
+      </tr>
+    `),
+    "No market pathway CI scores available."
+  );
+}
+
+function uniqueCiSummaryRows(plant){
+  if (!plant) return [];
+  const feed = plant.ci_by_feedstock || plant.ci_summary?.ci_by_feedstock || {};
+  const delivered = plant.ci_lcfs_delivered_g_per_mj ?? plant.ci_summary?.ci_lcfs_delivered_g_per_mj;
+  const corn = feed.ci_corn_g_per_mj;
+  const fiber = feed.ci_fiber_g_per_mj;
+  const ckf = plant.ckf_ci_score;
+  const rows = [];
+
+  if (ciNumber(corn) !== null) rows.push(["Corn CI", `${displayCi(corn)} g/MJ`]);
+  if (ciNumber(fiber) !== null) rows.push(["Fiber CI", `${displayCi(fiber)} g/MJ`]);
+  if (ciNumber(delivered) !== null && !ciSame(delivered, corn)) rows.push(["Delivered CI", `${displayCi(delivered)} g/MJ`]);
+  if (ciNumber(ckf) !== null && !ciSame(ckf, fiber)) rows.push(["CKF CI", `${displayCi(ckf)} g/MJ`]);
+  return rows;
+}
+
+
 // ----------------------------
 // PLANT DETAILS
 // ----------------------------
@@ -4527,10 +4701,12 @@ function renderPlantDetails(){
 
     badges.innerHTML = "";
     kv.innerHTML = "";
+    renderMarketPathways();
     if (operatingBtn) operatingBtn.disabled = true;
 
     if (!selectedPlant){
       badges.innerHTML = `<span class="pill warn">No plant selected</span>`;
+      renderMarketPathways();
       return;
     }
 
@@ -4714,7 +4890,8 @@ const items = [
   ["Regulatory Pathways", regText],
   ["CA Facility ID", selectedPlant.ca_facility_id || selectedPlant.facility_id || ""],
   ["Year Built", selectedPlant.year_build || ""],
-  ["CI date", selectedPlant.ci_date]
+  ["CI date", selectedPlant.ci_date],
+  ...uniqueCiSummaryRows(selectedPlant)
 ];
 
 
@@ -4744,6 +4921,8 @@ const items = [
       kv.appendChild(blankK);
       kv.appendChild(blankV);
     }
+
+    renderMarketPathways();
 }
 
 function getOperatingPermitBlock(plant){

@@ -4619,10 +4619,13 @@ function marketPathwayDedupeKey(row){
     row.program,
     row.pathway,
     row.detail,
-    row.source,
-    row.date,
-    Number.isFinite(row.ci) ? row.ci.toFixed(3) : ""
+    row.source
   ].join("||").toLowerCase();
+}
+
+function marketPathwayDateValue(row){
+  const parsed = Date.parse(row?.date || "");
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function estimated45zMarketRow(){
@@ -4646,29 +4649,38 @@ function estimated45zMarketRow(){
   }
 }
 
-function marketPathwayStatsRows(selectedEntries, peerGroups){
-  return selectedEntries.map(entry => {
-    const group = (peerGroups.get(groupKey(entry)) || [])
-      .filter(row => Number.isFinite(row.ci))
-      .sort((a, b) => a.ci - b.ci);
-    const mean = avg(group.map(row => row.ci));
-    const rank = group.findIndex(row => row.plant_id === entry.plant_id && row.ci === entry.ci) + 1;
-    const pct = percentileFromRank(rank, group.length);
-    const rankLabel = rank > 0
-      ? `${rank}/${group.length}${pct === null ? "" : ` (${fmt(pct,0)}%)`}`
-      : "-";
+function marketNameForProgram(program){
+  if (program === "CA") return "California";
+  if (program === "OR") return "Oregon";
+  if (program === "WA") return "Washington";
+  if (program === "BC") return "British Columbia";
+  if (program === "Canada") return "Canada";
+  return program || "Market";
+}
 
-    return `
-      <tr>
-        <td>${escapeHtml(entry.program)}</td>
-        <td>${escapeHtml(entry.feedstock)}</td>
-        <td>${entry.coproduct ? escapeHtml(entry.coproduct) : "-"}</td>
-        <td>${escapeHtml(String(group.length))}</td>
-        <td>${mean === null ? "-" : escapeHtml(displayCi(mean))}</td>
-        <td>${escapeHtml(rankLabel)}</td>
-      </tr>
-    `;
-  });
+function marketCategoryStatsRows(peerEntries){
+  const programOrder = ["CA", "OR", "WA", "BC", "Canada"];
+  const groups = new Map();
+  peerEntries
+    .filter(entry => Number.isFinite(entry.ci))
+    .forEach(entry => {
+      if (!groups.has(entry.program)) groups.set(entry.program, []);
+      groups.get(entry.program).push(entry);
+    });
+
+  return programOrder
+    .filter(program => groups.has(program))
+    .map(program => {
+      const group = groups.get(program) || [];
+      const mean = avg(group.map(row => row.ci));
+      return `
+        <tr>
+          <td>${escapeHtml(marketNameForProgram(program))}</td>
+          <td>${escapeHtml(String(group.length))}</td>
+          <td>${mean === null ? "-" : escapeHtml(displayCi(mean))}</td>
+        </tr>
+      `;
+    });
 }
 
 async function renderMarketPathwayStats(statsEl, selectedEntries){
@@ -4701,8 +4713,8 @@ async function renderMarketPathwayStats(statsEl, selectedEntries){
     <div class="marketPathwaysDivider"></div>
     <div class="marketPathwaysSubhead">Pathway Summary Statistics</div>
     ${benchmarkTable(
-      ["Market", "Pathway", "Co-prod", "Count", "Avg CI", "Rank"],
-      marketPathwayStatsRows(selectedEntries, peerGroups),
+      ["Market", "Count", "Avg CI"],
+      marketCategoryStatsRows(peerEntries),
       "No pathway summary statistics available."
     )}
   `;
@@ -4737,7 +4749,14 @@ function marketPathwayRowsForPlant(plant){
   const byKey = new Map();
   rows.forEach(row => {
     const key = marketPathwayDedupeKey(row);
-    if (!byKey.has(key)) byKey.set(key, row);
+    const existing = byKey.get(key);
+    if (
+      !existing ||
+      marketPathwayDateValue(row) > marketPathwayDateValue(existing) ||
+      (marketPathwayDateValue(row) === marketPathwayDateValue(existing) && row.ci < existing.ci)
+    ){
+      byKey.set(key, row);
+    }
   });
 
   return [...byKey.values()].sort((a, b) => {

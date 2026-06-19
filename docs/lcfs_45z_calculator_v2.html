@@ -3880,11 +3880,22 @@ async function fetchPlantDetail(id){
   if (plantDetailCache.has(key)) return plantDetailCache.get(key);
 
   const url = `${PLANT_URL}?id=${encodeURIComponent(key)}`;
-  const resp = await fetch(url, { cache: "no-store" });
-  if (!resp.ok){
-    const txt = await resp.text().catch(() => "(no body)");
-    throw new Error(`Plant fetch failed ${resp.status}: ${txt}`);
+  let resp = null;
+  let lastError = null;
+  for (let attempt = 0; attempt < 3; attempt++){
+    try {
+      resp = await fetch(url, { cache: "no-store" });
+      if (resp.ok) break;
+      const txt = await resp.text().catch(() => "(no body)");
+      lastError = new Error(`Plant fetch failed ${resp.status}: ${txt}`);
+      if (resp.status !== 503) throw lastError;
+    } catch (e) {
+      lastError = e;
+      if (attempt >= 2) throw lastError;
+    }
+    await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
   }
+  if (!resp || !resp.ok) throw lastError || new Error("Plant fetch failed");
   const raw = await resp.json();
   const row = Array.isArray(raw)
     ? raw[0]
@@ -5428,11 +5439,8 @@ function operatingTechnologyRows(plant, op){
     operatingBoolRow("D3 Capable", operatingAnyBool(flags.d3_capable, rin.d3_cellulosic), { always: true }),
     operatingBoolRow("Corn Oil Extraction", operatingAnyBool(flags.corn_oil_extraction), { always: true }),
     operatingBoolRow("CO2 Capture", operatingAnyBool(flags.co2_capture), { always: true }),
-    operatingPlainMetricRow("Delivered CI", ci.ci_lcfs_delivered_g_per_mj, "g/MJ", { always: true }),
     operatingRow("CI Date", operatingCleanText(ci.ci_date), { always: true }),
-    operatingPlainMetricRow("Corn CI", feed.ci_corn_g_per_mj, "g/MJ", { always: true }),
-    operatingPlainMetricRow("Fiber CI", feed.ci_fiber_g_per_mj, "g/MJ", { always: true }),
-    operatingPlainMetricRow("CKF CI", plant?.ckf_ci_score, "g/MJ", { always: true }),
+    ...operatingUniqueCiRows(plant),
     operatingPlainMetricRow("EPA Thermal BTU/Gal", epa.thermal_btu_per_gal_est, "BTU/gal", { always: true }),
     operatingPlainMetricRow("EPA Thermal MMBtu", epa.thermal_mmbtu_est, "MMBtu/hr", { digits: 0, always: true }),
     operatingPlainMetricRow("EPA CO2", epa.co2_kg_per_gal_est, "kg/gal", { always: true }),
@@ -5442,7 +5450,21 @@ function operatingTechnologyRows(plant, op){
     operatingRow("Dryer Profile", operatingCleanText(epa.dryer_profile_bucket || dryer.relative_dryer_efficiency_bucket), { always: true })
   );
 }
+function operatingUniqueCiRows(plant){
+  const ci = plant?.ci_summary || {};
+  const feed = ci.ci_by_feedstock || plant?.ci_by_feedstock || {};
+  const delivered = plant?.ci_lcfs_delivered_g_per_mj ?? ci.ci_lcfs_delivered_g_per_mj;
+  const corn = feed.ci_corn_g_per_mj;
+  const fiber = feed.ci_fiber_g_per_mj;
+  const ckf = plant?.ckf_ci_score;
+  const rows = [];
 
+  if (ciNumber(corn) !== null) rows.push(operatingPlainMetricRow("Corn CI", corn, "g/MJ"));
+  if (ciNumber(fiber) !== null) rows.push(operatingPlainMetricRow("Fiber CI", fiber, "g/MJ"));
+  if (ciNumber(delivered) !== null && !ciSame(delivered, corn)) rows.push(operatingPlainMetricRow("Delivered CI", delivered, "g/MJ"));
+  if (ciNumber(ckf) !== null && !ciSame(ckf, fiber)) rows.push(operatingPlainMetricRow("CKF CI", ckf, "g/MJ"));
+  return rows;
+}
 function operatingPlantInformationRows(plant, op){
   const fac = plant?.fac_info || plant || {};
   return operatingRows(
@@ -6290,8 +6312,7 @@ async function handlePlantSelectChange(){
     detailPlant = await fetchPlantDetail(chosenId);
   } catch (e) {
     if (requestSeq !== plantSelectionSeq) return;
-    console.error("PLANT DETAIL FETCH ERROR:", e);
-    alert("Plant detail fetch failed. See console.");
+    console.warn("Plant detail fetch failed; continuing with search summary row:", e);
     return;
   }
 

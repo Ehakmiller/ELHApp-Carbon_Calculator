@@ -632,8 +632,34 @@
   border-bottom:1px solid var(--line);
 }
 .marketPathways .pathwayBenchmarkTable{
+  table-layout:fixed;
+  width:100%;
   font-size:12px;
 }
+.marketPathways .pathwayBenchmarkTable th,
+.marketPathways .pathwayBenchmarkTable td{
+  padding:7px 8px;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.3;
+  text-align:left;
+}
+.marketPathways .pathwayBenchmarkTable th:first-child,
+.marketPathways .pathwayBenchmarkTable td:first-child{
+  width:auto;
+  white-space:normal;
+}
+.marketPathways .pathwayBenchmarkTable th:last-child,
+.marketPathways .pathwayBenchmarkTable td:last-child{
+  text-align:left;
+}
+.marketPathways .pathwayBenchmarkTable th:nth-child(1){width:18%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(2){width:18%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(3){width:25%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(4){width:11%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(5){width:18%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(6){width:10%;}
 .marketPathwaysDivider{
   margin:12px 0 10px;
   border-top:3px double var(--line);
@@ -4052,7 +4078,7 @@ function addBenchmarkEntry(entries, plant, program, row){
   if (!isActivePathway(row)) return;
 
   const ci = benchmarkCiValue(program, row);
-  if (ci === null) return;
+  if (ci === null || ci === 0) return;
 
   const feedstock = benchmarkFeedstockLabel(program, row);
   if (!feedstock || feedstock === "-") return;
@@ -4598,7 +4624,7 @@ function marketPathwayFeedstock(program, row){
 
 function addMarketPathway(rows, program, pathway, ci, source, date="", status=""){
   const n = ciNumber(ci);
-  if (n === null) return;
+  if (n === null || n === 0) return;
   const isObj = pathway && typeof pathway === "object";
   const pathwayText = isObj
     ? [pathway.pathway_type, pathway.feedstock, pathway.feedstock_class, pathway["Fuel Name"], pathway.fuel_type, pathway.pathway_base].filter(Boolean).join(" ")
@@ -4658,29 +4684,36 @@ function marketNameForProgram(program){
   return program || "Market";
 }
 
-function marketCategoryStatsRows(peerEntries){
-  const programOrder = ["CA", "OR", "WA", "BC", "Canada"];
-  const groups = new Map();
+function marketPathwayComparisonRows(selectedEntries, peerEntries){
+  const peerGroups = new Map();
   peerEntries
     .filter(entry => Number.isFinite(entry.ci))
     .forEach(entry => {
-      if (!groups.has(entry.program)) groups.set(entry.program, []);
-      groups.get(entry.program).push(entry);
+      const key = groupKey(entry);
+      if (!peerGroups.has(key)) peerGroups.set(key, []);
+      peerGroups.get(key).push(entry);
     });
 
-  return programOrder
-    .filter(program => groups.has(program))
-    .map(program => {
-      const group = groups.get(program) || [];
-      const mean = avg(group.map(row => row.ci));
-      return `
-        <tr>
-          <td>${escapeHtml(marketNameForProgram(program))}</td>
-          <td>${escapeHtml(String(group.length))}</td>
-          <td>${mean === null ? "-" : escapeHtml(displayCi(mean))}</td>
-        </tr>
-      `;
-    });
+  return selectedEntries.map(entry => {
+    const group = (peerGroups.get(groupKey(entry)) || [])
+      .filter(row => Number.isFinite(row.ci))
+      .sort((a, b) => a.ci - b.ci);
+    const mean = avg(group.map(row => row.ci));
+    const rank = group.findIndex(row => row.plant_id === entry.plant_id && row.ci === entry.ci) + 1;
+    const rankLabel = rank > 0 ? `${rank}/${group.length}` : "-";
+    const pathwayLabel = [marketNameForProgram(entry.program), entry.feedstock, entry.coproduct]
+      .filter(Boolean)
+      .join(" / ");
+
+    return `
+      <tr>
+        <td>${escapeHtml(pathwayLabel)}</td>
+        <td>${escapeHtml(String(group.length))}</td>
+        <td>${mean === null ? "-" : escapeHtml(displayCi(mean))}</td>
+        <td>${escapeHtml(rankLabel)}</td>
+      </tr>
+    `;
+  });
 }
 
 async function renderMarketPathwayStats(statsEl, selectedEntries){
@@ -4702,19 +4735,13 @@ async function renderMarketPathwayStats(statsEl, selectedEntries){
   }
 
   const peerEntries = dedupeBenchmarkEntries(peers.flatMap(benchmarkEntriesForPlant));
-  const peerGroups = new Map();
-  peerEntries.forEach(entry => {
-    const key = groupKey(entry);
-    if (!peerGroups.has(key)) peerGroups.set(key, []);
-    peerGroups.get(key).push(entry);
-  });
 
   statsEl.innerHTML = `
     <div class="marketPathwaysDivider"></div>
     <div class="marketPathwaysSubhead">Pathway Summary Statistics</div>
     ${benchmarkTable(
-      ["Market", "Count", "Avg CI"],
-      marketCategoryStatsRows(peerEntries),
+      ["Market / Pathway", "Count", "Average CI", "Plant Rank"],
+      marketPathwayComparisonRows(selectedEntries, peerEntries),
       "No pathway summary statistics available."
     )}
   `;
@@ -4744,7 +4771,9 @@ function marketPathwayRowsForPlant(plant){
     addMarketPathway(rows, "Canadian Federal", row, row?.approved_ci_gco2e_mj, "Canadian Federal CFR", marketPathwayDate("Canadian Federal", row), row?.status || "Approved");
   });
 
-  addMarketPathway(rows, "Canadian Federal", "Federal CI", plant.canadian_fed_ci, "Canadian Federal");
+  if (ciNumber(plant.canadian_fed_ci) !== null && ciNumber(plant.canadian_fed_ci) > 0){
+    addMarketPathway(rows, "Canadian Federal", "Federal CI", plant.canadian_fed_ci, "Canadian Federal");
+  }
 
   const byKey = new Map();
   rows.forEach(row => {

@@ -4964,7 +4964,12 @@ function operatingPath(obj, path){
 function operatingValueIsPresent(value){
   if (value === null || value === undefined || value === "") return false;
   const text = String(value).trim().toLowerCase();
-  return !(text === "nan" || text === "none" || text === "null" || text === "<na>" || text === "not available");
+  if (!text) return false;
+  if (["nan", "none", "null", "<na>", "not available", "not identified", "not matched", "unknown", "n/a"].includes(text)) return false;
+  if (/^not\s+(clearly\s+)?(available|identified|provided|reported)/i.test(text)) return false;
+  if (/not\s+explicitly\s+identified/i.test(text)) return false;
+  if (/missing\s+input/i.test(text)) return false;
+  return true;
 }
 
 function operatingMetricNumber(metric){
@@ -5091,40 +5096,46 @@ function renderOperatingProfileSection(title, rows, options={}){
   `;
 }
 
-function operatingSummaryDerivativeRows(derivatives){
-  const order = [
-    ["total_corn_storage", "Total Grain Storage"],
-    ["grain_storage_days", "Grain Storage Days"],
-    ["grain_throughput_per_day", "Daily Grain Grind"],
-    ["estimated_fermentation_time", "Fermentation Time"],
-    ["estimated_btu_per_gal_from_heat_input", "BTU/Gal From Heat Input"],
-    ["thermal_btu_per_gal", "Thermal BTU/Gal"],
-    ["dryer_btu_per_gal", "Dryer BTU/Gal"],
-    ["ethanol_yield", "Ethanol Yield"],
-    ["corn_grind_per_gallon", "Corn Grind Per Gallon"],
-    ["ddgs_lb_per_bu", "DDGS lb/bu"],
-    ["corn_oil_lb_per_bu", "Corn Oil lb/bu"],
-    ["ddgs_tons_per_day", "DDGS Tons/Day"],
-    ["beer_feed_gpm", "Beer Feed"],
-    ["beer_well_hold_time", "Beer Well Hold Time"],
-    ["centrifuge_total_flow_gpm", "Centrifuge Flow"],
-    ["centrifuge_total_flow_gal_per_year", "Centrifuge Annual Flow"],
-    ["dryer_mmbtu_hr", "Dryer Heat Input"],
-    ["boiler_mmbtu_hr", "Boiler Heat Input"],
-    ["rto_thermal_oxidizer_mmbtu_hr", "RTO Heat Input"],
-    ["waste_heat_boiler_mmbtu_hr", "Waste Heat Boiler"],
-    ["total_thermal_mmbtu_hr", "Total Heat Input"],
-    ["total_thermal_mmbtu_hr_per_mgy", "Heat Input Per MGY"],
-    ["utilization_against_permitted_capacity", "Utilization"]
-  ];
+function operatingAnyBool(...values){
+  for (const value of values){
+    if (value === true || value === false) return value;
+    if (typeof value === "string" && operatingValueIsPresent(value)){
+      const text = value.trim().toLowerCase();
+      if (["yes", "true", "y", "1"].includes(text)) return true;
+      if (["no", "false", "n", "0"].includes(text)) return false;
+      return true;
+    }
+  }
+  return null;
+}
 
-  return order
-    .map(([key, label]) => {
-      const metric = derivatives?.[key];
-      if (!metric || String(metric.confidence || "").toLowerCase() === "missing_inputs") return null;
-      return operatingMetricRow(label, metric);
-    })
-    .filter(Boolean);
+function operatingSummaryDerivativeRows(derivatives){
+  const d = derivatives || {};
+  return operatingRows(
+    operatingMetricRow("Total Grain Storage", d.total_corn_storage, "bu", { always: true }),
+    operatingMetricRow("Grain Storage Days", d.grain_storage_days, "days", { always: true }),
+    operatingMetricRow("Daily Grain Grind", d.grain_throughput_per_day, "bu/day", { always: true }),
+    operatingMetricRow("Fermentation Time", d.estimated_fermentation_time, "hours", { always: true }),
+    operatingMetricRow("BTU/Gal From Heat Input", d.estimated_btu_per_gal_from_heat_input, "BTU/gal", { always: true }),
+    operatingMetricRow("Thermal BTU/Gal", d.thermal_btu_per_gal, "BTU/gal", { always: true }),
+    operatingMetricRow("Dryer BTU/Gal", d.dryer_btu_per_gal, "BTU/gal", { always: true }),
+    operatingMetricRow("Ethanol Yield", d.ethanol_yield, "gal/bu", { always: true }),
+    operatingMetricRow("Corn Grind Per Gallon", d.corn_grind_per_gallon, "bu/gal", { always: true }),
+    operatingMetricRow("DDGS lb/bu", d.ddgs_lb_per_bu, "lb/bu", { always: true }),
+    operatingMetricRow("Corn Oil lb/bu", d.corn_oil_lb_per_bu, "lb/bu", { always: true }),
+    operatingMetricRow("DDGS Tons/Day", d.ddgs_tons_per_day, "tons/day", { always: true }),
+    operatingMetricRow("Beer Feed", d.beer_feed_gpm, "gal/min", { always: true }),
+    operatingMetricRow("Beer Well Hold Time", d.beer_well_hold_time, "hours", { always: true }),
+    operatingMetricRow("Centrifuge Flow", d.centrifuge_total_flow_gpm, "gal/min", { always: true }),
+    operatingMetricRow("Centrifuge Annual Flow", d.centrifuge_total_flow_gal_per_year, "gal/year", { always: true }),
+    operatingMetricRow("Dryer Heat Input", d.dryer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Boiler Heat Input", d.boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("RTO Heat Input", d.rto_thermal_oxidizer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Waste Heat Boiler", d.waste_heat_boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Total Heat Input", d.total_thermal_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Heat Input Per MGY", d.total_thermal_mmbtu_hr_per_mgy, "MMBtu/hr/MGY", { always: true }),
+    operatingMetricRow("Utilization", d.utilization_against_permitted_capacity, "percent", { always: true })
+  );
 }
 
 function operatingEquipmentRows(op){
@@ -5138,54 +5149,53 @@ function operatingEquipmentRows(op){
   const dryers = eq.dryers || {};
   const boilers = eq.boilers_process_heaters || {};
   const rto = eq.thermal_oxidizers_rtos || {};
-  const whb = eq.waste_heat_boilers || {};
   const ddgs = eq.ddgs_system || {};
   const oil = eq.corn_oil_systems || {};
   const tanks = eq.tanks || {};
   const d = op?.derivatives || {};
 
   return operatingRows(
-    operatingMetricRow("Total Grain Storage", d.total_corn_storage),
-    operatingPlainMetricRow("Grain Storage", grain.total_storage_bu, "bu"),
-    operatingPlainMetricRow("Grain Receiving Limit", grain.grain_receiving_limit_bushels_per_year, "bu/year"),
-    operatingPlainMetricRow("Corn Elevator Capacity", grain.corn_elevator_tons_per_hour, "tons/hr"),
-    operatingPlainMetricRow("Corn Bin Unloading Conveyor", grain.corn_bin_unloading_conveyor_tons_per_hour, "tons/hr"),
-    operatingMetricRow("Daily Grain Grind", d.grain_throughput_per_day),
-    operatingPlainMetricRow("Hammermills", grinding.hammermill_count),
-    operatingPlainMetricRow("Hammermill Capacity Each", grinding.hammermill_capacity_each_bu_hr, "bu/hr"),
-    operatingPlainMetricRow("Total Grinding Capacity", grinding.total_grinding_capacity_bu_hr, "bu/hr"),
-    operatingPlainMetricRow("Theoretical Grind Capacity", grinding.theoretical_grind_capacity_bu_per_year, "bu/year"),
-    operatingPlainMetricRow("Fermenters", ferm.count),
-    operatingPlainMetricRow("Fermenter Size Each", ferm.size_gal_each, "gal"),
-    operatingPlainMetricRow("Total Fermenter Volume", ferm.total_volume_gal, "gal"),
-    operatingPlainMetricRow("Beer Well Volume", ferm.beer_well_volume_gal, "gal"),
-    operatingPlainMetricRow("Beer Feed", dist.beer_feed_gpm, "gal/min"),
-    operatingPlainMetricRow("Evaporator Capacity", evap.evaporator_gal_per_hour, "gal/hr"),
-    operatingPlainMetricRow("Concentrate Tank", evap.concentrate_tank_gal, "gal"),
-    operatingPlainMetricRow("Thin Stillage Recycle", evap.thin_stillage_recycle_percent, "percent"),
-    operatingPlainMetricRow("Evaporation Stages", evap.evaporation_stages),
-    operatingPlainMetricRow("Decanters / Centrifuges", dec.count),
-    operatingPlainMetricRow("Centrifuge Flow Each", dec.gpm_each, "gal/min"),
-    operatingPlainMetricRow("Centrifuge Total Flow", dec.gpm_total, "gal/min"),
-    operatingPlainMetricRow("Centrifuge Hourly Flow", dec.gph_total, "gal/hr"),
-    operatingPlainMetricRow("Centrifuge Annual Flow", dec.gpy_total, "gal/year"),
-    operatingPlainMetricRow("Dryers", dryers.count),
-    operatingRow("Dryer Type", operatingCleanText(dryers.type || dryers.type_from_technology_flags)),
-    operatingMetricRow("Dryer Heat Input", d.dryer_mmbtu_hr),
-    operatingPlainMetricRow("Dryer Heat Input", dryers.heat_input, "MMBtu/hr"),
-    operatingPlainMetricRow("Boilers / Process Heaters", boilers.count),
-    operatingRow("Boiler Fuel", operatingCleanText(boilers.fuel)),
-    operatingMetricRow("Boiler Heat Input", d.boiler_mmbtu_hr),
-    operatingPlainMetricRow("Boiler Heat Input", boilers.heat_input, "MMBtu/hr"),
-    operatingPlainMetricRow("RTOs / Thermal Oxidizers", rto.count),
-    operatingMetricRow("RTO Heat Input", d.rto_thermal_oxidizer_mmbtu_hr),
-    operatingMetricRow("Waste Heat Boiler", d.waste_heat_boiler_mmbtu_hr),
-    operatingPlainMetricRow("Wetcake Production Rate", ddgs.wetcake_tons_per_hour, "tons/hr"),
-    operatingPlainMetricRow("Wetcake Limit", ddgs.wetcake_limit_tons_per_year, "tons/year"),
-    operatingPlainMetricRow("Syrup Limit", ddgs.syrup_limit_tons_per_year, "tons/year"),
-    operatingBoolRow("Corn Oil Recovery", oil.present),
-    operatingBoolRow("Corn Oil Centrifuge Stack", oil.corn_oil_centrifuge_stack),
-    operatingPlainMetricRow("Storage Tanks", tanks.count)
+    operatingMetricRow("Total Grain Storage", d.total_corn_storage, "bu", { always: true }),
+    operatingPlainMetricRow("Grain Storage", grain.total_storage_bu, "bu", { always: true }),
+    operatingPlainMetricRow("Grain Receiving Limit", grain.grain_receiving_limit_bushels_per_year, "bu/year", { always: true }),
+    operatingPlainMetricRow("Corn Elevator Capacity", grain.corn_elevator_tons_per_hour, "tons/hr", { always: true }),
+    operatingPlainMetricRow("Corn Bin Unloading Conveyor", grain.corn_bin_unloading_conveyor_tons_per_hour, "tons/hr", { always: true }),
+    operatingMetricRow("Daily Grain Grind", d.grain_throughput_per_day, "bu/day", { always: true }),
+    operatingPlainMetricRow("Hammermills", grinding.hammermill_count, "", { always: true }),
+    operatingPlainMetricRow("Hammermill Capacity Each", grinding.hammermill_capacity_each_bu_hr, "bu/hr", { always: true }),
+    operatingPlainMetricRow("Total Grinding Capacity", grinding.total_grinding_capacity_bu_hr, "bu/hr", { always: true }),
+    operatingPlainMetricRow("Theoretical Grind Capacity", grinding.theoretical_grind_capacity_bu_per_year, "bu/year", { always: true }),
+    operatingPlainMetricRow("Fermenters", ferm.count, "", { always: true }),
+    operatingPlainMetricRow("Fermenter Size Each", ferm.size_gal_each, "gal", { always: true }),
+    operatingPlainMetricRow("Total Fermenter Volume", ferm.total_volume_gal, "gal", { always: true }),
+    operatingPlainMetricRow("Beer Well Volume", ferm.beer_well_volume_gal, "gal", { always: true }),
+    operatingPlainMetricRow("Beer Feed", dist.beer_feed_gpm, "gal/min", { always: true }),
+    operatingPlainMetricRow("Evaporator Capacity", evap.evaporator_gal_per_hour, "gal/hr", { always: true }),
+    operatingPlainMetricRow("Concentrate Tank", evap.concentrate_tank_gal, "gal", { always: true }),
+    operatingPlainMetricRow("Thin Stillage Recycle", evap.thin_stillage_recycle_percent, "percent", { always: true }),
+    operatingPlainMetricRow("Evaporation Stages", evap.evaporation_stages, "", { always: true }),
+    operatingPlainMetricRow("Decanters / Centrifuges", dec.count, "", { always: true }),
+    operatingPlainMetricRow("Centrifuge Flow Each", dec.gpm_each, "gal/min", { always: true }),
+    operatingPlainMetricRow("Centrifuge Total Flow", dec.gpm_total, "gal/min", { always: true }),
+    operatingPlainMetricRow("Centrifuge Hourly Flow", dec.gph_total, "gal/hr", { always: true }),
+    operatingPlainMetricRow("Centrifuge Annual Flow", dec.gpy_total, "gal/year", { always: true }),
+    operatingPlainMetricRow("Dryers", dryers.count, "", { always: true }),
+    operatingRow("Dryer Type", operatingCleanText(dryers.type || dryers.type_from_technology_flags), { always: true }),
+    operatingMetricRow("Dryer Heat Input", d.dryer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Dryer Heat Input", dryers.heat_input, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Boilers / Process Heaters", boilers.count, "", { always: true }),
+    operatingRow("Boiler Fuel", operatingCleanText(boilers.fuel), { always: true }),
+    operatingMetricRow("Boiler Heat Input", d.boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Boiler Heat Input", boilers.heat_input, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("RTOs / Thermal Oxidizers", rto.count, "", { always: true }),
+    operatingMetricRow("RTO Heat Input", d.rto_thermal_oxidizer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Waste Heat Boiler", d.waste_heat_boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Wetcake Production Rate", ddgs.wetcake_tons_per_hour, "tons/hr", { always: true }),
+    operatingPlainMetricRow("Wetcake Limit", ddgs.wetcake_limit_tons_per_year, "tons/year", { always: true }),
+    operatingPlainMetricRow("Syrup Limit", ddgs.syrup_limit_tons_per_year, "tons/year", { always: true }),
+    operatingBoolRow("Corn Oil Recovery", operatingAnyBool(oil.present), { always: true }),
+    operatingBoolRow("Corn Oil Centrifuge Stack", operatingAnyBool(oil.corn_oil_centrifuge_stack), { always: true }),
+    operatingPlainMetricRow("Storage Tanks", tanks.count, "", { always: true })
   );
 }
 
@@ -5197,13 +5207,12 @@ function operatingLimitRows(op){
     operatingMetricRow("DDGS Throughput Limit", limits.dryer_ddgs, "tons/year", { always: true, limit: true }),
     operatingMetricRow("Beer Well Limit", limits.beer_well, "gal", { always: true, limit: true }),
     operatingMetricRow("Boiler / Natural Gas Limit", limits.natural_gas_boiler, "MMBtu/hr", { always: true, limit: true }),
-    operatingMetricRow("Wetcake Limit", limits.wetcake, "tons/year", { limit: true }),
-    operatingMetricRow("Syrup Limit", limits.syrup, "tons/year", { limit: true })
+    operatingMetricRow("Wetcake Limit", limits.wetcake, "tons/year", { always: true, limit: true }),
+    operatingMetricRow("Syrup Limit", limits.syrup, "tons/year", { always: true, limit: true })
   );
 }
 
 function operatingTechnologyRows(plant, op){
-  const fac = plant?.fac_info || plant || {};
   const tech = plant?.tech_flags || {};
   const ci = plant?.ci_summary || {};
   const feed = ci.ci_by_feedstock || {};
@@ -5213,12 +5222,12 @@ function operatingTechnologyRows(plant, op){
   const flags = op?.equipment?.technology_flags || op?.equipment?.special_equipment || {};
 
   return operatingRows(
-    operatingRow("Technology", operatingCleanText(tech.technology)),
-    operatingRow("Dryer Type", operatingCleanText(tech.dryer_types)),
-    operatingRow("Fuel", operatingCleanText(plant?.fuel_summary?.fuel_type_master || tech.gas_supply || epa.gas_supply_effective)),
-    operatingRow("Electricity", operatingCleanText(tech.electricity_type)),
-    operatingRow("Grid", operatingCleanText(tech.electrical_grid_designation)),
-    operatingRow("RIN Pathways", [rin.d6_non_cellulosic, rin.d3_cellulosic, tech.reg_pathway].map(operatingCleanText).filter(Boolean).join(", ")),
+    operatingRow("Technology", operatingCleanText(tech.technology), { always: true }),
+    operatingRow("Dryer Type", operatingCleanText(tech.dryer_types), { always: true }),
+    operatingRow("Fuel", operatingCleanText(plant?.fuel_summary?.fuel_type_master || tech.gas_supply || epa.gas_supply_effective), { always: true }),
+    operatingRow("Electricity", operatingCleanText(tech.electricity_type), { always: true }),
+    operatingRow("Grid", operatingCleanText(tech.electrical_grid_designation), { always: true }),
+    operatingRow("RIN Pathways", [rin.d6_non_cellulosic, rin.d3_cellulosic, tech.reg_pathway].map(operatingCleanText).filter(Boolean).join(", "), { always: true }),
     operatingRow("Enhanced Technologies", [
       tech.chp,
       tech.white_fox,
@@ -5228,42 +5237,68 @@ function operatingTechnologyRows(plant, op){
       tech.waste_heat,
       tech.dco_enhancement,
       tech.fiber_technology
-    ].map(operatingCleanText).filter(Boolean).join(", ")),
-    operatingBoolRow("CHP", !!(tech.chp || flags.chp)),
-    operatingBoolRow("Fiber to Ethanol", !!(flags.fiber_to_ethanol || tech.fiber_technology)),
-    operatingRow("Fiber Technology", operatingCleanText(flags.fiber_to_ethanol_technology || tech.fiber_technology)),
-    operatingBoolRow("D3 Capable", !!(flags.d3_capable || rin.d3_cellulosic)),
-    operatingBoolRow("Corn Oil Extraction", !!flags.corn_oil_extraction),
-    operatingBoolRow("CO2 Capture", !!flags.co2_capture),
-    operatingPlainMetricRow("Delivered CI", ci.ci_lcfs_delivered_g_per_mj, "g/MJ"),
-    operatingRow("CI Date", operatingCleanText(ci.ci_date)),
-    operatingPlainMetricRow("Corn CI", feed.ci_corn_g_per_mj, "g/MJ"),
-    operatingPlainMetricRow("Fiber CI", feed.ci_fiber_g_per_mj, "g/MJ"),
-    operatingPlainMetricRow("CKF CI", plant?.ckf_ci_score, "g/MJ"),
-    operatingPlainMetricRow("EPA Thermal BTU/Gal", epa.thermal_btu_per_gal_est, "BTU/gal"),
-    operatingPlainMetricRow("EPA Thermal MMBtu", epa.thermal_mmbtu_est, "MMBtu/hr", { digits: 0 }),
-    operatingPlainMetricRow("EPA CO2", epa.co2_kg_per_gal_est, "kg/gal"),
-    operatingPlainMetricRow("EPA CO2", epa.co2_lb_per_gal_est, "lb/gal"),
-    operatingPlainMetricRow("Wet/Dry CI Spread", dryer.ci_spread, "g/MJ"),
-    operatingPlainMetricRow("Implied Dryer BTU/Gal", dryer.implied_dryer_btu_per_gal, "BTU/gal"),
-    operatingRow("Dryer Profile", operatingCleanText(epa.dryer_profile_bucket || dryer.relative_dryer_efficiency_bucket))
+    ].map(operatingCleanText).filter(Boolean).join(", "), { always: true }),
+    operatingBoolRow("CHP", operatingAnyBool(tech.chp, flags.chp), { always: true }),
+    operatingBoolRow("Fiber to Ethanol", operatingAnyBool(flags.fiber_to_ethanol, tech.fiber_technology), { always: true }),
+    operatingRow("Fiber Technology", operatingCleanText(flags.fiber_to_ethanol_technology || tech.fiber_technology), { always: true }),
+    operatingBoolRow("D3 Capable", operatingAnyBool(flags.d3_capable, rin.d3_cellulosic), { always: true }),
+    operatingBoolRow("Corn Oil Extraction", operatingAnyBool(flags.corn_oil_extraction), { always: true }),
+    operatingBoolRow("CO2 Capture", operatingAnyBool(flags.co2_capture), { always: true }),
+    operatingPlainMetricRow("Delivered CI", ci.ci_lcfs_delivered_g_per_mj, "g/MJ", { always: true }),
+    operatingRow("CI Date", operatingCleanText(ci.ci_date), { always: true }),
+    operatingPlainMetricRow("Corn CI", feed.ci_corn_g_per_mj, "g/MJ", { always: true }),
+    operatingPlainMetricRow("Fiber CI", feed.ci_fiber_g_per_mj, "g/MJ", { always: true }),
+    operatingPlainMetricRow("CKF CI", plant?.ckf_ci_score, "g/MJ", { always: true }),
+    operatingPlainMetricRow("EPA Thermal BTU/Gal", epa.thermal_btu_per_gal_est, "BTU/gal", { always: true }),
+    operatingPlainMetricRow("EPA Thermal MMBtu", epa.thermal_mmbtu_est, "MMBtu/hr", { digits: 0, always: true }),
+    operatingPlainMetricRow("EPA CO2", epa.co2_kg_per_gal_est, "kg/gal", { always: true }),
+    operatingPlainMetricRow("EPA CO2", epa.co2_lb_per_gal_est, "lb/gal", { always: true }),
+    operatingPlainMetricRow("Wet/Dry CI Spread", dryer.ci_spread, "g/MJ", { always: true }),
+    operatingPlainMetricRow("Implied Dryer BTU/Gal", dryer.implied_dryer_btu_per_gal, "BTU/gal", { always: true }),
+    operatingRow("Dryer Profile", operatingCleanText(epa.dryer_profile_bucket || dryer.relative_dryer_efficiency_bucket), { always: true })
   );
 }
 
-function operatingPlantPermitRows(plant, op){
+function operatingPlantInformationRows(plant, op){
   const fac = plant?.fac_info || plant || {};
   return operatingRows(
-    operatingRow("Plant", operatingCleanText(fac.plant_name || plant?.plant_name)),
-    operatingRow("Owner", operatingCleanText(fac.ownership || plant?.ownership)),
-    operatingRow("Location", [fac.city || plant?.city, fac.state || plant?.state].map(operatingCleanText).filter(Boolean).join(", ")),
-    operatingPlainMetricRow("Ethanol Capacity", fac.ethanol_capacity_mgy || plant?.ethanol_capacity_mgy, "MGY"),
-    operatingRow("EPM", operatingCleanText(fac.epm || plant?.epm || plantId(plant))),
-    operatingRow("Facility ID", operatingCleanText(fac.facility_id || plant?.facility_id || plant?.ca_facility_id)),
-    operatingRow("Rail", operatingCleanText(fac.rail_lines || plant?.rail_lines)),
-    operatingRow("Year Built", operatingCleanText(fac.year_build || plant?.year_build)),
-    operatingRow("Permit Number", operatingCleanText(op?.permit_number)),
-    operatingRow("Permit Type", operatingCleanText(op?.permit_type)),
-    operatingRow("Permit Match", operatingCleanText(op?.confidence))
+    operatingRow("Plant", operatingCleanText(fac.plant_name || plant?.plant_name), { always: true }),
+    operatingRow("Owner", operatingCleanText(fac.ownership || plant?.ownership), { always: true }),
+    operatingRow("Location", [fac.city || plant?.city, fac.state || plant?.state].map(operatingCleanText).filter(Boolean).join(", "), { always: true }),
+    operatingPlainMetricRow("Ethanol Capacity", fac.ethanol_capacity_mgy || plant?.ethanol_capacity_mgy, "MGY", { always: true }),
+    operatingRow("EPM", operatingCleanText(fac.epm || plant?.epm || plantId(plant)), { always: true }),
+    operatingRow("Facility ID", operatingCleanText(fac.facility_id || plant?.facility_id || plant?.ca_facility_id), { always: true }),
+    operatingRow("Rail", operatingCleanText(fac.rail_lines || plant?.rail_lines), { always: true }),
+    operatingRow("Year Built", operatingCleanText(fac.year_build || plant?.year_build), { always: true }),
+    operatingRow("Operating Permit", operatingCleanText(op?.permit_number), { always: true }),
+    operatingRow("Permit Type", operatingCleanText(op?.permit_type), { always: true })
+  );
+}
+
+function operatingOperationalHighlightRows(plant, op){
+  const fac = plant?.fac_info || plant || {};
+  const limits = op?.limits || {};
+  const d = op?.derivatives || {};
+  const tech = plant?.tech_flags || {};
+  const flags = op?.equipment?.technology_flags || op?.equipment?.special_equipment || {};
+  const dryers = op?.equipment?.dryers || {};
+  const boilers = op?.equipment?.boilers_process_heaters || {};
+  const rto = op?.equipment?.thermal_oxidizers_rtos || {};
+  return operatingRows(
+    operatingPlainMetricRow("Nameplate Capacity", fac.ethanol_capacity_mgy || plant?.ethanol_capacity_mgy, "MGY", { always: true }),
+    operatingMetricRow("Permitted Ethanol Capacity", limits.ethanol_production, "MGY", { always: true, limit: true }),
+    operatingMetricRow("Corn Throughput", limits.corn_grind, "bu/year", { always: true, limit: true }),
+    operatingMetricRow("DDGS Production", limits.dryer_ddgs, "tons/year", { always: true, limit: true }),
+    operatingMetricRow("Daily Grain Grind", d.grain_throughput_per_day, "bu/day", { always: true }),
+    operatingMetricRow("DDGS Tons/Day", d.ddgs_tons_per_day, "tons/day", { always: true }),
+    operatingMetricRow("Ethanol Yield", d.ethanol_yield, "gal/bu", { always: true }),
+    operatingPlainMetricRow("Dryers", dryers.count, "", { always: true }),
+    operatingMetricRow("Dryer Heat Input", d.dryer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Boilers", boilers.count, "", { always: true }),
+    operatingPlainMetricRow("RTOs", rto.count, "", { always: true }),
+    operatingRow("Primary Fuel", operatingCleanText(plant?.fuel_summary?.fuel_type_master || tech.gas_supply), { always: true }),
+    operatingBoolRow("Fiber / D3 Feature", operatingAnyBool(flags.fiber_to_ethanol, tech.fiber_technology), { always: true }),
+    operatingBoolRow("Corn Oil Recovery", operatingAnyBool(flags.corn_oil_extraction, op?.equipment?.corn_oil_systems?.present), { always: true })
   );
 }
 
@@ -5340,18 +5375,18 @@ function renderOperatingDetailModal(){
   sub.textContent = selectedPlant ? plantLabel(selectedPlant) : "No plant selected";
 
   const sections = [];
-  sections.push(renderOperatingProfileSection("Plant / Permit", operatingPlantPermitRows(selectedPlant, op)));
-  sections.push(renderOperatingProfileSection("Equipment", op ? operatingEquipmentRows(op) : [], { wide: true }));
-  sections.push(renderOperatingProfileSection("Permit Limitations", op ? operatingLimitRows(op) : operatingLimitRows({}), { wide: true }));
+  sections.push(renderOperatingProfileSection("Plant Information", operatingPlantInformationRows(selectedPlant, op)));
   sections.push(renderOperatingProfileSection("Technology / CI Features", operatingTechnologyRows(selectedPlant, op), { wide: true }));
-  sections.push(renderOperatingProfileSection("Derived Metrics", op ? operatingSummaryDerivativeRows(op.derivatives || {}) : [], { wide: true }));
+  sections.push(renderOperatingProfileSection("Equipment", operatingEquipmentRows(op || {}), { wide: true }));
+  sections.push(renderOperatingProfileSection("Permit Limitations", operatingLimitRows(op || {}), { wide: true }));
+  sections.push(renderOperatingProfileSection("Derived Metrics", operatingSummaryDerivativeRows(op?.derivatives || {}), { wide: true }));
+  sections.push(renderOperatingProfileSection("Operational Highlights", operatingOperationalHighlightRows(selectedPlant, op), { wide: true }));
 
   body.innerHTML = `
-    ${op?.permit_missing ? `<div class="pill warn" style="margin-bottom:10px;">Permit summary missing; available profile uses fallback plant metadata.</div>` : ""}
     <div class="operatingDetailGrid">
-      ${sections.filter(Boolean).join("") || `<div class="muted">No operating profile fields are available.</div>`}
+      ${sections.filter(Boolean).join("")}
     </div>
-    ${op ? renderOperatingTechnicalDetails(op) : `<details class="operatingSourceNotes"><summary>Technical Details / Source Notes</summary><div class="muted" style="margin-top:8px;">No operating permit block is available for this plant.</div></details>`}
+    ${op ? renderOperatingTechnicalDetails(op) : `<details class="operatingSourceNotes"><summary>Technical Details / Source Notes</summary><div class="muted" style="margin-top:8px;">Null</div></details>`}
   `;
 }
 function openOperatingDetailModal(){

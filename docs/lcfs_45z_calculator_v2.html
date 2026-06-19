@@ -465,13 +465,18 @@
   background:#0f1522;
   padding:12px;
 }
-.operatingDetailBlock h3{
-  margin:0 0 10px;
-  padding-bottom:8px;
-  border-bottom:1px solid var(--line);
+.operatingDetailBlock summary{
+  cursor:pointer;
+  padding-bottom:0;
   font-size:14px;
   font-weight:750;
   color:var(--text);
+  list-style-position:inside;
+}
+.operatingDetailBlock[open] summary{
+  margin-bottom:10px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
 }
 .operatingDetailTable{
   width:100%;
@@ -549,7 +554,8 @@
   padding:0;
   color:var(--muted);
   font-size:12px;
-}`r`n.operatingDetailTable td.operatingNullValue,
+}
+.operatingDetailTable td.operatingNullValue,
 .operatingNullValue{
   color:var(--muted);
   font-style:italic;
@@ -605,7 +611,8 @@
 }
 @media (max-width: 640px){
   .operatingSummaryGrid{grid-template-columns:1fr;}
-}`r`n
+}
+
   /* =========================
    METRIC GRID (3 columns, aligned)
    ========================= */
@@ -5077,10 +5084,10 @@ function renderOperatingProfileSection(title, rows, options={}){
   const shown = rows.filter(Boolean);
   if (!shown.length) return "";
   return `
-    <section class="operatingDetailBlock${options.wide ? " wide" : ""}">
-      <h3>${escapeHtml(title)}</h3>
+    <details class="operatingDetailBlock${options.wide ? " wide" : ""}">
+      <summary>${escapeHtml(title)}</summary>
       ${renderOperatingTable(shown)}
-    </section>
+    </details>
   `;
 }
 

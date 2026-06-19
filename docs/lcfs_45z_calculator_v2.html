@@ -4595,7 +4595,7 @@ function addMarketPathway(rows, program, pathway, ci, source, date="", status=""
 
 function marketPathwayRowsForPlant(plant){
   const rows = [];
-  if (!plant) return rows;
+  if (!plant || typeof plant !== "object") return rows;
 
   asArray(plant.ca_detail ?? plant.lcfs_detail?.ca_detail).forEach(row => {
     if (!isActivePathway(row)) return;
@@ -4649,30 +4649,35 @@ function renderMarketPathways(){
   const rowsEl = document.getElementById("marketPathwaysRows");
   if (!panel || !rowsEl) return;
 
-  const rows = marketPathwayRowsForPlant(selectedPlant);
-  if (!selectedPlant || !rows.length){
+  try {
+    const rows = marketPathwayRowsForPlant(selectedPlant);
+    if (!selectedPlant || !rows.length){
+      panel.style.display = "none";
+      rowsEl.innerHTML = "";
+      return;
+    }
+
+    panel.style.display = "block";
+    rowsEl.innerHTML = benchmarkTable(
+      ["Market", "Pathway", "Detail", "CI", "Source", "Date"],
+      rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.program)}</td>
+          <td>${escapeHtml(row.pathway)}</td>
+          <td>${escapeHtml(row.detail || row.status || "-")}</td>
+          <td>${escapeHtml(displayCi(row.ci))}</td>
+          <td>${escapeHtml(row.source)}</td>
+          <td>${escapeHtml(row.date || "-")}</td>
+        </tr>
+      `),
+      "No market pathway CI scores available."
+    );
+  } catch (e) {
+    console.warn("Market Pathways render skipped:", e);
     panel.style.display = "none";
     rowsEl.innerHTML = "";
-    return;
   }
-
-  panel.style.display = "block";
-  rowsEl.innerHTML = benchmarkTable(
-    ["Market", "Pathway", "Detail", "CI", "Source", "Date"],
-    rows.map(row => `
-      <tr>
-        <td>${escapeHtml(row.program)}</td>
-        <td>${escapeHtml(row.pathway)}</td>
-        <td>${escapeHtml(row.detail || row.status || "-")}</td>
-        <td>${escapeHtml(displayCi(row.ci))}</td>
-        <td>${escapeHtml(row.source)}</td>
-        <td>${escapeHtml(row.date || "-")}</td>
-      </tr>
-    `),
-    "No market pathway CI scores available."
-  );
 }
-
 function uniqueCiSummaryRows(plant){
   if (!plant) return [];
   const feed = plant.ci_by_feedstock || plant.ci_summary?.ci_by_feedstock || {};

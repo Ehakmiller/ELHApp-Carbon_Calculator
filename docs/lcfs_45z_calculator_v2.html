@@ -389,11 +389,20 @@
 .operatingDetailAction{
   display:flex;
   justify-content:flex-start;
-  margin-top:4px;
+  margin:0;
   border:1px solid var(--line);
   border-radius:8px;
   background:#0f1522;
   padding:7px 12px;
+}
+.dropdownTopRow{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:4px;
+  margin-top:4px;
+}
+.dropdownTopRow .operatingDetailAction{
+  min-width:0;
 }
 .operatingDetailBtn{
   display:inline-flex;
@@ -651,6 +660,7 @@
   .operatingSummaryGrid{grid-template-columns:1fr;}
 }
 
+.policyParametersPanel,
 .scenarioInputsPanel,
 .marketPathways{
   margin-top:4px;
@@ -659,6 +669,11 @@
   background:#0f1522;
   padding:7px 12px;
 }
+.policyParametersPanel{
+  margin-top:0;
+  min-width:0;
+}
+.policyParametersPanel summary,
 .scenarioInputsPanel summary,
 .marketPathways summary{
   display:inline-flex;
@@ -670,10 +685,12 @@
   font-size:13px;
   font-weight:750;
 }
+.policyParametersPanel summary::-webkit-details-marker,
 .scenarioInputsPanel summary::-webkit-details-marker,
 .marketPathways summary::-webkit-details-marker{
   display:none;
 }
+.policyParametersPanel summary::before,
 .scenarioInputsPanel summary::before,
 .marketPathways summary::before{
   content:"";
@@ -683,14 +700,17 @@
   border-right:5px solid transparent;
   border-top:6px solid var(--text);
 }
+.policyParametersPanel summary:hover,
 .scenarioInputsPanel summary:hover,
 .marketPathways summary:hover{
   color:var(--accent);
 }
+.policyParametersPanel summary:hover::before,
 .scenarioInputsPanel summary:hover::before,
 .marketPathways summary:hover::before{
   border-top-color:var(--accent);
 }
+.policyParametersPanel[open] summary,
 .scenarioInputsPanel[open] summary,
 .marketPathways[open] summary{
   margin-bottom:8px;
@@ -698,6 +718,9 @@
   border-bottom:1px solid var(--line);
 }
 .scenarioInputsBody{
+  padding-top:0;
+}
+.policyParametersBody{
   padding-top:0;
 }
 .marketPathways .pathwayBenchmarkTable{
@@ -1341,8 +1364,14 @@ header, main{ position:relative; z-index:1; }
 
       <div id="plantBadges" class="row" style="margin-bottom:6px;"></div>
       <div class="kv" id="plantKv"></div>
-      <div class="row operatingDetailAction">
-        <button id="operatingDetailBtn" type="button" class="operatingDetailBtn" disabled>View Operating Detail</button>
+      <div class="dropdownTopRow">
+        <div class="row operatingDetailAction">
+          <button id="operatingDetailBtn" type="button" class="operatingDetailBtn" disabled>View Operating Detail</button>
+        </div>
+        <details id="policyParametersPanel" class="policyParametersPanel">
+          <summary>45Z Parameters</summary>
+          <div id="policyParametersBody" class="policyParametersBody"></div>
+        </details>
       </div>
       <details id="marketPathwaysPanel" class="marketPathways" style="display:none;">
         <summary>Market Pathways</summary>
@@ -1461,9 +1490,7 @@ header, main{ position:relative; z-index:1; }
           
           <div><span class="mono">Payout detail:</span> <span id="outPayoutDetail">rate × capacity</span></div>
         </div>
-        
-        <div class="hr"></div>
-
+<div id="policyParametersContent">
 <p class="sectionTitle">45Z policy parameters</p>
 
 <div class="metricGrid">
@@ -1570,6 +1597,7 @@ The credit applies to qualifying carbon capture projects located in the United S
   <!-- keep ONLY if JS uses it -->
   <div id="modelSection"></div>
 </div> <!-- closes #notes -->
+</div>
 <div id="outputPanelEnd" hidden></div>
 </div> <!-- closes LEFT .card -->
 
@@ -2047,9 +2075,15 @@ The credit applies to qualifying carbon capture projects located in the United S
     const scenarioCard = cards[1];
     const scenarioInputsPanel = document.getElementById("scenarioInputsPanel");
     const marketPathwaysPanel = document.getElementById("marketPathwaysPanel");
+    const policyParametersContent = document.getElementById("policyParametersContent");
+    const policyParametersBody = document.getElementById("policyParametersBody");
     const outputStart = document.getElementById("outputPanelStart");
     const outputEnd = document.getElementById("outputPanelEnd");
     if (!plantCard || !scenarioCard || !outputStart || !outputEnd) return;
+
+    if (policyParametersContent && policyParametersBody){
+      policyParametersBody.appendChild(policyParametersContent);
+    }
 
     if (scenarioInputsPanel && marketPathwaysPanel){
       marketPathwaysPanel.insertAdjacentElement("afterend", scenarioInputsPanel);

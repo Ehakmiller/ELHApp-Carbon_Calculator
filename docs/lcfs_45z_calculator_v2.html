@@ -396,9 +396,7 @@
   padding:7px 12px;
 }
 .dropdownTopRow{
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:4px;
+  display:block;
   margin-top:4px;
 }
 .dropdownTopRow .operatingDetailAction{
@@ -2084,8 +2082,10 @@ The credit applies to qualifying carbon capture projects located in the United S
     const scenarioCard = cards[1];
     const scenarioInputsPanel = document.getElementById("scenarioInputsPanel");
     const marketPathwaysPanel = document.getElementById("marketPathwaysPanel");
+    const policyParametersPanel = document.getElementById("policyParametersPanel");
     const policyParametersContent = document.getElementById("policyParametersContent");
     const policyParametersBody = document.getElementById("policyParametersBody");
+    const policy45qParametersPanel = document.getElementById("policy45qParametersPanel");
     const policy45qParametersContent = document.getElementById("policy45qParametersContent");
     const policy45qNotesContent = document.getElementById("policy45qNotesContent");
     const policy45qParametersBody = document.getElementById("policy45qParametersBody");
@@ -2104,6 +2104,10 @@ The credit applies to qualifying carbon capture projects located in the United S
 
     if (scenarioInputsPanel && marketPathwaysPanel){
       marketPathwaysPanel.insertAdjacentElement("afterend", scenarioInputsPanel);
+      if (policyParametersPanel) scenarioInputsPanel.insertAdjacentElement("afterend", policyParametersPanel);
+      if (policy45qParametersPanel){
+        (policyParametersPanel || scenarioInputsPanel).insertAdjacentElement("afterend", policy45qParametersPanel);
+      }
       scenarioCard.style.display = "none";
     }
 

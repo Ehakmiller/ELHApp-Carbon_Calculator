@@ -34,6 +34,15 @@
     gap:14px;
     min-width:0;
   }
+  .inputColumn{
+    gap:4px;
+  }
+  .inputColumn > .card:nth-child(2){
+    background:transparent;
+    border:0;
+    border-radius:0;
+    padding:0;
+  }
   @media (max-width: 980px){
     .grid.calculatorLayout{grid-template-columns:1fr;}
   }
@@ -380,11 +389,11 @@
 .operatingDetailAction{
   display:flex;
   justify-content:flex-start;
-  margin-top:12px;
+  margin-top:4px;
   border:1px solid var(--line);
   border-radius:8px;
   background:#0f1522;
-  padding:10px 12px;
+  padding:7px 12px;
 }
 .operatingDetailBtn{
   display:inline-flex;
@@ -644,11 +653,11 @@
 
 .scenarioInputsPanel,
 .marketPathways{
-  margin-top:12px;
+  margin-top:4px;
   border:1px solid var(--line);
   border-radius:8px;
   background:#0f1522;
-  padding:10px 12px;
+  padding:7px 12px;
 }
 .scenarioInputsPanel summary,
 .marketPathways summary{
@@ -684,12 +693,12 @@
 }
 .scenarioInputsPanel[open] summary,
 .marketPathways[open] summary{
-  margin-bottom:10px;
-  padding-bottom:8px;
+  margin-bottom:8px;
+  padding-bottom:6px;
   border-bottom:1px solid var(--line);
 }
 .scenarioInputsBody{
-  padding-top:2px;
+  padding-top:0;
 }
 .marketPathways .pathwayBenchmarkTable{
   table-layout:fixed;
@@ -1590,7 +1599,6 @@ The credit applies to qualifying carbon capture projects located in the United S
       <div id="benchmarkRankRows"></div>
     </div>
   </div>
-  <div class="hr"></div>
 
   <details id="scenarioInputsPanel" class="scenarioInputsPanel">
     <summary>Scenario Inputs</summary>

@@ -721,6 +721,29 @@
 .policyParametersBody{
   padding-top:0;
 }
+.dropdownExpansionHost{
+  grid-column:1 / -1;
+  display:none;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--card);
+  padding:14px;
+  overflow-x:auto;
+}
+.dropdownExpansionHost.open{
+  display:block;
+}
+.dropdownExpansionHost .scenarioInputsBody,
+.dropdownExpansionHost .policyParametersBody,
+.dropdownExpansionHost #marketPathwaysRows,
+.dropdownExpansionHost #operatingDetailBody{
+  min-width:0;
+}
+.dropdownExpansionActive summary{
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+  border-bottom:0 !important;
+}
 .marketPathways .pathwayBenchmarkTable{
   table-layout:fixed;
   width:100%;
@@ -2127,6 +2150,9 @@ The credit applies to qualifying carbon capture projects located in the United S
     leftColumn.className = "calculatorColumn inputColumn";
     const rightColumn = document.createElement("div");
     rightColumn.className = "calculatorColumn outputColumn";
+    const dropdownExpansionHost = document.createElement("div");
+    dropdownExpansionHost.id = "dropdownExpansionHost";
+    dropdownExpansionHost.className = "dropdownExpansionHost";
 
     leftColumn.appendChild(plantCard);
     leftColumn.appendChild(scenarioCard);
@@ -2136,10 +2162,97 @@ The credit applies to qualifying carbon capture projects located in the United S
     grid.classList.add("calculatorLayout");
     grid.appendChild(leftColumn);
     grid.appendChild(rightColumn);
+    grid.appendChild(dropdownExpansionHost);
     grid.dataset.arranged = "1";
+
+    setupFullWidthDropdownExpansion();
   }
 
   arrangeCalculatorLayout();
+
+  let activeFullWidthDropdown = null;
+  let suppressDropdownToggle = false;
+
+  function detachToFullWidthHost(key, panel, contentEl, beforeOpen){
+    const host = document.getElementById("dropdownExpansionHost");
+    if (!host || !contentEl) return;
+
+    if (activeFullWidthDropdown && activeFullWidthDropdown.key !== key){
+      closeFullWidthDropdown();
+    }
+
+    if (beforeOpen) beforeOpen();
+
+    const placeholder = document.createComment(`${key}-placeholder`);
+    contentEl.parentNode.insertBefore(placeholder, contentEl);
+    host.textContent = "";
+    host.appendChild(contentEl);
+    host.classList.add("open");
+    if (panel) panel.classList.add("dropdownExpansionActive");
+    activeFullWidthDropdown = { key, panel, contentEl, placeholder };
+  }
+
+  function closeFullWidthDropdown(){
+    if (!activeFullWidthDropdown) return;
+    const { panel, contentEl, placeholder } = activeFullWidthDropdown;
+    if (placeholder && placeholder.parentNode){
+      placeholder.parentNode.insertBefore(contentEl, placeholder);
+      placeholder.remove();
+    }
+    if (panel) panel.classList.remove("dropdownExpansionActive");
+    const host = document.getElementById("dropdownExpansionHost");
+    if (host){
+      host.textContent = "";
+      host.classList.remove("open");
+    }
+    activeFullWidthDropdown = null;
+  }
+
+  function setupFullWidthDropdownExpansion(){
+    const panels = [
+      ["marketPathways", document.getElementById("marketPathwaysPanel"), document.getElementById("marketPathwaysRows")],
+      ["scenarioInputs", document.getElementById("scenarioInputsPanel"), document.querySelector("#scenarioInputsPanel > .scenarioInputsBody")],
+      ["policy45z", document.getElementById("policyParametersPanel"), document.getElementById("policyParametersBody")],
+      ["policy45q", document.getElementById("policy45qParametersPanel"), document.getElementById("policy45qParametersBody")]
+    ];
+
+    panels.forEach(([key, panel, contentEl]) => {
+      if (!panel || !contentEl) return;
+      panel.addEventListener("toggle", () => {
+        if (suppressDropdownToggle) return;
+        if (panel.open){
+          suppressDropdownToggle = true;
+          panels.forEach(([, otherPanel]) => {
+            if (otherPanel && otherPanel !== panel) otherPanel.open = false;
+          });
+          suppressDropdownToggle = false;
+          detachToFullWidthHost(key, panel, contentEl);
+        } else if (activeFullWidthDropdown?.panel === panel){
+          closeFullWidthDropdown();
+        }
+      });
+    });
+  }
+
+  function toggleOperatingDetailExpansion(){
+    const body = document.getElementById("operatingDetailBody");
+    const action = document.querySelector(".operatingDetailAction");
+    if (activeFullWidthDropdown?.key === "operatingDetail"){
+      closeFullWidthDropdown();
+      return;
+    }
+    suppressDropdownToggle = true;
+    [
+      document.getElementById("marketPathwaysPanel"),
+      document.getElementById("scenarioInputsPanel"),
+      document.getElementById("policyParametersPanel"),
+      document.getElementById("policy45qParametersPanel")
+    ].forEach(panel => {
+      if (panel) panel.open = false;
+    });
+    suppressDropdownToggle = false;
+    detachToFullWidthHost("operatingDetail", action, body, renderOperatingDetailModal);
+  }
 
   function arrangeFreightLayout(){
     const apply = document.getElementById("applyFreight");
@@ -5905,6 +6018,9 @@ function openOperatingDetailModal(){
 function closeOperatingDetailModal(){
   const modal = document.getElementById("operatingDetailModal");
   if (modal) modal.classList.remove("open");
+  if (activeFullWidthDropdown?.key === "operatingDetail"){
+    closeFullWidthDropdown();
+  }
 }
 
 function compute(){
@@ -6662,7 +6778,7 @@ async function handlePlantSelectChange(){
 
   const operatingBtn = document.getElementById("operatingDetailBtn");
   if (operatingBtn){
-    operatingBtn.addEventListener("click", openOperatingDetailModal);
+    operatingBtn.addEventListener("click", toggleOperatingDetailExpansion);
   }
   const operatingClose = document.getElementById("operatingDetailClose");
   if (operatingClose){

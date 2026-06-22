@@ -379,18 +379,33 @@
 
 .operatingDetailAction{
   justify-content:flex-start;
-  margin:0 0 8px 0;
+  margin:12px 0 0 0;
 }
 .operatingDetailBtn{
-  height:32px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:#0f1522;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border:0;
+  background:transparent;
   color:var(--text);
-  padding:0 12px;
-  font-size:12px;
-  font-weight:650;
+  padding:0;
+  font-size:13px;
+  font-weight:750;
   cursor:pointer;
+}
+.operatingDetailBtn::before{
+  content:"";
+  width:0;
+  height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:6px solid var(--text);
+}
+.operatingDetailBtn:hover{
+  color:var(--accent);
+}
+.operatingDetailBtn:hover::before{
+  border-top-color:var(--accent);
 }
 .operatingDetailBtn:disabled{
   opacity:.45;
@@ -1280,10 +1295,10 @@ header, main{ position:relative; z-index:1; }
       <div class="hr"></div>
 
       <div id="plantBadges" class="row" style="margin-bottom:6px;"></div>
+      <div class="kv" id="plantKv"></div>
       <div class="row operatingDetailAction">
         <button id="operatingDetailBtn" type="button" class="operatingDetailBtn" disabled>View Operating Detail</button>
       </div>
-      <div class="kv" id="plantKv"></div>
       <details id="marketPathwaysPanel" class="marketPathways" style="display:none;">
         <summary>Market Pathways</summary>
         <div id="marketPathwaysRows"></div>

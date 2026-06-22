@@ -378,8 +378,13 @@
   .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted);}
 
 .operatingDetailAction{
+  display:flex;
   justify-content:flex-start;
-  margin:12px 0 0 0;
+  margin-top:12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  padding:10px 12px;
 }
 .operatingDetailBtn{
   display:inline-flex;
@@ -645,10 +650,31 @@
   padding:10px 12px;
 }
 .marketPathways summary{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  list-style:none;
   cursor:pointer;
   color:var(--text);
   font-size:13px;
   font-weight:750;
+}
+.marketPathways summary::-webkit-details-marker{
+  display:none;
+}
+.marketPathways summary::before{
+  content:"";
+  width:0;
+  height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:6px solid var(--text);
+}
+.marketPathways summary:hover{
+  color:var(--accent);
+}
+.marketPathways summary:hover::before{
+  border-top-color:var(--accent);
 }
 .marketPathways[open] summary{
   margin-bottom:10px;

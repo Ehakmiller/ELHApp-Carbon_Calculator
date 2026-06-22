@@ -1,0 +1,4 @@
+facility,city,state,facility_id,or_ci,ca_ci,or_minus_ca_spread,expected_iluc_spread,iluc_adjusted_residual,or_coproduct_text,ca_coproduct_text,override_reason,recommended_rule
+Poet Biorefinning-Corning LLC,Corning,IA,70143,60.92,66.57,-5.649999999999992,12.25,6.6000000000000085,WDGS,WDGS,known POET Iowa OR-to-CA corn residual outlier,do not infer this facility from the general OR corn +12.25 rule without review
+Poet Biorefinning-Jewell LLC,Jewell,IA,70014,62.32,67.19,-4.869999999999997,12.25,7.3799999999999955,WDGS,WDGS,known POET Iowa OR-to-CA corn residual outlier,do not infer this facility from the general OR corn +12.25 rule without review
+Poet Biorefinning-Coon Rapids,Coon Rapids,IA,70031,62.64,66.28,-3.640000000000001,12.25,8.61,WDGS,WDGS,known POET Iowa OR-to-CA corn residual outlier,do not infer this facility from the general OR corn +12.25 rule without review

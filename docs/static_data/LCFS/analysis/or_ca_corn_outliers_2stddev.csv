@@ -1,0 +1,4 @@
+facility,city,state,or_pathway_code,or_ci,ca_pathway_code,ca_ci,or_minus_ca_ci,or_effective_date,ca_effective_date,or_process_type,ca_process_type,coproduct,ca_coproduct,or_feedstock_description,ca_feedstock_description,or_gas_source,ca_gas_source,or_electricity_source,ca_electricity_source,match_type,z_score,outside_2_stddev
+Poet Biorefinning-Corning LLC,Corning,IA,OR,60.92,CA,66.57,-5.6499999999999915,2025-07-10,2026-05-19,Starch,Starch,WDGS,WDGS,Corn,Corn (009),,Natural Gas,,Grid Electricity,exact,2.6305821649094567,True
+Poet Biorefinning-Jewell LLC,Jewell,IA,OR,62.32,CA,67.19,-4.869999999999997,2025-07-10,2026-05-19,Starch,Starch,WDGS,WDGS,Corn,Corn (009),,Natural Gas,,Grid Electricity,exact,2.9642893245043864,True
+Poet Biorefinning-Coon Rapids,Coon Rapids,IA,OR,62.64,CA,66.28,-3.6400000000000006,2025-07-10,2026-05-19,Starch,Starch,WDGS,WDGS,Corn,Corn (009),,Natural Gas,,Grid Electricity,exact,3.4905198454040858,True

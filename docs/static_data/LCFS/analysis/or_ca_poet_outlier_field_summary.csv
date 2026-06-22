@@ -1,0 +1,17 @@
+field,normal_poet_values,outlier_values,differs
+or_effective_date,2025-07-10,2025-07-10,False
+ca_effective_date,2026-05-19,2026-05-19,False
+or_feedstock_description,Corn,Corn,False
+ca_feedstock_description,Corn (009),Corn (009),False
+or_process_type,Starch,Starch,False
+ca_process_type,Starch,Starch,False
+coproduct,DDGS; DDGS+WDGS; WDGS,WDGS,True
+ca_coproduct,DDGS; DDGS + WDGS; WDGS,WDGS,True
+or_gas_source,(blank); Natural Gas,(blank),True
+ca_gas_source,Biogas; Natural Gas,Natural Gas,True
+or_electricity_source,(blank); Grid Electricity,(blank),True
+ca_electricity_source,Grid Electricity,Grid Electricity,False
+pathway_version_dates,not available in source detail,not available in source detail,False
+transportation_description,not available in source detail,not available in source detail,False
+pathway_notes,not available in source detail,not available in source detail,False
+match_quality,exact,exact,False

@@ -1,0 +1,13 @@
+facility,city,state,coproduct,or_ci,ca_ci,or_minus_ca_spread,expected_spread,residual_ci,total_btu_per_gal,chp_status,corn_fiber_technology_status,d3_capability,year_built,capacity_mgy,dryer_type,natural_gas_source,outlier_group,residual_abs
+Poet Biorefining- Groton LLC,Groton,SD,WDGS,56.16,68.73,-12.570000000000007,12.25,-0.3200000000000074,24353.595263963103,,BPX,Yes,2005.0,68.0,Ring Dryer,Natural Gas,other_poet,0.3200000000000074
+Poet Biorefining- Groton LLC,Groton,SD,DDGS,63.41,75.67,-12.260000000000003,12.25,-0.010000000000005116,24353.595263963103,,BPX,Yes,2005.0,68.0,Ring Dryer,Natural Gas,other_poet,0.010000000000005116
+Poet Biorefining- Chancellor LLC,Chancellor,SD,DDGS+WDGS,51.02,62.63,-11.61,12.25,0.6400000000000006,9377.224877497172,CHP,BPX,Yes,2003.0,125.0,Ring Dryer,Biogas,other_poet,0.6400000000000006
+Poet Biorefining- Hudson,Hudson,SD,WDGS,55.27,66.79,-11.520000000000003,12.25,0.730000000000004,23497.178665661515,CHP,BPX,Yes,2004.0,80.0,Ring Dryer,Natural Gas,other_poet,0.730000000000004
+Poet Biorefining- Big Stone LLC,Big Stone City,SD,WDGS,56.72,67.98,-11.260000000000003,12.25,0.9899999999999949,17331.239746558254,CHP,BPX,Yes,2002.0,105.0,Ring Dryer,Natural Gas,other_poet,0.9899999999999949
+Poet Biorefining- Mitchell LLC,Mitchell,SD,DDGS,62.55,73.69,-11.14,12.25,1.1099999999999994,23612.57198958616,,BPX,Yes,2006.0,86.0,Ring Dryer,Natural Gas,other_poet,1.1099999999999994
+Poet Biorefining- Mitchell LLC,Mitchell,SD,WDGS,55.03,66.07,-11.039999999999992,12.25,1.210000000000008,23612.57198958616,,BPX,Yes,2006.0,86.0,Ring Dryer,Natural Gas,other_poet,1.210000000000008
+Poet Biorefining- Hudson,Hudson,SD,DDGS,62.99,73.94,-10.949999999999996,12.25,1.3000000000000114,23497.178665661515,CHP,BPX,Yes,2004.0,80.0,Ring Dryer,Natural Gas,other_poet,1.3000000000000114
+Poet Biorefining- Big Stone LLC,Big Stone City,SD,DDGS,64.15,75.07,-10.919999999999987,12.25,1.3300000000000125,17331.239746558254,CHP,BPX,Yes,2002.0,105.0,Ring Dryer,Natural Gas,other_poet,1.3300000000000125
+Poet Biorefinning-Corning LLC,Corning,IA,WDGS,60.92,66.57,-5.649999999999992,12.25,6.6000000000000085,23041.574737194787,CHP,BPX,Yes,2007.0,90.0,Ring Dryer,Natural Gas,iowa_outlier,6.6000000000000085
+Poet Biorefinning-Jewell LLC,Jewell,IA,WDGS,62.32,67.19,-4.869999999999997,12.25,7.3799999999999955,23426.31570130251,CHP,BPX,Yes,2006.0,90.0,Ring Dryer,Natural Gas,iowa_outlier,7.3799999999999955
+Poet Biorefinning-Coon Rapids,Coon Rapids,IA,WDGS,62.64,66.28,-3.640000000000001,12.25,8.61,23063.237554002728,,BPX,Yes,2002.0,65.0,Ring Dryer,Natural Gas,iowa_outlier,8.61

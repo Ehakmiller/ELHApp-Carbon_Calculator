@@ -1,0 +1,71 @@
+match_type,EPM,facility,city,state,feedstock_class,pathway_type,coproduct,wa_code,wa_ci,ca_pathway,ca_feedstock,ca_coproduct,ca_ci,wa_minus_ca_ci
+exact,3564,Arkalon Ethanol LLC,Liberal,KS,corn starch,Ethanol from Corn,WDGS,ETHWA009A01530100,64.83,Starch,Corn (009),WDGS,64.5,0.3299999999999983
+exact,3564,Arkalon Ethanol LLC,Liberal,KS,corn starch,Ethanol from Corn,DDGS,ETHWA009A01530200,73.79,Starch,Corn (009),DDGS,73.9,-0.10999999999999943
+exact,3564,Arkalon Ethanol LLC,Liberal,KS,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01530500,24.51,Fiber,Corn Fiber (012),,24.39,0.120000000000001
+exact,3564,Arkalon Ethanol LLC,Liberal,KS,sorghum,Ethanol from Sorghum,WDGS,ETHWA010A01530300,67.3,Starch,Grain Sorghum (010),WDGS,67.77,-0.46999999999999886
+exact,3564,Arkalon Ethanol LLC,Liberal,KS,sorghum,Ethanol from Sorghum,DDGS,ETHWA010A01530400,76.26,Starch,Grain Sorghum (010),DDGS,77.17,-0.9099999999999966
+exact,3574,Bonanza Bioenergy LLC,Garden City,KS,corn starch,Ethanol from Corn,WDGS,ETHWA009A01520200,63.83,Starch,Corn (009),WDGS,64.45,-0.6200000000000045
+exact,3574,Bonanza Bioenergy LLC,Garden City,KS,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01520300,24.95,Fiber,Corn Fiber (012),,24.44,0.509999999999998
+exact,3574,Bonanza Bioenergy LLC,Garden City,KS,sorghum,Ethanol from Sorghum,WDGS,ETHWA010A01520100,67.14,Starch,Grain Sorghum (010),WDGS,67.03,0.10999999999999943
+exact,3575,Bridgeport Ethanol LLC,Bridgeport,NE,corn starch,Ethanol from Corn,WDGS,ETHWA009A01170101,65.08,Starch,Corn (009),WDGS,64.79,0.28999999999999204
+exact,3587,Chippewa Valley Ethanol Co LLLP,Benson,MN,corn starch,Ethanol from Corn,DDGS,ETHWA009B00360100,76.43,Starch,Corn (009),DDGS,76.7,-0.269999999999996
+exact,3587,Chippewa Valley Ethanol Co LLLP,Benson,MN,corn starch,Ethanol from Corn,WDGS,ETHWA009B00360200,68.53,Starch,Corn (009),WDGS,68.9,-0.37000000000000455
+exact,3587,Chippewa Valley Ethanol Co LLLP,Benson,MN,fiber/cellulosic,Ethanol from Biomass,,ETHWA012B00360300,28.59,Fiber,Corn Fiber (012),,29.0,-0.41000000000000014
+exact,3592,Dakota Ethanol LLC,Wentworth,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A00260101,72.69,Starch,Corn (009),DDGS,73.05,-0.35999999999999943
+exact,3592,Dakota Ethanol LLC,Wentworth,SD,corn starch,Ethanol from Corn,,ETHWA009A00260201,68.72,Starch,Corn (009),MDGS,69.08,-0.35999999999999943
+exact,3592,Dakota Ethanol LLC,Wentworth,SD,corn starch,Ethanol from Corn,WDGS,ETHWA009A00260301,65.09,Starch,Corn (009),WDGS,65.45,-0.35999999999999943
+exact,3592,Dakota Ethanol LLC,Wentworth,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00260401,25.08,Fiber,Corn Fiber (012),,25.62,-0.5400000000000027
+exact,3594,Denco II LLC,Morris,MN,corn starch,Ethanol from Corn,WDGS,ETHWA009A01400200,69.8,Starch,Corn (009),WDGS,70.16,-0.35999999999999943
+exact,3607,Glacial Lakes Energy,Watertown,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A01550200,73.24,Starch,Corn (009),DDGS,73.7,-0.46000000000000796
+exact,3607,Glacial Lakes Energy,Watertown,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01550100,33.18,Fiber,Corn Fiber (012),,34.31,-1.1300000000000026
+exact,3619,Green Plains Otter Tail LLC,Otter Tail,MN,corn starch,Ethanol from Corn,WDGS,ETHWA009A01380100,72.13,Starch,Corn (009),DDGS + WDGS,72.83,-0.7000000000000028
+exact,3626,Hankinson Renewable Energy LLC,Hankinson,ND,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01440301,25.15,Fiber,Corn Fiber (012),,26.0,-0.8500000000000014
+exact,3633,Husker Ag LLC,Plainview,NE,corn starch,Ethanol from Corn,DDGS,ETHWA009A01320101,65.0,Starch,Corn (009),DDGS + MDGS,63.99,1.009999999999998
+exact,3633,Husker Ag LLC,Plainview,NE,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01320201,26.4,Fiber,Corn Fiber (012),,25.83,0.5700000000000003
+exact,3636,Kappa Ethanol LLC,Minden,NE,corn starch,Ethanol from Corn,WDGS,ETHWA009A00270101,62.37,Starch,Corn (009),WDGS,61.25,1.1199999999999974
+exact,3636,Kappa Ethanol LLC,Minden,NE,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00270201,23.04,Fiber,Corn Fiber (012),,23.0,0.03999999999999915
+exact,3637,Kappa Ethanol Ravenna LLC,Ravenna,NE,corn starch,Ethanol from Corn,DDGS,ETHWA009A00310100,73.79,Starch,Corn (009),DDGS,74.68,-0.8900000000000006
+exact,3637,Kappa Ethanol Ravenna LLC,Ravenna,NE,corn starch,Ethanol from Corn,WDGS,ETHWA009A00310201,63.46,Starch,Corn (009),WDGS,63.9,-0.4399999999999977
+exact,3637,Kappa Ethanol Ravenna LLC,Ravenna,NE,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00310300,25.32,Fiber,Corn Fiber (012),,25.15,0.1700000000000017
+exact,3660,Plymouth Energy LLC,Merrill,IA,corn starch,Ethanol from Corn,WDGS,ETHWA009A01580100,65.29,Starch,Corn (009),DDGS + WDGS,65.3,-0.009999999999990905
+exact,3664,Poet Biorefining- Big Stone LLC,Big Stone City,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009B00420101,74.6,Starch,Corn (009),DDGS,75.07,-0.46999999999999886
+exact,3664,Poet Biorefining- Big Stone LLC,Big Stone City,SD,corn starch,Ethanol from Corn,WDGS,ETHWA009B00420201,67.52,Starch,Corn (009),WDGS,67.98,-0.46000000000000796
+exact,3664,Poet Biorefining- Big Stone LLC,Big Stone City,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012B00420301,27.61,Fiber,Corn Fiber (012),,28.31,-0.6999999999999993
+exact,3667,Poet Biorefining- Chancellor LLC,Chancellor,SD,corn starch,Ethanol from Corn,,ETHWA009A00920101,62.44,Starch,Corn (009),DDGS + WDGS,62.63,-0.19000000000000483
+exact,3667,Poet Biorefining- Chancellor LLC,Chancellor,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00920201,22.38,Fiber,Corn Fiber (012),,23.48,-1.1000000000000014
+exact,3669,Poet Biorefinning-Coon Rapids,Coon Rapids,IA,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00930302,26.47,Fiber,Corn Fiber (012),DDGS + WDGS,26.63,-0.16000000000000014
+exact,3669,Poet Biorefinning-Coon Rapids,Coon Rapids,IA,corn starch,Ethanol from Corn,DDGS,ETHWA009A00930101,72.95,Starch,Corn (009),DDGS,72.88,0.07000000000000739
+exact,3669,Poet Biorefinning-Coon Rapids,Coon Rapids,IA,corn starch,Ethanol from Corn,WDGS,ETHWA009A00930201,66.35,Starch,Corn (009),WDGS,66.28,0.06999999999999318
+exact,3670,Poet Biorefinning-Corning LLC,Corning,IA,corn starch,Ethanol from Corn,DDGS,ETHWA009A00670102,74.97,Starch,Corn (009),DDGS,74.8,0.1700000000000017
+exact,3670,Poet Biorefinning-Corning LLC,Corning,IA,corn starch,Ethanol from Corn,WDGS,ETHWA009A00670202,66.75,Starch,Corn (009),WDGS,66.57,0.18000000000000682
+exact,3670,Poet Biorefinning-Corning LLC,Corning,IA,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00670302,26.89,Fiber,Corn Fiber (012),DDGS + WDGS,26.96,-0.07000000000000028
+exact,3676,Poet Biorefining- Groton LLC,Groton,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A00700101,74.91,Starch,Corn (009),DDGS,75.67,-0.7600000000000051
+exact,3676,Poet Biorefining- Groton LLC,Groton,SD,corn starch,Ethanol from Corn,WDGS,ETHWA009A00700201,67.97,Starch,Corn (009),WDGS,68.73,-0.7600000000000051
+exact,3676,Poet Biorefining- Groton LLC,Groton,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00700301,27.96,Fiber,Corn Fiber (012),DDGS + WDGS,28.95,-0.9899999999999984
+exact,3678,Poet Biorefining- Hudson,Hudson,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00880302,26.51,Fiber,Corn Fiber (012),DDGS + WDGS,26.85,-0.33999999999999986
+exact,3678,Poet Biorefining- Hudson,Hudson,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A00880101,73.86,Starch,Corn (009),DDGS,73.94,-0.0799999999999983
+exact,3678,Poet Biorefining- Hudson,Hudson,SD,corn starch,Ethanol from Corn,WDGS,ETHWA009A00880201,66.72,Starch,Corn (009),WDGS,66.79,-0.07000000000000739
+exact,3680,Poet Biorefinning-Jewell LLC,Jewell,IA,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00890302,27.27,Fiber,Corn Fiber (012),DDGS + WDGS,27.18,0.08999999999999986
+exact,3680,Poet Biorefinning-Jewell LLC,Jewell,IA,corn starch,Ethanol from Corn,WDGS,ETHWA009A00890201,67.54,Starch,Corn (009),WDGS,67.19,0.3500000000000085
+exact,3680,Poet Biorefinning-Jewell LLC,Jewell,IA,corn starch,Ethanol from Corn,DDGS,ETHWA009A00890101,74.11,Starch,Corn (009),DDGS,73.76,0.3499999999999943
+exact,3687,Poet Biorefining- Mitchell LLC,Mitchell,SD,corn starch,Ethanol from Corn,,ETHWA009A00900202,65.72,Starch,Corn (009),WDGS,66.07,-0.3499999999999943
+exact,3687,Poet Biorefining- Mitchell LLC,Mitchell,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A00900302,25.88,Fiber,Corn Fiber (012),DDGS + WDGS,26.48,-0.6000000000000014
+exact,3687,Poet Biorefining- Mitchell LLC,Mitchell,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A00900101,73.35,Starch,Corn (009),DDGS,73.69,-0.3400000000000034
+exact,3700,Redfield Energy LLC,Redfield,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A01610100,67.82,Starch,Corn (009),DDGS + WDGS,68.05,-0.23000000000000398
+exact,3700,Redfield Energy LLC,Redfield,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01610200,28.7,Fiber,Corn Fiber (012),,29.06,-0.35999999999999943
+exact,3702,Ringneck Energy & Feed LLC,Onida,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A01040101,72.57,Starch,Corn (009),DDGS,72.64,-0.07000000000000739
+exact,3702,Ringneck Energy & Feed LLC,Onida,SD,corn starch,Ethanol from Corn,WDGS,ETHWA009A01040201,64.24,Starch,Corn (009),WDGS,64.17,0.06999999999999318
+exact,3702,Ringneck Energy & Feed LLC,Onida,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01040301,26.9,Fiber,Corn Fiber (012),,26.13,0.7699999999999996
+exact,3702,Ringneck Energy & Feed LLC,Onida,SD,sorghum,Ethanol from Sorghum,DDGS,ETHWA010A01040401,76.51,Starch,Grain Sorghum (010),DDGS,76.51,0.0
+exact,3702,Ringneck Energy & Feed LLC,Onida,SD,sorghum,Ethanol from Sorghum,WDGS,ETHWA010A01040501,68.18,Starch,Grain Sorghum (010),WDGS,68.04,0.14000000000000057
+exact,3705,Siouxland Energy Cooperative,Sioux Center,IA,corn starch,Ethanol from Corn,WDGS,ETHWA009A01630100,61.0,Starch,Corn (009),DDGS,61.09,-0.09000000000000341
+exact,3705,Siouxland Energy Cooperative,Sioux Center,IA,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01630200,21.5,Fiber,Corn Fiber (012),,22.23,-0.7300000000000004
+exact,3706,Siouxland Ethnaol LLC,Jackson,NE,corn starch,Ethanol from Corn,WDGS,ETHWA009A01210100,62.37,Starch,Corn (009),DDGS + MDGS,66.5,-4.130000000000003
+exact,3706,Siouxland Ethnaol LLC,Jackson,NE,corn starch,Ethanol from Corn,DDGS,ETHWA009A01260100,63.8,Starch,Corn (009),DDGS + MDGS,66.5,-2.700000000000003
+exact,3706,Siouxland Ethnaol LLC,Jackson,NE,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01260200,24.18,Fiber,Corn Fiber (012),,25.0,-0.8200000000000003
+exact,3709,Sterling Ethanol LLC,Sterling,CO,corn starch,Ethanol from Corn,WDGS,ETHWA009A01350100,66.0,Starch,Corn (009),WDGS,65.13,0.8700000000000045
+exact,3714,The Andersons Marathon Holdings LLC,Denison,IA,corn starch,Ethanol from Corn,DDGS,ETHWA009A01390100,72.57,Starch,Corn (009),DDGS,71.88,0.6899999999999977
+exact,3714,The Andersons Marathon Holdings LLC,Denison,IA,corn starch,Ethanol from Corn,,ETHWA009A01390200,67.43,Starch,Corn (009),DDGS,71.88,-4.449999999999989
+exact,3717,Trenton Agri Products LLC,Trenton,NE,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01130301,26.68,Fiber,Corn Fiber (012),,26.52,0.16000000000000014
+exact,3717,Trenton Agri Products LLC,Trenton,NE,corn starch,Ethanol from Corn,WDGS,ETHWA009A01130200,65.08,Starch,Corn (009),WDGS,65.05,0.030000000000001137
+exact,3739,Yuma Ethanol LLC,Yuma,CO,corn starch,Ethanol from Corn,WDGS,ETHWA009A01190100,65.28,Starch,Corn (009),WDGS,64.45,0.8299999999999983

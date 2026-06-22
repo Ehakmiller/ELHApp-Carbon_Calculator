@@ -1,0 +1,10 @@
+EPM,facility,city,state,feedstock_class,pathway_type,coproduct,wa_code,wa_ci
+3551,Alto Columbia LLC,Boardman,OR,corn starch,Ethanol from Corn,WDGS,ETHWA009A00470101,70.71
+3576,Bushmills Ethanol Inc,Atwater,MN,corn starch,Ethanol from Corn,WDGS,ETHWA009A00010101,66.33
+3604,Hub City Energy LLC,Aberdeen,SD,corn starch,Ethanol from Corn,DDGS,ETHWA009A01560200,72.0
+3604,Hub City Energy LLC,Aberdeen,SD,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01560100,32.36
+3699,Red Trail Energy LLC,Richardton,ND,corn starch,Ethanol from Corn,DDGS,ETHWA009A01600100,74.02
+3699,Red Trail Energy LLC,Richardton,ND,corn starch,Ethanol from Corn,,ETHWA009A01600200,69.23
+3711,Tharaldson Ethanol,Casselton,ND,corn starch,Ethanol from Corn,DDGS,ETHWA009A01660200,74.74
+3711,Tharaldson Ethanol,Casselton,ND,corn starch,Ethanol from Corn,WDGS,ETHWA009A01660300,68.84
+3711,Tharaldson Ethanol,Casselton,ND,fiber/cellulosic,Ethanol from Biomass,,ETHWA012A01660101,29.43

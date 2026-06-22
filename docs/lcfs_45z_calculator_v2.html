@@ -642,13 +642,15 @@
   .operatingSummaryGrid{grid-template-columns:1fr;}
 }
 
-  .marketPathways{
+.scenarioInputsPanel,
+.marketPathways{
   margin-top:12px;
   border:1px solid var(--line);
   border-radius:8px;
   background:#0f1522;
   padding:10px 12px;
 }
+.scenarioInputsPanel summary,
 .marketPathways summary{
   display:inline-flex;
   align-items:center;
@@ -659,9 +661,11 @@
   font-size:13px;
   font-weight:750;
 }
+.scenarioInputsPanel summary::-webkit-details-marker,
 .marketPathways summary::-webkit-details-marker{
   display:none;
 }
+.scenarioInputsPanel summary::before,
 .marketPathways summary::before{
   content:"";
   width:0;
@@ -670,16 +674,22 @@
   border-right:5px solid transparent;
   border-top:6px solid var(--text);
 }
+.scenarioInputsPanel summary:hover,
 .marketPathways summary:hover{
   color:var(--accent);
 }
+.scenarioInputsPanel summary:hover::before,
 .marketPathways summary:hover::before{
   border-top-color:var(--accent);
 }
+.scenarioInputsPanel[open] summary,
 .marketPathways[open] summary{
   margin-bottom:10px;
   padding-bottom:8px;
   border-bottom:1px solid var(--line);
+}
+.scenarioInputsBody{
+  padding-top:2px;
 }
 .marketPathways .pathwayBenchmarkTable{
   table-layout:fixed;
@@ -1582,7 +1592,9 @@ The credit applies to qualifying carbon capture projects located in the United S
   </div>
   <div class="hr"></div>
 
-  <p class="sectionTitle">Scenario inputs</p>
+  <details id="scenarioInputsPanel" class="scenarioInputsPanel">
+    <summary>Scenario Inputs</summary>
+    <div class="scenarioInputsBody">
 
   <p class="sectionTitle">Starting CI</p>
 
@@ -1950,6 +1962,9 @@ The credit applies to qualifying carbon capture projects located in the United S
     </ul>
   </div>
 </div>
+
+    </div>
+  </details>
 
 <div class="hr"></div>
 

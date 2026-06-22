@@ -1349,15 +1349,6 @@ header, main{ position:relative; z-index:1; }
         <div id="marketPathwaysRows"></div>
       </details>
 
-      <div class="hr"></div>
-
-     
-        
-        
-        <div class="hr"></div>
-        
-       
-
 <div id="outputPanelStart" hidden></div>
 
  <p class="sectionTitle">45Z Credit Value</p>
@@ -2054,9 +2045,16 @@ The credit applies to qualifying carbon capture projects located in the United S
     const cards = Array.from(grid.children).filter((el) => el.classList && el.classList.contains("card"));
     const plantCard = cards[0];
     const scenarioCard = cards[1];
+    const scenarioInputsPanel = document.getElementById("scenarioInputsPanel");
+    const marketPathwaysPanel = document.getElementById("marketPathwaysPanel");
     const outputStart = document.getElementById("outputPanelStart");
     const outputEnd = document.getElementById("outputPanelEnd");
     if (!plantCard || !scenarioCard || !outputStart || !outputEnd) return;
+
+    if (scenarioInputsPanel && marketPathwaysPanel){
+      marketPathwaysPanel.insertAdjacentElement("afterend", scenarioInputsPanel);
+      scenarioCard.style.display = "none";
+    }
 
     const outputCard = document.createElement("div");
     outputCard.className = "card outputCard";

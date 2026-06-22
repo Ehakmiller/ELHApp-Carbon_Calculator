@@ -1373,6 +1373,10 @@ header, main{ position:relative; z-index:1; }
           <div id="policyParametersBody" class="policyParametersBody"></div>
         </details>
       </div>
+      <details id="policy45qParametersPanel" class="policyParametersPanel">
+        <summary>45Q Parameters</summary>
+        <div id="policy45qParametersBody" class="policyParametersBody"></div>
+      </details>
       <details id="marketPathwaysPanel" class="marketPathways" style="display:none;">
         <summary>Market Pathways</summary>
         <div id="marketPathwaysRows"></div>
@@ -1519,6 +1523,7 @@ header, main{ position:relative; z-index:1; }
 
 </div>
 
+<div id="policy45qParametersContent">
 <p class="sectionTitle" style="margin-top:14px;">45Q policy parameters</p>
 
 <div class="metricGrid">
@@ -1549,6 +1554,8 @@ header, main{ position:relative; z-index:1; }
 </div>
 
 
+</div>
+
      
         
  <div class="hr"></div>
@@ -1563,6 +1570,7 @@ header, main{ position:relative; z-index:1; }
   The credit applies to qualifying fuels produced in the United States for use as transportation fuel. This calculator assumes 45Z value runs through Dec. 31, 2029 for modeling purposes.
 </p>
 
+<div id="policy45qNotesContent">
 <div class="sectionTitle" style="margin-top:18px;">Note – 45Q</div>
 
 <p>
@@ -1572,6 +1580,7 @@ The Section 45Q Carbon Sequestration Credit is a federal tax incentive designed 
 <p>
 The credit applies to qualifying carbon capture projects located in the United States and is available for twelve years after a carbon capture facility is placed in service. For projects that permanently sequester captured carbon dioxide in geological formations, the credit value is currently set at up to $85 per metric ton of CO₂. Because the credit is earned on each ton of carbon captured and stored, the total financial benefit depends on both the amount of CO₂ captured annually and the duration of the credit eligibility period following project start-up. Utilization pathways, including Enhanced Oil Recovery (EOR), qualify for a lower credit value of up to $60 per metric ton, as these uses may not ensure the same level of permanent carbon storage as dedicated geologic sequestration.
 </p>
+</div>
 
 
 <div class="hr"></div>
@@ -2077,12 +2086,20 @@ The credit applies to qualifying carbon capture projects located in the United S
     const marketPathwaysPanel = document.getElementById("marketPathwaysPanel");
     const policyParametersContent = document.getElementById("policyParametersContent");
     const policyParametersBody = document.getElementById("policyParametersBody");
+    const policy45qParametersContent = document.getElementById("policy45qParametersContent");
+    const policy45qNotesContent = document.getElementById("policy45qNotesContent");
+    const policy45qParametersBody = document.getElementById("policy45qParametersBody");
     const outputStart = document.getElementById("outputPanelStart");
     const outputEnd = document.getElementById("outputPanelEnd");
     if (!plantCard || !scenarioCard || !outputStart || !outputEnd) return;
 
     if (policyParametersContent && policyParametersBody){
       policyParametersBody.appendChild(policyParametersContent);
+    }
+
+    if (policy45qParametersBody){
+      if (policy45qParametersContent) policy45qParametersBody.appendChild(policy45qParametersContent);
+      if (policy45qNotesContent) policy45qParametersBody.appendChild(policy45qNotesContent);
     }
 
     if (scenarioInputsPanel && marketPathwaysPanel){

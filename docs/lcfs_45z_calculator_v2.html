@@ -1648,21 +1648,21 @@ The credit applies to qualifying carbon capture projects located in the United S
   <div class="hr"></div>
 
 
-  <p class="sectionTitle">Additional Gallons</p>
+  <p class="sectionTitle">Additional Gallons (MM gal)</p>
 
   <div class="scoreRow nowrap" style="margin-bottom:10px;">
     <div class="scoreBox">
-      <div class="t">Additional annual gallons</div>
+      <div class="t">Additional annual volume (million gallons)</div>
       <input
         id="additionalGallons"
         class="small numBox"
         type="number"
-        step="1000000"
+        step="1"
         min="0"
         value="0"
-        title="Additional annual scenario gallons"
+        title="Additional annual scenario volume in million gallons"
       />
-      <div class="s">Added to plant capacity for scenario value math only</div>
+      <div class="s">Enter million gallons; added to plant capacity for scenario value math only</div>
     </div>
   </div>
 
@@ -5938,7 +5938,7 @@ function scenarioGallonsPerYear(){
   const baseGallons = capMgy * 1_000_000;
   const additionalGallonsRaw = getNumber("additionalGallons");
   const additionalGallons = Number.isFinite(additionalGallonsRaw)
-    ? Math.max(0, additionalGallonsRaw)
+    ? Math.max(0, additionalGallonsRaw) * 1_000_000
     : 0;
 
   return baseGallons + additionalGallons;

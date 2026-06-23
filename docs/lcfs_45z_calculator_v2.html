@@ -1664,6 +1664,13 @@ The credit applies to qualifying carbon capture projects located in the United S
       />
       <div class="s">Enter million gallons; added to plant capacity for scenario value math only</div>
     </div>
+  
+
+    <div class="scoreBox">
+      <div class="t">Total scenario volume (million gallons)</div>
+      <div class="n" id="scenarioGallonsTotal">—</div>
+      <div class="s">Base capacity + additional volume</div>
+    </div>
   </div>
 
   <div class="hr"></div>
@@ -6304,6 +6311,7 @@ function renderOutputs(){
   const outFreightHub  = document.getElementById("outFreightHub");
   const outPayout      = document.getElementById("outPayout");
   const outPayoutDetail= document.getElementById("outPayoutDetail");
+  const scenarioGallonsTotal = document.getElementById("scenarioGallonsTotal");
   const outTotalDiscountedValue = document.getElementById("outTotalDiscountedValue");
   const outFinalCreditValue = document.getElementById("outFinalCreditValue");
   const outFinalCreditValueDetail = document.getElementById("outFinalCreditValueDetail");
@@ -6350,6 +6358,7 @@ function renderOutputs(){
 
     if (outPayout) outPayout.textContent = "â€”";
     if (outPayoutDetail) outPayoutDetail.textContent = "â€”";
+    if (scenarioGallonsTotal) scenarioGallonsTotal.textContent = "—";
     if (outTotalDiscountedValue) outTotalDiscountedValue.textContent = "â€”";
     if (outFinalCreditValue) outFinalCreditValue.textContent = "â€”";
     if (outFinalCreditValueDetail) outFinalCreditValueDetail.textContent = "â€”";
@@ -6478,6 +6487,9 @@ if (out45qValuePerGal){
 
   const cap = scenarioGallonsMgy();
   const gallonsPerYear = scenarioGallonsPerYear();
+  if (scenarioGallonsTotal){
+    scenarioGallonsTotal.textContent = Number.isFinite(cap) ? fmt(cap, 1) : "—";
+  }
 
   let payout = NaN;
 

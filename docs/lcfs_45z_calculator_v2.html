@@ -1902,6 +1902,48 @@ The credit applies to qualifying carbon capture projects located in the United S
   </div>
 </div>
 
+<p class="sectionTitle">DGS Co-product Bridge</p>
+
+<div class="scoreRow nowrap" style="margin-bottom:10px;">
+  <div class="scoreBox">
+    <div class="t">DGS co-product adjustment (gCO2e/MJ)</div>
+
+    <div class="row" style="gap:8px; align-items:center; margin-top:6px; flex-wrap:nowrap;">
+      <input id="dgs_bridge_apply" type="checkbox" checked />
+      <div style="flex:1; min-width:0; font-size:12px; color:var(--muted); line-height:1.2; white-space:nowrap;">
+        Apply
+      </div>
+      <input
+        id="dgs_bridge_score"
+        class="small numBox"
+        type="number"
+        step="0.1"
+        value="0"
+        title="DGS co-product bridge adjustment (gCO2e/MJ)"
+      />
+    </div>
+
+    <div style="margin-top:10px;">
+      <select id="dgs_bridge_type" class="hubSelect" title="DGS co-product bridge type">
+        <option value="none" data-score="0">No DGS adjustment</option>
+        <option value="wet_best_case" data-score="-8.0">Wet DGS best case</option>
+        <option value="dry_reference" data-score="0">Dry DDGS reference</option>
+        <option value="mixed" data-score="-4.0">Mixed wet/dry</option>
+      </select>
+    </div>
+
+    <div class="s" style="margin-top:6px;">Negative values reduce CI; user-editable after selecting a bridge type</div>
+  </div>
+
+  <div class="note scoreNotes">
+    <div style="margin-bottom:6px;">DGS bridge logic</div>
+    <ul class="noteList">
+      <li><span class="mono">Wet DGS best case</span> = -8.0</li>
+      <li><span class="mono">Mixed wet/dry</span> = -4.0</li>
+      <li><span class="mono">Dry DDGS reference</span> = 0.0</li>
+    </ul>
+  </div>
+</div>
 <p class="sectionTitle">CO2 sequestration reduction</p>
 
 <div class="scoreRow nowrap" style="margin-bottom:10px;">
@@ -2438,6 +2480,7 @@ function compute45zRateBlock({
   pipelineScore,
   agReduction,
   ckfAdjustment,
+  dgsBridge,
   electricityBridge,
   benchmarkKgPerMmbtu,
   maxRate
@@ -2462,6 +2505,7 @@ function compute45zRateBlock({
   if (Number.isFinite(pipelineScore)) ci -= pipelineScore;
   if (Number.isFinite(agReduction)) ci -= agReduction;
   if (Number.isFinite(ckfAdjustment)) ci -= ckfAdjustment;
+  if (Number.isFinite(dgsBridge)) ci += dgsBridge;
   if (Number.isFinite(electricityBridge)) ci += electricityBridge;
 
   if (Number.isFinite(ci)) ci = Math.max(0, ci);
@@ -6059,6 +6103,8 @@ res.electricityBridgeAdj = electricityBridgeApply ? electricityBridgeInput : 0;
       ? res.electricityBridgeAdj
       : 0;
   
+  
+  const dgsBridge = getChecked("dgs_bridge_apply") ? getNumber("dgs_bridge_score") : 0;
   const ckfEligible = hasCaliforniaCkf(selectedPlant);
 const ckfApply = ckfEligible && getChecked("ckf_apply");
 const ckfSharePct = getNumber("ckf_share_pct");
@@ -6249,6 +6295,7 @@ if (Number.isFinite(res.startCi)){
     pipelineScore,
     agReduction,
     ckfAdjustment,
+    dgsBridge,
     electricityBridge,
     benchmarkKgPerMmbtu: bench_kg_per_mmbtu,
     maxRate
@@ -6741,6 +6788,13 @@ async function handlePlantSelectChange(){
    renderOutputs();
  });
 
+  onInput("dgs_bridge_type", () => {
+    const sel = document.getElementById("dgs_bridge_type");
+    const score = document.getElementById("dgs_bridge_score");
+    const selected = sel?.selectedOptions?.[0];
+    if (score && selected) score.value = selected.dataset.score ?? "0";
+    renderOutputs();
+  });
   // All other calc-driving inputs: recompute only
   const calcIds = [
     "caHub",
@@ -6748,6 +6802,7 @@ async function handlePlantSelectChange(){
     "subtractIluc","ilucValue",
     "additionalGallons",
     "ckf_apply","ckf_share_pct",
+    "dgs_bridge_apply","dgs_bridge_type","dgs_bridge_score",
     "applyMisc","ccsReduction",
     "ciBenchmark","maxRate",
     "ch2_pipeline_apply","ch2_pipeline_score",

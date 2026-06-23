@@ -2457,6 +2457,8 @@ function compute45zRateBlock({
   if (Number.isFinite(ckfAdjustment)) ci -= ckfAdjustment;
   if (Number.isFinite(electricityBridge)) ci += electricityBridge;
 
+  if (Number.isFinite(ci)) ci = Math.max(0, ci);
+
   const emissionsKgmmbtu = Number.isFinite(ci)
     ? (ci * CONV_G_PER_MJ_TO_KG_PER_MMBTU)
     : NaN;

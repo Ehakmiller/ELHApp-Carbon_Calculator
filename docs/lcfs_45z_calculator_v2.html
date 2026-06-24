@@ -1481,6 +1481,16 @@ header, main{ position:relative; z-index:1; }
 
 <div id="outputPanelStart" hidden></div>
 
+<div class="factorLevelsPanel" aria-label="Estimated 45Z Factor">
+  <div class="factorLevelsHead">
+    <div class="factorLevelsTitle">Estimated 45Z Factor</div>
+    <div class="factorLevelsLabel" id="factorLevelsPlantLabel">Plant factor: -</div>
+  </div>
+  <div class="factorLevelsChart" id="factorLevelsChart">
+    <div class="factorPlantMarker isHidden" id="factorPlantMarker" aria-hidden="true"></div>
+  </div>
+</div>
+
  <p class="sectionTitle">45Z Credit Value</p>
 
 <div class="metricGrid">
@@ -1583,16 +1593,6 @@ header, main{ position:relative; z-index:1; }
   </div>
 
 </div>
-<div class="factorLevelsPanel" aria-label="Possible 45Z Factor Levels">
-  <div class="factorLevelsHead">
-    <div class="factorLevelsTitle">Possible 45Z Factor Levels</div>
-    <div class="factorLevelsLabel" id="factorLevelsPlantLabel">Plant factor: -</div>
-  </div>
-  <div class="factorLevelsChart" id="factorLevelsChart">
-    <div class="factorPlantMarker isHidden" id="factorPlantMarker" aria-hidden="true"></div>
-  </div>
-</div>
-
 
         
         <!-- Details live below so the top row can stay tight -->

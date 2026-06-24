@@ -1478,6 +1478,10 @@ header, main{ position:relative; z-index:1; }
         <summary>Market Pathways</summary>
         <div id="marketPathwaysRows"></div>
       </details>
+      <details id="modelMechanicsPanel" class="policyParametersPanel">
+        <summary>Model Mechanics</summary>
+        <div id="modelMechanicsBody" class="policyParametersBody"></div>
+      </details>
 
 <div id="outputPanelStart" hidden></div>
 
@@ -1693,6 +1697,7 @@ The credit applies to qualifying carbon capture projects located in the United S
 
 
 
+<div id="modelMechanicsContent">
 <div class="noteSubhead">Model Mechanics</div>
 <ul class="noteList">
   <li>Starts with a facility carbon intensity in <span class="mono">gCO2e/MJ</span> (LCFS CI or proxy estimate).</li>
@@ -1711,6 +1716,7 @@ The credit applies to qualifying carbon capture projects located in the United S
 
   <!-- keep ONLY if JS uses it -->
   <div id="modelSection"></div>
+</div>
 </div> <!-- closes #notes -->
 </div>
 <div id="outputPanelEnd" hidden></div>
@@ -2266,6 +2272,9 @@ The credit applies to qualifying carbon capture projects located in the United S
     const policy45qParametersContent = document.getElementById("policy45qParametersContent");
     const policy45qNotesContent = document.getElementById("policy45qNotesContent");
     const policy45qParametersBody = document.getElementById("policy45qParametersBody");
+    const modelMechanicsPanel = document.getElementById("modelMechanicsPanel");
+    const modelMechanicsContent = document.getElementById("modelMechanicsContent");
+    const modelMechanicsBody = document.getElementById("modelMechanicsBody");
     const outputStart = document.getElementById("outputPanelStart");
     const outputEnd = document.getElementById("outputPanelEnd");
     if (!plantCard || !scenarioCard || !outputStart || !outputEnd) return;
@@ -2279,11 +2288,18 @@ The credit applies to qualifying carbon capture projects located in the United S
       if (policy45qNotesContent) policy45qParametersBody.appendChild(policy45qNotesContent);
     }
 
+    if (modelMechanicsContent && modelMechanicsBody){
+      modelMechanicsBody.appendChild(modelMechanicsContent);
+    }
+
     if (scenarioInputsPanel && marketPathwaysPanel){
       marketPathwaysPanel.insertAdjacentElement("afterend", scenarioInputsPanel);
       if (policyParametersPanel) scenarioInputsPanel.insertAdjacentElement("afterend", policyParametersPanel);
       if (policy45qParametersPanel){
         (policyParametersPanel || scenarioInputsPanel).insertAdjacentElement("afterend", policy45qParametersPanel);
+      }
+      if (modelMechanicsPanel){
+        (marketPathwaysPanel || policy45qParametersPanel || policyParametersPanel || scenarioInputsPanel).insertAdjacentElement("afterend", modelMechanicsPanel);
       }
       scenarioCard.style.display = "none";
     }

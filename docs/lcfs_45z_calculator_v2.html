@@ -1787,6 +1787,31 @@ The credit applies to qualifying carbon capture projects located in the United S
     </div>
   </div>
 
+  <p class="sectionTitle">Ethanol Yield Improvement (gal/bu)</p>
+
+  <div class="scoreRow nowrap" style="margin-bottom:10px;">
+    <div class="scoreBox">
+      <div class="t">Ethanol Yield Improvement (gal/bu)</div>
+      <input
+        id="yieldImprovementGalBu"
+        class="small numBox"
+        type="number"
+        step="0.01"
+        min="-0.20"
+        max="0.20"
+        value="0.00"
+        title="Published pathway scores already reflect current plant performance. This input estimates how a future ethanol yield improvement could reduce the estimated 45Z CI score."
+      />
+      <div class="s">Scenario-only sensitivity from the certified pathway baseline</div>
+    </div>
+
+    <div class="scoreBox">
+      <div class="t">Yield scenario impact</div>
+      <div class="n" id="yieldScenarioImpact">-</div>
+      <div class="s">+0.01 gal/bu = -0.20 CI points</div>
+    </div>
+  </div>
+
   <div class="hr"></div>
       <!-- CHAPTER 2 (compact, matches Starting CI panel) -->
 <!-- CHAPTER 2 (compact, matches Starting CI panel) -->
@@ -2603,6 +2628,7 @@ function compute45zRateBlock({
   miscReduction,
   pipelineScore,
   agReduction,
+  yieldScenarioImpact,
   ckfAdjustment,
   dgsBridge,
   electricityBridge,
@@ -2628,6 +2654,7 @@ function compute45zRateBlock({
   if (Number.isFinite(miscReduction)) ci -= miscReduction;
   if (Number.isFinite(pipelineScore)) ci -= pipelineScore;
   if (Number.isFinite(agReduction)) ci -= agReduction;
+  if (Number.isFinite(yieldScenarioImpact)) ci -= yieldScenarioImpact;
   if (Number.isFinite(ckfAdjustment)) ci -= ckfAdjustment;
   if (Number.isFinite(dgsBridge)) ci += dgsBridge;
   if (Number.isFinite(electricityBridge)) ci += electricityBridge;
@@ -2843,6 +2870,8 @@ const FORTYFIVEZ_LAST_YEAR = 2029;
 const CURRENT_MODEL_YEAR = new Date().getFullYear();
 const FORTYFIVEQ_TERM_YEARS = 12;
 const DEFAULT_DISCOUNT_RATE = 0.10;
+const YIELD_SCENARIO_BASELINE_GAL_PER_BU = 2.98;
+const YIELD_SCENARIO_CI_PER_0_01_GAL_BU = 0.20;
 
 
 // OK SET YOUR REDUCTIONS HERE (gCO2e/MJ)
@@ -5039,6 +5068,471 @@ function marketPathwayComparisonRows(selectedEntries, peerEntries){
   });
 }
 
+function programCiRows(plant, program){
+  if (!plant || typeof plant !== "object") return [];
+  return program === "CA" ? asArray(plant.ca_detail ?? plant.lcfs_detail?.ca_detail) :
+    program === "OR" ? asArray(plant.or_detail ?? plant.lcfs_detail?.or_detail) :
+    program === "WA" ? asArray(plant.wa_lcfs_ci_detail) :
+    program === "BC" ? asArray(plant.bc_lcfs_ci_detail) :
+    program === "Canada" ? asArray(plant.canadian_fed_ci_detail) :
+    [];
+}
+
+function programFeedstockClass(row){
+  const text = [
+    row?.pathway_type,
+    row?.feedstock,
+    row?.feedstock_class,
+    row?.grain_source,
+    row?.fuel_type,
+    row?.pathway,
+    row?.pathway_base,
+    row?.["Fuel Name"],
+    row?.["Pathway Description"]
+  ].filter(value => value !== null && value !== undefined).join(" ").toLowerCase();
+
+  if (/fiber|cellulosic|biomass/.test(text)) return "Fiber";
+  if (/starch|corn|sorghum|wheat|grain/.test(text)) return "Starch";
+  return "Unknown";
+}
+
+function lowestActiveProgramCi(plant, program, feedstockClass){
+  const scores = activeProgramCiCandidates(plant, program, feedstockClass);
+  return scores.length ? Math.min(...scores) : null;
+}
+
+function activeProgramCiCandidates(plant, program, feedstockClass){
+  return programCiRows(plant, program)
+    .filter(row => isActivePathway(row))
+    .filter(row => program === "BC" || programFeedstockClass(row) === feedstockClass)
+    .map(row => benchmarkCiValue(program, row))
+    .filter(ci => Number.isFinite(ci) && ci > 0);
+}
+
+function pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass){
+  const firstCandidates = activeProgramCiCandidates(plant, firstKey, feedstockClass);
+  const secondCandidates = activeProgramCiCandidates(plant, secondKey, feedstockClass);
+  if (!firstCandidates.length || !secondCandidates.length) return null;
+  const firstCi = Math.min(...firstCandidates);
+  const secondCi = Math.min(...secondCandidates);
+  return {
+    plant,
+    firstCi,
+    secondCi,
+    spread: firstCi - secondCi,
+    firstCandidateCount: firstCandidates.length,
+    secondCandidateCount: secondCandidates.length
+  };
+}
+
+function pairedProgramComparisonRows(plants, feedstockClass){
+  const comparisons = [
+    ["California", "CA", "Canadian Federal", "Canada"],
+    ["Oregon", "OR", "Canadian Federal", "Canada"],
+    ["Washington", "WA", "Canadian Federal", "Canada"],
+    ["British Columbia", "BC", "Canadian Federal", "Canada"],
+    ["California", "CA", "British Columbia", "BC"],
+    ["Oregon", "OR", "British Columbia", "BC"],
+    ["Washington", "WA", "British Columbia", "BC"],
+    ["California", "CA", "Oregon", "OR"],
+    ["California", "CA", "Washington", "WA"],
+    ["Oregon", "OR", "Washington", "WA"]
+  ].filter(([, firstKey, , secondKey]) => feedstockClass !== "Fiber" || (firstKey !== "BC" && secondKey !== "BC"));
+
+  return comparisons.map(([firstLabel, firstKey, secondLabel, secondKey]) => {
+    const spreads = asArray(plants).map(plant => {
+      const record = pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass);
+      return record ? record.spread : null;
+    }).filter(spread => Number.isFinite(spread));
+
+    const count = spreads.length;
+    if (!count) return "";
+
+    const mean = avg(spreads);
+    const min = Math.min(...spreads);
+    const max = Math.max(...spreads);
+    const stdDev = standardDeviation(spreads);
+
+    return `
+      <tr>
+        <td>${escapeHtml(`${firstLabel} vs ${secondLabel}`)}</td>
+        <td>${escapeHtml(String(count))}</td>
+        <td>${escapeHtml(displaySignedCi(mean))}</td>
+        <td>${escapeHtml(displaySignedCi(min))}</td>
+        <td>${escapeHtml(displaySignedCi(max))}</td>
+        <td>${escapeHtml(displayCi(stdDev))}</td>
+      </tr>
+    `;
+  }).filter(Boolean);
+}
+
+function standardDeviation(values){
+  const nums = asArray(values).filter(value => Number.isFinite(value));
+  if (!nums.length) return null;
+  const mean = avg(nums);
+  const variance = avg(nums.map(value => (value - mean) ** 2));
+  return Math.sqrt(variance);
+}
+
+function ciComparisonPairs(feedstockClass){
+  const pairs = [
+    ["CA/CFA", "California", "CA", "Canadian Federal", "Canada"],
+    ["OR/CFA", "Oregon", "OR", "Canadian Federal", "Canada"],
+    ["BC/CFA", "British Columbia", "BC", "Canadian Federal", "Canada"],
+    ["CA/BC", "California", "CA", "British Columbia", "BC"],
+    ["WA/BC", "Washington", "WA", "British Columbia", "BC"],
+    ["CA/OR", "California", "CA", "Oregon", "OR"],
+    ["CA/WA", "California", "CA", "Washington", "WA"],
+    ["OR/WA", "Oregon", "OR", "Washington", "WA"]
+  ];
+  return pairs.filter(([, , firstKey, , secondKey]) => feedstockClass !== "Fiber" || (firstKey !== "BC" && secondKey !== "BC"));
+}
+
+function pairedProgramComparisonRecords(plants, feedstockClass){
+  return ciComparisonPairs(feedstockClass).flatMap(([shortLabel, firstLabel, firstKey, secondLabel, secondKey]) => {
+    const records = asArray(plants).map(plant => {
+      const record = pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass);
+      if (!record) return null;
+      return {
+        feedstockClass,
+        comparison: `${firstLabel} vs ${secondLabel}`,
+        shortLabel,
+        plant,
+        plantName: firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name),
+        epm: plantId(plant),
+        firstCi: record.firstCi,
+        secondCi: record.secondCi,
+        spread: record.spread
+      };
+    }).filter(Boolean);
+
+    const mean = avg(records.map(row => row.spread));
+    const withDeviation = records.map(row => ({
+      ...row,
+      averageSpread: mean,
+      deviation: row.spread - mean,
+      absDeviation: Math.abs(row.spread - mean)
+    }));
+
+    const positives = [...withDeviation]
+      .filter(row => row.deviation > 0)
+      .sort((a, b) => b.deviation - a.deviation)
+      .slice(0, 3);
+    const negatives = [...withDeviation]
+      .filter(row => row.deviation < 0)
+      .sort((a, b) => a.deviation - b.deviation)
+      .slice(0, 3);
+    const positiveKeys = new Set(positives.map(outlierKey));
+    const negativeKeys = new Set(negatives.map(outlierKey));
+
+    return withDeviation
+      .sort((a, b) => b.absDeviation - a.absDeviation)
+      .map(row => ({
+        ...row,
+        outlierFlag: positiveKeys.has(outlierKey(row)) ? "High +" : negativeKeys.has(outlierKey(row)) ? "Low -" : ""
+      }));
+  });
+}
+
+function outlierKey(row){
+  return `${row.feedstockClass}|${row.shortLabel}|${row.epm}|${row.spread}`;
+}
+
+function plantCapacityLabel(plant){
+  const cap = Number(plant?.ethanol_capacity_mgy ?? plant?.fac_info?.ethanol_capacity_mgy);
+  return Number.isFinite(cap) ? fmt(cap, 1) : "-";
+}
+
+function yesNo(value){
+  return asBool(value) ? "Y" : "N";
+}
+
+function plantFiberFlag(plant){
+  return yesNo(plant?.fiber_technology || hasCaliforniaCkf(plant));
+}
+
+function plantCornOilFlag(plant){
+  return yesNo(
+    plant?.dco_enhancement ||
+    plant?.operating_permit?.equipment?.corn_oil_systems?.present ||
+    plant?.operating_permit?.equipment?.technology_flags?.corn_oil_extraction ||
+    plant?.operating_permit?.equipment?.special_equipment?.corn_oil_extraction
+  );
+}
+
+function plantCcsFlag(plant){
+  const def = computePipelineDefault(plant);
+  return def.applied ? "Y" : "N";
+}
+
+function plantCoproductLabel(plant){
+  const details = [
+    ...programCiRows(plant, "CA"),
+    ...programCiRows(plant, "OR")
+  ];
+  const text = details.map(row => firstNonEmpty(row?.coproduct_type, row?.co_product, row?.coproduct)).filter(Boolean).join(" ");
+  const dryer = firstNonEmpty(plant?.dryer_used, getDryerText(plant), plant?.dryer_types, plant?.operating_permit?.equipment?.dryers?.type);
+  const combined = `${text} ${dryer}`.toLowerCase();
+  const hasWet = /\bwet\b|wdgs|wet distillers|wetcake/.test(combined);
+  const hasDry = /\bdry\b|ddgs|dried distillers|dryer/.test(combined);
+  if (hasWet && hasDry) return "Mixed";
+  if (hasDry) return "Dry";
+  if (hasWet) return "Wet";
+  return "-";
+}
+
+function plantJurisdictionsLabel(plant){
+  const jurisdictions = [];
+  if (lowestActiveProgramCi(plant, "CA", "Starch") !== null || lowestActiveProgramCi(plant, "CA", "Fiber") !== null) jurisdictions.push("CA");
+  if (lowestActiveProgramCi(plant, "OR", "Starch") !== null || lowestActiveProgramCi(plant, "OR", "Fiber") !== null) jurisdictions.push("OR");
+  if (lowestActiveProgramCi(plant, "WA", "Starch") !== null || lowestActiveProgramCi(plant, "WA", "Fiber") !== null) jurisdictions.push("WA");
+  if (lowestActiveProgramCi(plant, "BC", "Starch") !== null) jurisdictions.push("BC");
+  if (lowestActiveProgramCi(plant, "Canada", "Starch") !== null || lowestActiveProgramCi(plant, "Canada", "Fiber") !== null) jurisdictions.push("CFA");
+  return jurisdictions.length ? jurisdictions.join(", ") : "-";
+}
+
+function ciComparisonOutlierRows(plants){
+  const records = [
+    ...pairedProgramComparisonRecords(plants, "Starch"),
+    ...pairedProgramComparisonRecords(plants, "Fiber")
+  ];
+
+  return records.map(row => `
+    <tr>
+      <td>${escapeHtml(row.feedstockClass)}</td>
+      <td>${escapeHtml(row.shortLabel)}</td>
+      <td>${escapeHtml(row.outlierFlag || "")}</td>
+      <td>${escapeHtml(row.plantName || "-")}</td>
+      <td>${escapeHtml(row.epm || "-")}</td>
+      <td>${escapeHtml(displayCi(row.firstCi))}</td>
+      <td>${escapeHtml(displayCi(row.secondCi))}</td>
+      <td>${escapeHtml(displaySignedCi(row.spread))}</td>
+      <td>${escapeHtml(displaySignedCi(row.deviation))}</td>
+      <td>${escapeHtml(yesNo(row.plant?.chp))}</td>
+      <td>${escapeHtml(plantFiberFlag(row.plant))}</td>
+      <td>${escapeHtml(plantCornOilFlag(row.plant))}</td>
+      <td>${escapeHtml(plantCcsFlag(row.plant))}</td>
+      <td>${escapeHtml(plantCoproductLabel(row.plant))}</td>
+      <td>${escapeHtml(plantCapacityLabel(row.plant))}</td>
+      <td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
+    </tr>
+  `);
+}
+
+function coproductMethodologyText(row){
+  if (!row || typeof row !== "object") return "";
+  return [
+    row?.coproduct_type,
+    row?.co_product,
+    row?.coproduct,
+    row?.feedstock,
+    row?.feedstock_class,
+    row?.grain_source,
+    row?.fuel_type,
+    row?.pathway_type,
+    row?.pathway,
+    row?.pathway_base,
+    row?.detail,
+    row?.status,
+    row?.source,
+    row?.["Fuel Name"],
+    row?.["Pathway Description"],
+    row?.["Fuel Pathway Code"]
+  ].filter(value => value !== null && value !== undefined).join(" ");
+}
+
+function plantCoproductMethodologyType(plant){
+  const rows = [
+    ...programCiRows(plant, "CA"),
+    ...programCiRows(plant, "BC"),
+    ...programCiRows(plant, "Canada")
+  ];
+  const rowText = rows.map(coproductMethodologyText).join(" ");
+  const dryerText = firstNonEmpty(
+    plant?.dryer_used,
+    getDryerText(plant),
+    plant?.dryer_types,
+    plant?.operating_permit?.equipment?.dryers?.type,
+    plant?.operating_permit?.equipment?.ddgs_system?.description
+  );
+  const text = `${rowText} ${dryerText}`.toLowerCase();
+
+  const modified = /\bmdgs\b|\bmwdgs\b|modified|mixed|wet\s*\/\s*dry|wet\s+and\s+dry|wdgs\s*\/\s*ddgs|multiple/.test(text);
+  const dry = /\bddgs\b|dry distillers|dried distillers|\bdry\b|dryer/.test(text);
+  const wet = /\bwdgs\b|wet distillers|\bwet\b|wetcake/.test(text);
+
+  if (modified || (wet && dry)) return "Modified/Mixed";
+  if (dry) return "Dry";
+  if (wet) return "Wet";
+  return "Unknown";
+}
+
+function coproductDiagnosticRecords(plants){
+  return asArray(plants).map(plant => {
+    const caCi = lowestActiveProgramCi(plant, "CA", "Starch");
+    const cfaCi = lowestActiveProgramCi(plant, "Canada", "Starch");
+    const bcCi = lowestActiveProgramCi(plant, "BC", "Starch");
+    const caCfa = Number.isFinite(caCi) && Number.isFinite(cfaCi) ? caCi - cfaCi : null;
+    const bcCfa = Number.isFinite(bcCi) && Number.isFinite(cfaCi) ? bcCi - cfaCi : null;
+    const caBc = Number.isFinite(caCi) && Number.isFinite(bcCi) ? caCi - bcCi : null;
+    if (!Number.isFinite(caCfa) && !Number.isFinite(bcCfa) && !Number.isFinite(caBc)) return null;
+    return {
+      plant,
+      plantName: firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name),
+      epm: plantId(plant),
+      dgsType: plantCoproductMethodologyType(plant),
+      caCi,
+      cfaCi,
+      bcCi,
+      caCfa,
+      bcCfa,
+      caBc
+    };
+  }).filter(Boolean);
+}
+
+function averageNullable(values){
+  const nums = asArray(values).filter(value => Number.isFinite(value));
+  return nums.length ? avg(nums) : null;
+}
+
+function coproductMethodologySummaryRows(plants){
+  const records = coproductDiagnosticRecords(plants);
+  const groups = ["Wet", "Modified/Mixed", "Dry", "Unknown"];
+  const comparisons = [
+    ["CA-CFA", "caCfa"],
+    ["BC-CFA", "bcCfa"],
+    ["CA-BC", "caBc"]
+  ];
+
+  return groups.flatMap(group => comparisons.map(([label, field]) => {
+    const spreads = records
+      .filter(row => row.dgsType === group)
+      .map(row => row[field])
+      .filter(value => Number.isFinite(value));
+    if (!spreads.length) return "";
+    return `
+      <tr>
+        <td>${escapeHtml(group)}</td>
+        <td>${escapeHtml(label)}</td>
+        <td>${escapeHtml(String(spreads.length))}</td>
+        <td>${escapeHtml(displaySignedCi(avg(spreads)))}</td>
+        <td>${escapeHtml(displaySignedCi(Math.min(...spreads)))}</td>
+        <td>${escapeHtml(displaySignedCi(Math.max(...spreads)))}</td>
+        <td>${escapeHtml(displayCi(standardDeviation(spreads)))}</td>
+      </tr>
+    `;
+  })).filter(Boolean);
+}
+
+function coproductOutlierReviewRows(plants){
+  return coproductDiagnosticRecords(plants)
+    .filter(row => Number.isFinite(row.caCfa))
+    .sort((a, b) => b.caCfa - a.caCfa)
+    .map(row => `
+      <tr>
+        <td>${escapeHtml(row.plantName || "-")}</td>
+        <td>${escapeHtml(row.epm || "-")}</td>
+        <td>${escapeHtml(displayCi(row.caCi))}</td>
+        <td>${escapeHtml(displayCi(row.cfaCi))}</td>
+        <td>${escapeHtml(displaySignedCi(row.caCfa))}</td>
+        <td>${escapeHtml(row.dgsType)}</td>
+        <td>${escapeHtml(plantCornOilFlag(row.plant))}</td>
+        <td>${escapeHtml(plantFiberFlag(row.plant))}</td>
+        <td>${escapeHtml(yesNo(row.plant?.chp))}</td>
+        <td>${escapeHtml(plantCcsFlag(row.plant))}</td>
+        <td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
+      </tr>
+    `);
+}
+
+function caCfaReconciliationRecords(plants){
+  const coproductRecordsByEpm = new Map(coproductDiagnosticRecords(plants)
+    .filter(row => Number.isFinite(row.caCfa))
+    .map(row => [row.epm, row]));
+
+  return asArray(plants).map(plant => {
+    const caCandidates = activeProgramCiCandidates(plant, "CA", "Starch");
+    const cfaCandidates = activeProgramCiCandidates(plant, "Canada", "Starch");
+    const record = pairedProgramRecordForPlant(plant, "CA", "Canada", "Starch");
+    const epm = plantId(plant);
+    const inOriginal = !!record;
+    const inCoproduct = coproductRecordsByEpm.has(epm);
+    let exclusion = "Included";
+    if (!inOriginal){
+      if (!caCandidates.length && !cfaCandidates.length) exclusion = "No active CA or CFA starch CI";
+      else if (!caCandidates.length) exclusion = "No active CA starch CI";
+      else if (!cfaCandidates.length) exclusion = "No active CFA starch CI";
+    }
+    return {
+      plant,
+      epm,
+      plantName: firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name),
+      caCount: caCandidates.length,
+      cfaCount: cfaCandidates.length,
+      caCi: caCandidates.length ? Math.min(...caCandidates) : null,
+      cfaCi: cfaCandidates.length ? Math.min(...cfaCandidates) : null,
+      inOriginal,
+      inCoproduct,
+      exclusion,
+      duplicateCandidates: caCandidates.length > 1 || cfaCandidates.length > 1
+    };
+  });
+}
+
+function caCfaReconciliationRows(plants){
+  return caCfaReconciliationRecords(plants)
+    .filter(row => row.inOriginal || row.inCoproduct || row.duplicateCandidates)
+    .sort((a, b) => {
+      if (a.inOriginal !== b.inOriginal) return a.inOriginal ? -1 : 1;
+      if (a.duplicateCandidates !== b.duplicateCandidates) return a.duplicateCandidates ? -1 : 1;
+      return String(a.epm).localeCompare(String(b.epm));
+    })
+    .map(row => `
+      <tr>
+        <td>${escapeHtml(row.epm || "-")}</td>
+        <td>${escapeHtml(row.plantName || "-")}</td>
+        <td>${escapeHtml(String(row.caCount))}</td>
+        <td>${escapeHtml(String(row.cfaCount))}</td>
+        <td>${escapeHtml(displayCi(row.caCi))}</td>
+        <td>${escapeHtml(displayCi(row.cfaCi))}</td>
+        <td>${escapeHtml(row.inOriginal ? "Y" : "N")}</td>
+        <td>${escapeHtml(row.inCoproduct ? "Y" : "N")}</td>
+        <td>${escapeHtml(row.exclusion)}</td>
+      </tr>
+    `);
+}
+
+function caCfaPairingDiagnosticSummaryRows(plants){
+  const rows = caCfaReconciliationRecords(plants);
+  const paired = rows.filter(row => row.inOriginal).length;
+  const excluded = rows.filter(row => !row.inOriginal);
+  const duplicate = rows.filter(row => row.duplicateCandidates);
+  const reasons = new Map();
+  excluded.forEach(row => reasons.set(row.exclusion, (reasons.get(row.exclusion) || 0) + 1));
+  const reasonText = [...reasons.entries()].map(([reason, count]) => `${reason}: ${count}`).join("; ");
+
+  return [
+    ["Total unique plants examined", rows.length],
+    ["Total paired plants", paired],
+    ["Plants excluded", excluded.length],
+    ["Exclusion reasons", reasonText || "-"],
+    ["Plants with duplicate pathway candidates", duplicate.length],
+    ["Duplicate candidate EPMs", duplicate.map(row => row.epm).filter(Boolean).join(", ") || "-"]
+  ].map(([metric, value]) => `
+    <tr>
+      <td>${escapeHtml(metric)}</td>
+      <td>${escapeHtml(String(value))}</td>
+    </tr>
+  `);
+}
+
+function displaySignedCi(value){
+  if (!Number.isFinite(value)) return "-";
+  const rounded = fmt(value, 2);
+  return value > 0 ? `+${rounded}` : rounded;
+}
+
 async function renderMarketPathwayStats(statsEl, selectedEntries){
   if (!statsEl) return;
   if (!selectedEntries.length){
@@ -5066,6 +5560,58 @@ async function renderMarketPathwayStats(statsEl, selectedEntries){
       ["Market / Pathway", "Count", "Average CI", "Plant Rank"],
       marketPathwayComparisonRows(selectedEntries, peerEntries),
       "No pathway summary statistics available."
+    )}
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">Starch CI Comparison</div>
+    ${benchmarkTable(
+      ["Comparison", "Paired Plants", "Average Spread", "Min Spread", "Max Spread", "Std Dev"],
+      pairedProgramComparisonRows(peers, "Starch"),
+      "No paired starch CI comparisons available."
+    )}
+    <div class="muted" style="font-size:11px; margin-top:6px;">British Columbia rows do not expose a starch/fiber split in the loaded data, so BC comparisons are included in this starch table using the lowest active BC CI.</div>
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">Fiber CI Comparison</div>
+    ${benchmarkTable(
+      ["Comparison", "Paired Plants", "Average Spread", "Min Spread", "Max Spread", "Std Dev"],
+      pairedProgramComparisonRows(peers, "Fiber"),
+      "No paired fiber CI comparisons available."
+    )}
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">CI Comparison Outliers</div>
+    ${benchmarkTable(
+      ["Feed", "Pair", "Flag", "Plant", "EPM", "A CI", "B CI", "Spread", "Vs Avg", "CHP", "Fiber", "Corn Oil", "CCS", "DGS", "Capacity", "Jurisdictions"],
+      ciComparisonOutlierRows(peers),
+      "No CI comparison outliers available."
+    )}
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">Coproduct Methodology Diagnostic</div>
+    ${benchmarkTable(
+      ["DGS Type", "Comparison", "Paired Plants", "Average Spread", "Min Spread", "Max Spread", "Std Dev"],
+      coproductMethodologySummaryRows(peers),
+      "No coproduct methodology comparisons available."
+    )}
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">Coproduct Outlier Review</div>
+    ${benchmarkTable(
+      ["Plant", "EPM", "CA CI", "CFA CI", "CA-CFA", "DGS Type", "Corn Oil", "Fiber", "CHP", "CCS", "Jurisdictions"],
+      coproductOutlierReviewRows(peers),
+      "No CA-CFA coproduct outlier rows available."
+    )}
+    <div class="muted" style="font-size:11px; margin-top:6px;">California LCFS explicitly distinguishes DDGS, MDGS, WDGS, syrup, and distillers oil in starch ethanol pathway calculations. The USDA LCFS review states that switching from dry to wet DGS can reduce CI by approximately 8-10 gCO2e/MJ, largely because wet DGS avoids drying energy. This diagnostic tests whether Canadian Federal CFR scores appear to apply different coproduct or avoided-feed assumptions than California.</div>
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">CA-CFA Pairing Reconciliation</div>
+    <div class="muted" style="font-size:11px; margin-bottom:6px;">Counts are plant-level: one row per EPM using the lowest active starch CI in each jurisdiction. Duplicate active pathways are candidate rows only and do not create extra paired rows.</div>
+    ${benchmarkTable(
+      ["EPM", "Plant", "CA Starch Candidates", "CFA Starch Candidates", "Selected CA CI", "Selected CFA CI", "Original Pair", "Coproduct Pair", "Status"],
+      caCfaReconciliationRows(peers),
+      "No CA-CFA reconciliation rows available."
+    )}
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">CA-CFA Pairing Diagnostic Summary</div>
+    ${benchmarkTable(
+      ["Metric", "Value"],
+      caCfaPairingDiagnosticSummaryRows(peers),
+      "No CA-CFA diagnostic summary available."
     )}
   `;
 }
@@ -6133,6 +6679,9 @@ function compute(){
   ckf_share_pct: NaN,
   ckf_delta_g_per_mj: NaN,
   ckf_adjustment_g_per_mj: NaN,
+  yield_improvement_gal_per_bu: 0,
+  yield_scenario_baseline_gal_per_bu: YIELD_SCENARIO_BASELINE_GAL_PER_BU,
+  yield_scenario_impact_g_per_mj: 0,
   hasCI: false,
   ciDelivered: NaN,
   miles: NaN,
@@ -6221,6 +6770,12 @@ res.electricityBridgeAdj = electricityBridgeApply ? electricityBridgeInput : 0;
 
   const doMisc = getChecked("applyMisc");
   const misc = getNumber("ccsReduction");
+
+  const yieldImprovementRaw = getNumber("yieldImprovementGalBu");
+  const yieldImprovement = Number.isFinite(yieldImprovementRaw) ? yieldImprovementRaw : 0;
+  const yieldScenarioImpact = yieldImprovement * (YIELD_SCENARIO_CI_PER_0_01_GAL_BU / 0.01);
+  res.yield_improvement_gal_per_bu = yieldImprovement;
+  res.yield_scenario_impact_g_per_mj = Number.isFinite(yieldScenarioImpact) ? yieldScenarioImpact : 0;
 
   const electricityBridge =
     Number.isFinite(res.electricityBridgeAdj)
@@ -6418,6 +6973,7 @@ if (Number.isFinite(res.startCi)){
     miscReduction: doMisc ? misc : 0,
     pipelineScore,
     agReduction,
+    yieldScenarioImpact: res.yield_scenario_impact_g_per_mj,
     ckfAdjustment,
     dgsBridge,
     electricityBridge,
@@ -6559,6 +7115,7 @@ function renderOutputs(){
   const outPayout      = document.getElementById("outPayout");
   const outPayoutDetail= document.getElementById("outPayoutDetail");
   const scenarioGallonsTotal = document.getElementById("scenarioGallonsTotal");
+  const yieldScenarioImpact = document.getElementById("yieldScenarioImpact");
   const outTotalDiscountedValue = document.getElementById("outTotalDiscountedValue");
   const outFinalCreditValue = document.getElementById("outFinalCreditValue");
   const outFinalCreditValueDetail = document.getElementById("outFinalCreditValueDetail");
@@ -6607,6 +7164,7 @@ function renderOutputs(){
     if (outPayout) outPayout.textContent = "-";
     if (outPayoutDetail) outPayoutDetail.textContent = "-";
     if (scenarioGallonsTotal) scenarioGallonsTotal.textContent = "-";
+    if (yieldScenarioImpact) yieldScenarioImpact.textContent = "-";
     if (outTotalDiscountedValue) outTotalDiscountedValue.textContent = "-";
     if (outFinalCreditValue) outFinalCreditValue.textContent = "-";
     if (outFinalCreditValueDetail) outFinalCreditValueDetail.textContent = "-";
@@ -6721,8 +7279,12 @@ if (out45qValuePerGal){
       const nextBandLine = Number.isFinite(r.next_band_ci_reduction_kg_per_mmbtu)
         ? `\nNext Band: ${fmt(r.next_band_ci_reduction_kg_per_mmbtu, 2)} kg/MMBtu`
         : "";
+      const yieldLine = Number.isFinite(r.yield_scenario_impact_g_per_mj) && r.yield_scenario_impact_g_per_mj !== 0
+        ? `
+Yield scenario impact: ${r.yield_scenario_impact_g_per_mj >= 0 ? "-" : "+"}${fmt(Math.abs(r.yield_scenario_impact_g_per_mj), 2)} g/MJ`
+        : "";
       outConvLine.textContent =
-        `${fmt(r.ci45z_g_per_mj, 2)} g/MJ = ${fmt(r.emissions_kg_per_mmbtu, 2)} kg/MMBtu${nextBandLine}`;
+        `${fmt(r.ci45z_g_per_mj, 2)} g/MJ = ${fmt(r.emissions_kg_per_mmbtu, 2)} kg/MMBtu${yieldLine}${nextBandLine}`;
     } else {
       outConvLine.textContent = "-";
     }
@@ -6739,6 +7301,12 @@ if (out45qValuePerGal){
   const gallonsPerYear = scenarioGallonsPerYear();
   if (scenarioGallonsTotal){
     scenarioGallonsTotal.textContent = Number.isFinite(cap) ? fmt(cap, 1) : "-";
+  }
+  if (yieldScenarioImpact){
+    const impact = r.yield_scenario_impact_g_per_mj;
+    yieldScenarioImpact.textContent = Number.isFinite(impact)
+      ? `${impact >= 0 ? "-" : "+"}${fmt(Math.abs(impact), 2)} CI`
+      : "-";
   }
 
   let payout = NaN;
@@ -7003,7 +7571,7 @@ async function handlePlantSelectChange(){
     "caHub",
     "freightMultiplier","gPerMjPerMile",
     "subtractIluc","ilucValue",
-    "additionalGallons",
+    "additionalGallons","yieldImprovementGalBu",
     "ckf_apply","ckf_share_pct",
     "dgs_bridge_apply","dgs_bridge_type","dgs_bridge_score",
     "applyMisc","ccsReduction",

@@ -5577,27 +5577,13 @@ async function renderMarketPathwayStats(statsEl, selectedEntries){
       "No paired fiber CI comparisons available."
     )}
     <div class="marketPathwaysDivider"></div>
-    <div class="marketPathwaysSubhead">CI Comparison Outliers</div>
-    ${benchmarkTable(
-      ["Feed", "Pair", "Flag", "Plant", "EPM", "A CI", "B CI", "Spread", "Vs Avg", "CHP", "Fiber", "Corn Oil", "CCS", "DGS", "Capacity", "Jurisdictions"],
-      ciComparisonOutlierRows(peers),
-      "No CI comparison outliers available."
-    )}
-    <div class="marketPathwaysDivider"></div>
     <div class="marketPathwaysSubhead">Coproduct Methodology Diagnostic</div>
     ${benchmarkTable(
       ["DGS Type", "Comparison", "Paired Plants", "Average Spread", "Min Spread", "Max Spread", "Std Dev"],
       coproductMethodologySummaryRows(peers),
       "No coproduct methodology comparisons available."
     )}
-    <div class="marketPathwaysDivider"></div>
-    <div class="marketPathwaysSubhead">Coproduct Outlier Review</div>
-    ${benchmarkTable(
-      ["Plant", "EPM", "CA CI", "CFA CI", "CA-CFA", "DGS Type", "Corn Oil", "Fiber", "CHP", "CCS", "Jurisdictions"],
-      coproductOutlierReviewRows(peers),
-      "No CA-CFA coproduct outlier rows available."
-    )}
-    <div class="muted" style="font-size:11px; margin-top:6px;">California LCFS explicitly distinguishes DDGS, MDGS, WDGS, syrup, and distillers oil in starch ethanol pathway calculations. The USDA LCFS review states that switching from dry to wet DGS can reduce CI by approximately 8-10 gCO2e/MJ, largely because wet DGS avoids drying energy. This diagnostic tests whether Canadian Federal CFR scores appear to apply different coproduct or avoided-feed assumptions than California.</div>
+    <div class="muted" style="font-size:11px; margin-top:6px;">California LCFS explicitly distinguishes DDGS, MDGS, WDGS, syrup, and distillers oil in starch ethanol pathway calculations. The USDA LCFS review states that switching from dry to wet DGS can reduce CI by approximately 8-10 gCO2e/MJ, largely because wet DGS avoids drying energy. This diagnostic tests whether Canadian Federal CFR scores appear to apply different coproduct or avoided-feed assumptions than California. Outlier detail has been moved to <a href="ci_comparison_outlier_report.html">CI Comparison Outlier Report</a>.</div>
     <div class="marketPathwaysDivider"></div>
     <div class="marketPathwaysSubhead">CA-CFA Pairing Reconciliation</div>
     <div class="muted" style="font-size:11px; margin-bottom:6px;">Counts are plant-level: one row per EPM using the lowest active starch CI in each jurisdiction. Duplicate active pathways are candidate rows only and do not create extra paired rows.</div>

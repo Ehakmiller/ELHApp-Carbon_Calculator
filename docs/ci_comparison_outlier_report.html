@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CI Comparison Outlier Report</title>
+  <style>
+    :root{
+      --bg:#f6f7f9;
+      --panel:#ffffff;
+      --text:#172033;
+      --muted:#5d687a;
+      --line:#d8dde6;
+      --accent:#1d5f8f;
+      --high:#b54708;
+      --low:#175cd3;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:14px;
+      line-height:1.35;
+    }
+    main{max-width:1480px; margin:0 auto; padding:20px;}
+    header{display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:14px;}
+    h1{font-size:24px; margin:0 0 4px; letter-spacing:0;}
+    h2{font-size:16px; margin:0 0 10px; letter-spacing:0;}
+    a{color:var(--accent); text-decoration:none;}
+    a:hover{text-decoration:underline;}
+    .muted{color:var(--muted);}
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:14px;
+      margin-bottom:14px;
+      box-shadow:0 1px 2px rgba(17,24,39,0.04);
+    }
+    .toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:10px 0 4px;}
+    label{font-size:12px; color:var(--muted); display:flex; gap:6px; align-items:center;}
+    select,input{height:32px; border:1px solid var(--line); border-radius:6px; padding:0 9px; background:#fff; color:var(--text);}
+    input{min-width:240px;}
+    .summary{display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;}
+    .chip{border:1px solid var(--line); border-radius:999px; padding:5px 9px; background:#fafbfc; font-size:12px; color:var(--muted);}
+    .tableWrap{overflow:auto; border:1px solid var(--line); border-radius:8px;}
+    table{width:100%; border-collapse:collapse; min-width:1180px; background:#fff;}
+    th,td{padding:7px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; white-space:normal; overflow-wrap:anywhere;}
+    th{position:sticky; top:0; background:#f0f3f7; z-index:1; font-size:12px; font-weight:700; color:#263247;}
+    tr:last-child td{border-bottom:0;}
+    .num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+    .flag{font-weight:700; white-space:nowrap;}
+    .high{color:var(--high);}
+    .low{color:var(--low);}
+    .status{padding:10px; color:var(--muted);}
+    @media (max-width:760px){main{padding:12px;} header{display:block;} input{min-width:170px; width:100%;} .toolbar{align-items:stretch;} label{width:100%; display:block;} select,input{width:100%; margin-top:4px;}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>CI Comparison Outlier Report</h1>
+      <div class="muted">Diagnostic table pulled out of the calculator. One row per plant per comparison, using the lowest active CI in each program.</div>
+    </div>
+    <div><a href="lcfs_45z_calculator_v2.html">Back to calculator</a></div>
+  </header>
+
+  <section class="panel">
+    <h2>CI Comparison Outliers</h2>
+    <div class="muted">Rows are sorted by absolute deviation from each comparison average. High + and Low - flag the three largest positive and negative outliers within each pair.</div>
+    <div class="toolbar">
+      <label>Feed
+        <select id="feedFilter"><option value="">All</option><option>Starch</option><option>Fiber</option></select>
+      </label>
+      <label>Pair
+        <select id="pairFilter"><option value="">All</option></select>
+      </label>
+      <label>Flag
+        <select id="flagFilter"><option value="">All</option><option>High +</option><option>Low -</option><option>No flag</option></select>
+      </label>
+      <label>Search
+        <input id="searchBox" type="search" placeholder="Plant, EPM, jurisdiction, DGS" />
+      </label>
+    </div>
+    <div id="summary" class="summary"></div>
+    <div class="tableWrap"><table id="outlierTable"></table></div>
+  </section>
+
+  <section class="panel">
+    <h2>Coproduct Outlier Review</h2>
+    <div class="muted">CA-CFA starch comparison sorted from highest CA-CFA spread to lowest.</div>
+    <div class="tableWrap"><table id="coproductTable"></table></div>
+  </section>
+</main>
+<script>
+const WORKER_BASE_URL = "https://flat-silence-a8a3.elhakmiller.workers.dev";
+const SEARCH_URL = `${WORKER_BASE_URL}/search`;
+const PLANT_URL = `${WORKER_BASE_URL}/plant`;
+let allOutliers = [];
+let coproductRows = [];
+
+function asArray(value){ return Array.isArray(value) ? value : (value ? [value] : []); }
+function displayValue(value){ return value === null || value === undefined || value === "" ? "-" : String(value); }
+function fmt(n, digits=2){ return Number.isFinite(Number(n)) ? Number(n).toFixed(digits) : "-"; }
+function displayCi(value){ return Number.isFinite(Number(value)) ? Number(value).toFixed(2) : displayValue(value); }
+function displaySignedCi(value){ if (!Number.isFinite(value)) return "-"; const s = fmt(value, 2); return value > 0 ? `+${s}` : s; }
+function escapeHtml(value){ return displayValue(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+function firstNonEmpty(...vals){ for (const v of vals){ const s = String(v ?? "").trim(); if (s) return s; } return ""; }
+function avg(values){ const nums = values.filter(Number.isFinite); return nums.length ? nums.reduce((s,v)=>s+v,0)/nums.length : null; }
+function plantId(p){ return String(p?.EPM_NUMBER ?? p?.epm_number ?? p?.epm ?? p?.EPM ?? p?.id ?? p?.facility_id ?? p?.ca_facility_id ?? p?.fac_info?.epm ?? p?.fac_info?.facility_id ?? p?.__id ?? "").trim(); }
+function getDryerText(p){ const d = p?.dryer_types ?? p?.dryer_used ?? ""; return Array.isArray(d) ? d.join(" ") : String(d ?? ""); }
+function asBool(v){ if (v === true) return true; if (v === false || v === null || v === undefined) return false; if (typeof v === "number") return Number.isFinite(v) && v !== 0; const s = String(v).trim().toLowerCase(); return !!s && !["0","no","false","n","none","null","<na>"].includes(s); }
+function yesNo(value){ return asBool(value) ? "Y" : "N"; }
+function normalizePlant(p, i){
+  const fac = p?.fac_info || {}, detail = p?.lcfs_detail || {}, tech = p?.tech_flags || {}, co2 = p?.co2_info || {};
+  return {
+    ...p,
+    facility_id: p?.facility_id ?? p?.EPM_NUMBER ?? p?.epm_number ?? p?.epm ?? p?.EPM ?? p?.id ?? fac.epm ?? fac.facility_id ?? null,
+    ca_facility_id: p?.ca_facility_id ?? fac.epm ?? fac.facility_id ?? null,
+    plant_name: p?.plant_name ?? fac.plant_name ?? null,
+    state: p?.state ?? fac.state ?? null,
+    city: p?.city ?? fac.city ?? null,
+    ethanol_capacity_mgy: Number(p?.ethanol_capacity_mgy ?? fac.ethanol_capacity_mgy),
+    ca_detail: p?.ca_detail ?? detail.ca_detail ?? [],
+    or_detail: p?.or_detail ?? detail.or_detail ?? [],
+    wa_lcfs_ci_detail: p?.wa_lcfs_ci_detail ?? detail.wa_lcfs_ci_detail ?? [],
+    canadian_fed_ci_detail: p?.canadian_fed_ci_detail ?? detail.canadian_fed_ci_detail ?? null,
+    bc_lcfs_ci_detail: p?.bc_lcfs_ci_detail ?? detail.bc_lcfs_ci_detail ?? [],
+    chp: p?.chp ?? tech.chp ?? null,
+    dco_enhancement: p?.dco_enhancement ?? tech.dco_enhancement ?? p?.["DCO Enhancement"] ?? p?.["DCO Enhancement\n(lb/bu)"] ?? p?.["ICM FOT"] ?? tech["ICM FOT"] ?? null,
+    fiber_technology: p?.fiber_technology ?? tech.fiber_technology ?? null,
+    dryer_types: p?.dryer_types ?? tech.dryer_types ?? null,
+    dryer_used: p?.dryer_used ?? tech.dryer_used ?? null,
+    co2_pipeline_direct: p?.co2_pipeline_direct ?? co2.co2_pipeline_direct ?? null,
+    co2_pipeline_3rd_party: p?.co2_pipeline_3rd_party ?? co2.co2_pipeline_3rd_party ?? null,
+    co2_sponsor: p?.co2_sponsor ?? co2.co2_sponsor ?? null,
+    __id: String(p?.epm ?? p?.EPM ?? p?.facility_id ?? p?.ca_facility_id ?? i).trim()
+  };
+}
+function programCiRows(plant, program){
+  if (!plant || typeof plant !== "object") return [];
+  return program === "CA" ? asArray(plant.ca_detail ?? plant.lcfs_detail?.ca_detail) :
+    program === "OR" ? asArray(plant.or_detail ?? plant.lcfs_detail?.or_detail) :
+    program === "WA" ? asArray(plant.wa_lcfs_ci_detail) :
+    program === "BC" ? asArray(plant.bc_lcfs_ci_detail) :
+    program === "Canada" ? asArray(plant.canadian_fed_ci_detail) : [];
+}
+function isActivePathway(row){
+  const status = String(row?.status ?? row?.Status ?? "").trim().toLowerCase();
+  if (status) return status === "active";
+  const active = String(row?.Active ?? "").trim().toLowerCase();
+  if (active) return active === "1" || active === "true" || active === "active";
+  const expiry = row?.expiry_date ?? row?.["Eff. End Qtr/Yr"];
+  if (!expiry) return true;
+  const parsed = Date.parse(expiry);
+  return Number.isNaN(parsed) ? true : parsed >= Date.now();
+}
+function programFeedstockClass(row){
+  const text = [row?.pathway_type,row?.feedstock,row?.feedstock_class,row?.grain_source,row?.fuel_type,row?.pathway,row?.pathway_base,row?.["Fuel Name"],row?.["Pathway Description"]].filter(v => v !== null && v !== undefined).join(" ").toLowerCase();
+  if (/fiber|cellulosic|biomass/.test(text)) return "Fiber";
+  if (/starch|corn|sorghum|wheat|grain/.test(text)) return "Starch";
+  return "Unknown";
+}
+function benchmarkCiValue(program, row){
+  const value = program === "WA" ? row?.CI : program === "BC" ? row?.carbon_intensity_gCO2e_per_MJ : program === "Canada" ? row?.approved_ci_gco2e_mj : row?.ci_score;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+function activeProgramCiCandidates(plant, program, feedstockClass){
+  return programCiRows(plant, program).filter(isActivePathway).filter(row => program === "BC" || programFeedstockClass(row) === feedstockClass).map(row => benchmarkCiValue(program, row)).filter(ci => Number.isFinite(ci) && ci > 0);
+}
+function lowestActiveProgramCi(plant, program, feedstockClass){ const scores = activeProgramCiCandidates(plant, program, feedstockClass); return scores.length ? Math.min(...scores) : null; }
+function pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass){
+  const firstCandidates = activeProgramCiCandidates(plant, firstKey, feedstockClass);
+  const secondCandidates = activeProgramCiCandidates(plant, secondKey, feedstockClass);
+  if (!firstCandidates.length || !secondCandidates.length) return null;
+  const firstCi = Math.min(...firstCandidates), secondCi = Math.min(...secondCandidates);
+  return { plant, firstCi, secondCi, spread:firstCi-secondCi };
+}
+function ciComparisonPairs(feedstockClass){
+  const pairs = [["CA/CFA","California","CA","Canadian Federal","Canada"],["OR/CFA","Oregon","OR","Canadian Federal","Canada"],["BC/CFA","British Columbia","BC","Canadian Federal","Canada"],["CA/BC","California","CA","British Columbia","BC"],["WA/BC","Washington","WA","British Columbia","BC"],["CA/OR","California","CA","Oregon","OR"],["CA/WA","California","CA","Washington","WA"],["OR/WA","Oregon","OR","Washington","WA"]];
+  return pairs.filter(([, , firstKey, , secondKey]) => feedstockClass !== "Fiber" || (firstKey !== "BC" && secondKey !== "BC"));
+}
+function outlierKey(row){ return `${row.feedstockClass}|${row.shortLabel}|${row.epm}|${row.spread}`; }
+function pairedProgramComparisonRecords(plants, feedstockClass){
+  return ciComparisonPairs(feedstockClass).flatMap(([shortLabel, firstLabel, firstKey, secondLabel, secondKey]) => {
+    const records = asArray(plants).map(plant => {
+      const record = pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass);
+      if (!record) return null;
+      return { feedstockClass, comparison:`${firstLabel} vs ${secondLabel}`, shortLabel, plant, plantName:firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name), epm:plantId(plant), firstCi:record.firstCi, secondCi:record.secondCi, spread:record.spread };
+    }).filter(Boolean);
+    const mean = avg(records.map(row => row.spread));
+    const withDeviation = records.map(row => ({...row, averageSpread:mean, deviation:row.spread-mean, absDeviation:Math.abs(row.spread-mean)}));
+    const positives = [...withDeviation].filter(row => row.deviation > 0).sort((a,b)=>b.deviation-a.deviation).slice(0,3);
+    const negatives = [...withDeviation].filter(row => row.deviation < 0).sort((a,b)=>a.deviation-b.deviation).slice(0,3);
+    const positiveKeys = new Set(positives.map(outlierKey));
+    const negativeKeys = new Set(negatives.map(outlierKey));
+    return withDeviation.sort((a,b)=>b.absDeviation-a.absDeviation).map(row => ({...row, outlierFlag:positiveKeys.has(outlierKey(row)) ? "High +" : negativeKeys.has(outlierKey(row)) ? "Low -" : ""}));
+  });
+}
+function plantCapacityLabel(plant){ const cap = Number(plant?.ethanol_capacity_mgy ?? plant?.fac_info?.ethanol_capacity_mgy); return Number.isFinite(cap) ? fmt(cap, 1) : "-"; }
+function plantFiberFlag(plant){ return yesNo(plant?.fiber_technology || (lowestActiveProgramCi(plant,"CA","Fiber") !== null)); }
+function plantCornOilFlag(plant){ return yesNo(plant?.dco_enhancement || plant?.operating_permit?.equipment?.corn_oil_systems?.present || plant?.operating_permit?.equipment?.technology_flags?.corn_oil_extraction || plant?.operating_permit?.equipment?.special_equipment?.corn_oil_extraction); }
+function plantCcsFlag(plant){ const direct = String(plant?.co2_pipeline_direct ?? "").toUpperCase(); const third = String(plant?.co2_pipeline_3rd_party ?? "").toUpperCase(); const sponsor = String(plant?.co2_sponsor ?? "").toUpperCase(); return (direct.includes("DIRECT") || third.includes("TALL") || third.includes("TRAILBLAZER") || sponsor.includes("TALL") || sponsor.includes("TRAILBLAZER")) ? "Y" : "N"; }
+function plantCoproductLabel(plant){
+  const details = [...programCiRows(plant,"CA"), ...programCiRows(plant,"OR")];
+  const text = details.map(row => firstNonEmpty(row?.coproduct_type,row?.co_product,row?.coproduct)).filter(Boolean).join(" ");
+  const combined = `${text} ${getDryerText(plant)}`.toLowerCase();
+  const hasWet = /\bwet\b|wdgs|wet distillers|wetcake/.test(combined);
+  const hasDry = /\bdry\b|ddgs|dried distillers|dryer/.test(combined);
+  if (hasWet && hasDry) return "Mixed"; if (hasDry) return "Dry"; if (hasWet) return "Wet"; return "-";
+}
+function plantJurisdictionsLabel(plant){
+  const jurisdictions = [];
+  if (lowestActiveProgramCi(plant,"CA","Starch") !== null || lowestActiveProgramCi(plant,"CA","Fiber") !== null) jurisdictions.push("CA");
+  if (lowestActiveProgramCi(plant,"OR","Starch") !== null || lowestActiveProgramCi(plant,"OR","Fiber") !== null) jurisdictions.push("OR");
+  if (lowestActiveProgramCi(plant,"WA","Starch") !== null || lowestActiveProgramCi(plant,"WA","Fiber") !== null) jurisdictions.push("WA");
+  if (lowestActiveProgramCi(plant,"BC","Starch") !== null) jurisdictions.push("BC");
+  if (lowestActiveProgramCi(plant,"Canada","Starch") !== null || lowestActiveProgramCi(plant,"Canada","Fiber") !== null) jurisdictions.push("CFA");
+  return jurisdictions.length ? jurisdictions.join(", ") : "-";
+}
+function coproductMethodologyText(row){ return [row?.coproduct_type,row?.co_product,row?.coproduct,row?.feedstock,row?.feedstock_class,row?.grain_source,row?.fuel_type,row?.pathway_type,row?.pathway,row?.pathway_base,row?.detail,row?.status,row?.source,row?.["Fuel Name"],row?.["Pathway Description"],row?.["Fuel Pathway Code"]].filter(v => v !== null && v !== undefined).join(" "); }
+function plantCoproductMethodologyType(plant){
+  const rows = [...programCiRows(plant,"CA"), ...programCiRows(plant,"BC"), ...programCiRows(plant,"Canada")];
+  const text = `${rows.map(coproductMethodologyText).join(" ")} ${getDryerText(plant)} ${plant?.operating_permit?.equipment?.ddgs_system?.description ?? ""}`.toLowerCase();
+  const modified = /\bmdgs\b|\bmwdgs\b|modified|mixed|wet\s*\/\s*dry|wet\s+and\s+dry|wdgs\s*\/\s*ddgs|multiple/.test(text);
+  const dry = /\bddgs\b|dry distillers|dried distillers|\bdry\b|dryer/.test(text);
+  const wet = /\bwdgs\b|wet distillers|\bwet\b|wetcake/.test(text);
+  if (modified || (wet && dry)) return "Modified/Mixed"; if (dry) return "Dry"; if (wet) return "Wet"; return "Unknown";
+}
+function coproductDiagnosticRecords(plants){
+  return asArray(plants).map(plant => {
+    const caCi = lowestActiveProgramCi(plant,"CA","Starch"), cfaCi = lowestActiveProgramCi(plant,"Canada","Starch"), bcCi = lowestActiveProgramCi(plant,"BC","Starch");
+    const caCfa = Number.isFinite(caCi) && Number.isFinite(cfaCi) ? caCi-cfaCi : null;
+    if (!Number.isFinite(caCfa)) return null;
+    return { plant, plantName:firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name), epm:plantId(plant), dgsType:plantCoproductMethodologyType(plant), caCi, cfaCi, bcCi, caCfa };
+  }).filter(Boolean).sort((a,b)=>b.caCfa-a.caCfa);
+}
+async function fetchJson(url){ const resp = await fetch(url, {cache:"no-store"}); if (!resp.ok) throw new Error(`${resp.status} ${await resp.text().catch(()=>"")}`); return resp.json(); }
+async function fetchPlantDetail(id){ const raw = await fetchJson(`${PLANT_URL}?id=${encodeURIComponent(id)}`); const row = Array.isArray(raw) ? raw[0] : (raw?.plant || raw?.row || raw?.data || raw); return normalizePlant(row, 0); }
+async function loadPlants(){
+  const raw = await fetchJson(SEARCH_URL);
+  const rows = Array.isArray(raw) ? raw : (raw?.plants || raw?.rows || raw?.data || raw?.results || raw?.items || []);
+  const ids = [...new Set(rows.map((p,i)=>plantId(normalizePlant(p,i))).filter(Boolean))];
+  const plants = [];
+  for (let i=0; i<ids.length; i+=8){
+    const batch = ids.slice(i, i+8);
+    const got = await Promise.all(batch.map(id => fetchPlantDetail(id).catch(() => null)));
+    plants.push(...got.filter(Boolean));
+    document.getElementById("summary").innerHTML = `<span class="chip">Loaded ${plants.length} of ${ids.length} plants</span>`;
+  }
+  return plants;
+}
+function renderSummary(rows){
+  const flagged = rows.filter(r => r.outlierFlag).length;
+  const pairs = new Set(rows.map(r => r.shortLabel)).size;
+  document.getElementById("summary").innerHTML = `<span class="chip">Rows: ${rows.length}</span><span class="chip">Flagged: ${flagged}</span><span class="chip">Pairs: ${pairs}</span>`;
+}
+function outlierTableRows(rows){
+  return rows.map(row => `<tr>
+    <td>${escapeHtml(row.feedstockClass)}</td><td>${escapeHtml(row.shortLabel)}</td><td class="flag ${row.outlierFlag === "High +" ? "high" : row.outlierFlag === "Low -" ? "low" : ""}">${escapeHtml(row.outlierFlag || "")}</td><td>${escapeHtml(row.plantName || "-")}</td><td>${escapeHtml(row.epm || "-")}</td>
+    <td class="num">${escapeHtml(displayCi(row.firstCi))}</td><td class="num">${escapeHtml(displayCi(row.secondCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.spread))}</td><td class="num">${escapeHtml(displaySignedCi(row.deviation))}</td>
+    <td>${escapeHtml(yesNo(row.plant?.chp))}</td><td>${escapeHtml(plantFiberFlag(row.plant))}</td><td>${escapeHtml(plantCornOilFlag(row.plant))}</td><td>${escapeHtml(plantCcsFlag(row.plant))}</td><td>${escapeHtml(plantCoproductLabel(row.plant))}</td><td class="num">${escapeHtml(plantCapacityLabel(row.plant))}</td><td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
+  </tr>`).join("");
+}
+function coproductTableRows(rows){
+  return rows.map(row => `<tr><td>${escapeHtml(row.plantName || "-")}</td><td>${escapeHtml(row.epm || "-")}</td><td class="num">${escapeHtml(displayCi(row.caCi))}</td><td class="num">${escapeHtml(displayCi(row.cfaCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.caCfa))}</td><td>${escapeHtml(row.dgsType)}</td><td>${escapeHtml(plantCornOilFlag(row.plant))}</td><td>${escapeHtml(plantFiberFlag(row.plant))}</td><td>${escapeHtml(yesNo(row.plant?.chp))}</td><td>${escapeHtml(plantCcsFlag(row.plant))}</td><td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td></tr>`).join("");
+}
+function render(){
+  const feed = document.getElementById("feedFilter").value;
+  const pair = document.getElementById("pairFilter").value;
+  const flag = document.getElementById("flagFilter").value;
+  const q = document.getElementById("searchBox").value.trim().toLowerCase();
+  let rows = allOutliers.filter(row => (!feed || row.feedstockClass === feed) && (!pair || row.shortLabel === pair) && (!flag || (flag === "No flag" ? !row.outlierFlag : row.outlierFlag === flag)));
+  if (q) rows = rows.filter(row => [row.feedstockClass,row.shortLabel,row.outlierFlag,row.plantName,row.epm,plantCoproductLabel(row.plant),plantJurisdictionsLabel(row.plant)].join(" ").toLowerCase().includes(q));
+  renderSummary(rows);
+  document.getElementById("outlierTable").innerHTML = `<thead><tr><th>Feed</th><th>Pair</th><th>Flag</th><th>Plant</th><th>EPM</th><th>A CI</th><th>B CI</th><th>Spread</th><th>Vs Avg</th><th>CHP</th><th>Fiber</th><th>Corn Oil</th><th>CCS</th><th>DGS</th><th>Capacity</th><th>Jurisdictions</th></tr></thead><tbody>${outlierTableRows(rows) || `<tr><td colspan="16" class="status">No rows match the current filters.</td></tr>`}</tbody>`;
+  document.getElementById("coproductTable").innerHTML = `<thead><tr><th>Plant</th><th>EPM</th><th>CA CI</th><th>CFA CI</th><th>CA-CFA</th><th>DGS Type</th><th>Corn Oil</th><th>Fiber</th><th>CHP</th><th>CCS</th><th>Jurisdictions</th></tr></thead><tbody>${coproductTableRows(coproductRows) || `<tr><td colspan="11" class="status">No coproduct outlier rows available.</td></tr>`}</tbody>`;
+}
+async function init(){
+  document.getElementById("outlierTable").innerHTML = `<tbody><tr><td class="status">Loading outlier report...</td></tr></tbody>`;
+  const plants = await loadPlants();
+  allOutliers = [...pairedProgramComparisonRecords(plants,"Starch"), ...pairedProgramComparisonRecords(plants,"Fiber")];
+  coproductRows = coproductDiagnosticRecords(plants);
+  const pairFilter = document.getElementById("pairFilter");
+  [...new Set(allOutliers.map(row => row.shortLabel))].sort().forEach(pair => pairFilter.insertAdjacentHTML("beforeend", `<option>${escapeHtml(pair)}</option>`));
+  ["feedFilter","pairFilter","flagFilter","searchBox"].forEach(id => document.getElementById(id).addEventListener("input", render));
+  render();
+}
+init().catch(err => {
+  console.error(err);
+  document.getElementById("summary").innerHTML = `<span class="chip">Load failed</span>`;
+  document.getElementById("outlierTable").innerHTML = `<tbody><tr><td class="status">Failed to load report: ${escapeHtml(err.message)}</td></tr></tbody>`;
+});
+</script>
+</body>
+</html>

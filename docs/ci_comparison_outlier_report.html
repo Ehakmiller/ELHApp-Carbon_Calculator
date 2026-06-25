@@ -82,7 +82,7 @@
         <select id="flagFilter"><option value="">All</option><option>High +</option><option>Low -</option><option>No flag</option></select>
       </label>
       <label>Search
-        <input id="searchBox" type="search" placeholder="Plant, EPM, jurisdiction, DGS" />
+        <input id="searchBox" type="search" placeholder="Plant, jurisdiction, DGS" />
       </label>
     </div>
     <div id="summary" class="summary"></div>
@@ -193,7 +193,9 @@ function pairedProgramComparisonRecords(plants, feedstockClass){
       return { feedstockClass, comparison:`${firstLabel} vs ${secondLabel}`, shortLabel, plant, plantName:firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name), epm:plantId(plant), firstCi:record.firstCi, secondCi:record.secondCi, spread:record.spread };
     }).filter(Boolean);
     const mean = avg(records.map(row => row.spread));
-    const withDeviation = records.map(row => ({...row, averageSpread:mean, deviation:row.spread-mean, absDeviation:Math.abs(row.spread-mean)}));
+    const firstMean = avg(records.map(row => row.firstCi));
+    const secondMean = avg(records.map(row => row.secondCi));
+    const withDeviation = records.map(row => ({...row, averageSpread:mean, firstAverage:firstMean, secondAverage:secondMean, deviation:row.spread-mean, firstDeviation:row.firstCi-firstMean, secondDeviation:row.secondCi-secondMean, absDeviation:Math.abs(row.spread-mean)}));
     const positives = [...withDeviation].filter(row => row.deviation > 0).sort((a,b)=>b.deviation-a.deviation).slice(0,3);
     const negatives = [...withDeviation].filter(row => row.deviation < 0).sort((a,b)=>a.deviation-b.deviation).slice(0,3);
     const positiveKeys = new Set(positives.map(outlierKey));
@@ -232,12 +234,15 @@ function plantCoproductMethodologyType(plant){
   if (modified || (wet && dry)) return "Modified/Mixed"; if (dry) return "Dry"; if (wet) return "Wet"; return "Unknown";
 }
 function coproductDiagnosticRecords(plants){
-  return asArray(plants).map(plant => {
+  const records = asArray(plants).map(plant => {
     const caCi = lowestActiveProgramCi(plant,"CA","Starch"), cfaCi = lowestActiveProgramCi(plant,"Canada","Starch"), bcCi = lowestActiveProgramCi(plant,"BC","Starch");
     const caCfa = Number.isFinite(caCi) && Number.isFinite(cfaCi) ? caCi-cfaCi : null;
     if (!Number.isFinite(caCfa)) return null;
     return { plant, plantName:firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name), epm:plantId(plant), dgsType:plantCoproductMethodologyType(plant), caCi, cfaCi, bcCi, caCfa };
-  }).filter(Boolean).sort((a,b)=>b.caCfa-a.caCfa);
+  }).filter(Boolean);
+  const caMean = avg(records.map(row => row.caCi));
+  const cfaMean = avg(records.map(row => row.cfaCi));
+  return records.map(row => ({...row, caAverage:caMean, cfaAverage:cfaMean, caDeviation:row.caCi-caMean, cfaDeviation:row.cfaCi-cfaMean})).sort((a,b)=>b.caCfa-a.caCfa);
 }
 async function fetchJson(url){ const resp = await fetch(url, {cache:"no-store"}); if (!resp.ok) throw new Error(`${resp.status} ${await resp.text().catch(()=>"")}`); return resp.json(); }
 async function fetchPlantDetail(id){ const raw = await fetchJson(`${PLANT_URL}?id=${encodeURIComponent(id)}`); const row = Array.isArray(raw) ? raw[0] : (raw?.plant || raw?.row || raw?.data || raw); return normalizePlant(row, 0); }
@@ -261,13 +266,13 @@ function renderSummary(rows){
 }
 function outlierTableRows(rows){
   return rows.map(row => `<tr>
-    <td>${escapeHtml(row.feedstockClass)}</td><td>${escapeHtml(row.shortLabel)}</td><td class="flag ${row.outlierFlag === "High +" ? "high" : row.outlierFlag === "Low -" ? "low" : ""}">${escapeHtml(row.outlierFlag || "")}</td><td>${escapeHtml(row.plantName || "-")}</td><td>${escapeHtml(row.epm || "-")}</td>
-    <td class="num">${escapeHtml(displayCi(row.firstCi))}</td><td class="num">${escapeHtml(displayCi(row.secondCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.spread))}</td><td class="num">${escapeHtml(displaySignedCi(row.deviation))}</td>
-    <td>${escapeHtml(yesNo(row.plant?.chp))}</td><td>${escapeHtml(plantFiberFlag(row.plant))}</td><td>${escapeHtml(plantCornOilFlag(row.plant))}</td><td>${escapeHtml(plantCcsFlag(row.plant))}</td><td>${escapeHtml(plantCoproductLabel(row.plant))}</td><td class="num">${escapeHtml(plantCapacityLabel(row.plant))}</td><td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
+    <td>${escapeHtml(row.feedstockClass)}</td><td>${escapeHtml(row.shortLabel)}</td><td class="flag ${row.outlierFlag === "High +" ? "high" : row.outlierFlag === "Low -" ? "low" : ""}">${escapeHtml(row.outlierFlag || "")}</td><td>${escapeHtml(row.plantName || "-")}</td>
+    <td class="num">${escapeHtml(displayCi(row.firstCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.firstDeviation))}</td><td class="num">${escapeHtml(displayCi(row.secondCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.secondDeviation))}</td><td class="num">${escapeHtml(displaySignedCi(row.spread))}</td><td class="num">${escapeHtml(displaySignedCi(row.deviation))}</td>
+    <td>${escapeHtml(yesNo(row.plant?.chp))}</td><td>${escapeHtml(plantCcsFlag(row.plant))}</td><td>${escapeHtml(plantCoproductLabel(row.plant))}</td><td class="num">${escapeHtml(plantCapacityLabel(row.plant))}</td><td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
   </tr>`).join("");
 }
 function coproductTableRows(rows){
-  return rows.map(row => `<tr><td>${escapeHtml(row.plantName || "-")}</td><td>${escapeHtml(row.epm || "-")}</td><td class="num">${escapeHtml(displayCi(row.caCi))}</td><td class="num">${escapeHtml(displayCi(row.cfaCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.caCfa))}</td><td>${escapeHtml(row.dgsType)}</td><td>${escapeHtml(plantCornOilFlag(row.plant))}</td><td>${escapeHtml(plantFiberFlag(row.plant))}</td><td>${escapeHtml(yesNo(row.plant?.chp))}</td><td>${escapeHtml(plantCcsFlag(row.plant))}</td><td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td></tr>`).join("");
+  return rows.map(row => `<tr><td>${escapeHtml(row.plantName || "-")}</td><td class="num">${escapeHtml(displayCi(row.caCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.caDeviation))}</td><td class="num">${escapeHtml(displayCi(row.cfaCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.cfaDeviation))}</td><td class="num">${escapeHtml(displaySignedCi(row.caCfa))}</td><td>${escapeHtml(row.dgsType)}</td><td>${escapeHtml(yesNo(row.plant?.chp))}</td><td>${escapeHtml(plantCcsFlag(row.plant))}</td><td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td></tr>`).join("");
 }
 function render(){
   const feed = document.getElementById("feedFilter").value;
@@ -275,10 +280,10 @@ function render(){
   const flag = document.getElementById("flagFilter").value;
   const q = document.getElementById("searchBox").value.trim().toLowerCase();
   let rows = allOutliers.filter(row => (!feed || row.feedstockClass === feed) && (!pair || row.shortLabel === pair) && (!flag || (flag === "No flag" ? !row.outlierFlag : row.outlierFlag === flag)));
-  if (q) rows = rows.filter(row => [row.feedstockClass,row.shortLabel,row.outlierFlag,row.plantName,row.epm,plantCoproductLabel(row.plant),plantJurisdictionsLabel(row.plant)].join(" ").toLowerCase().includes(q));
+  if (q) rows = rows.filter(row => [row.feedstockClass,row.shortLabel,row.outlierFlag,row.plantName,plantCoproductLabel(row.plant),plantJurisdictionsLabel(row.plant)].join(" ").toLowerCase().includes(q));
   renderSummary(rows);
-  document.getElementById("outlierTable").innerHTML = `<thead><tr><th>Feed</th><th>Pair</th><th>Flag</th><th>Plant</th><th>EPM</th><th>A CI</th><th>B CI</th><th>Spread</th><th>Vs Avg</th><th>CHP</th><th>Fiber</th><th>Corn Oil</th><th>CCS</th><th>DGS</th><th>Capacity</th><th>Jurisdictions</th></tr></thead><tbody>${outlierTableRows(rows) || `<tr><td colspan="16" class="status">No rows match the current filters.</td></tr>`}</tbody>`;
-  document.getElementById("coproductTable").innerHTML = `<thead><tr><th>Plant</th><th>EPM</th><th>CA CI</th><th>CFA CI</th><th>CA-CFA</th><th>DGS Type</th><th>Corn Oil</th><th>Fiber</th><th>CHP</th><th>CCS</th><th>Jurisdictions</th></tr></thead><tbody>${coproductTableRows(coproductRows) || `<tr><td colspan="11" class="status">No coproduct outlier rows available.</td></tr>`}</tbody>`;
+  document.getElementById("outlierTable").innerHTML = `<thead><tr><th>Feed</th><th>Pair</th><th>Flag</th><th>Plant</th><th>A CI</th><th>A vs Avg</th><th>B CI</th><th>B vs Avg</th><th>Spread</th><th>Spread vs Avg</th><th>CHP</th><th>CCS</th><th>DGS</th><th>Capacity</th><th>Jurisdictions</th></tr></thead><tbody>${outlierTableRows(rows) || `<tr><td colspan="15" class="status">No rows match the current filters.</td></tr>`}</tbody>`;
+  document.getElementById("coproductTable").innerHTML = `<thead><tr><th>Plant</th><th>CA CI</th><th>CA vs Avg</th><th>CFA CI</th><th>CFA vs Avg</th><th>CA-CFA</th><th>DGS Type</th><th>CHP</th><th>CCS</th><th>Jurisdictions</th></tr></thead><tbody>${coproductTableRows(coproductRows) || `<tr><td colspan="10" class="status">No coproduct outlier rows available.</td></tr>`}</tbody>`;
 }
 async function init(){
   document.getElementById("outlierTable").innerHTML = `<tbody><tr><td class="status">Loading outlier report...</td></tr></tbody>`;

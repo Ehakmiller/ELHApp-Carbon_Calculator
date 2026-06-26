@@ -5834,7 +5834,26 @@ const clean = (s) => {
   return t;
 };
 
-const regParts = [clean(d6), clean(d3), clean(ep)].filter(Boolean);
+const programRowsPresent = (rows) => asArray(rows).length > 0;
+const hasProgramValue = (...values) => values.some(value => clean(value));
+const hasAnyNamedProgramFlag = (names) => names.some(name => {
+  const value = selectedPlant?.[name] ?? selectedPlant?.certifications?.[name] ?? selectedPlant?.regulatory_programs?.[name];
+  const cleaned = clean(value);
+  if (!cleaned) return false;
+  const low = cleaned.toLowerCase();
+  return low !== "no" && low !== "false" && low !== "0";
+});
+
+const lowCarbonProgramParts = [];
+if (hasProgramValue(selectedPlant.ci_lcfs_delivered_g_per_mj, selectedPlant.ci_summary?.ci_lcfs_delivered_g_per_mj, selectedPlant.ci_by_feedstock?.ci_corn_g_per_mj, selectedPlant.ci_by_feedstock?.ci_fiber_g_per_mj) || programRowsPresent(selectedPlant.ca_detail ?? selectedPlant.lcfs_detail?.ca_detail)) lowCarbonProgramParts.push("CA LCFS");
+if (programRowsPresent(selectedPlant.or_detail ?? selectedPlant.lcfs_detail?.or_detail)) lowCarbonProgramParts.push("OR LCFS");
+if (programRowsPresent(selectedPlant.wa_lcfs_ci_detail)) lowCarbonProgramParts.push("WA LCFS");
+if (hasProgramValue(selectedPlant.canadian_fed_ci) || programRowsPresent(selectedPlant.canadian_fed_ci_detail)) lowCarbonProgramParts.push("Canada CFR");
+if (programRowsPresent(selectedPlant.bc_lcfs_ci_detail)) lowCarbonProgramParts.push("B.C. Carbon");
+if (hasAnyNamedProgramFlag(["iscc_eu", "isccEU", "iscc_eu_certified", "iscc_eu_status", "ISCC EU"])) lowCarbonProgramParts.push("ISCC EU");
+if (hasAnyNamedProgramFlag(["iscc_plus", "isccPlus", "iscc_plus_certified", "iscc_plus_status", "ISCC PLUS", "ISCC Plus"])) lowCarbonProgramParts.push("ISCC PLUS");
+
+const regParts = [...new Set([clean(d6), clean(d3), clean(ep), ...lowCarbonProgramParts].filter(Boolean))];
 const regText = regParts.length ? regParts.join(", ") : "";
 
 const items = [

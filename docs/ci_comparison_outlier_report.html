@@ -87,6 +87,7 @@
     </div>
     <div id="summary" class="summary"></div>
     <div class="tableWrap"><table id="outlierTable"></table></div>
+    <div class="muted" style="font-size:12px; margin-top:8px;">Policy-Adjusted Spread removes known jurisdiction policy/ILUC differences where available. CA/OR adjustment = 12.2 CI points (CA corn ILUC 19.8 less OR corn ILUC 7.6). CA/WA adjustment = 0.0 CI points. No standard adjustment is applied for BC/CFA comparisons.</div>
   </section>
 
   <section class="panel">
@@ -264,10 +265,22 @@ function renderSummary(rows){
   const pairs = new Set(rows.map(r => r.shortLabel)).size;
   document.getElementById("summary").innerHTML = `<span class="chip">Rows: ${rows.length}</span><span class="chip">Flagged: ${flagged}</span><span class="chip">Pairs: ${pairs}</span>`;
 }
+function expectedPolicySpread(row){
+  if (row?.shortLabel === "CA/OR") return 12.2;
+  if (row?.shortLabel === "CA/WA") return 0.0;
+  return null;
+}
+
+function policyAdjustedSpreadLabel(row){
+  const expected = expectedPolicySpread(row);
+  if (!Number.isFinite(expected) || !Number.isFinite(row?.spread)) return "N/A";
+  return displaySignedCi(row.spread - expected);
+}
+
 function outlierTableRows(rows){
   return rows.map(row => `<tr>
     <td>${escapeHtml(row.feedstockClass)}</td><td>${escapeHtml(row.shortLabel)}</td><td class="flag ${row.outlierFlag === "High +" ? "high" : row.outlierFlag === "Low -" ? "low" : ""}">${escapeHtml(row.outlierFlag || "")}</td><td>${escapeHtml(row.plantName || "-")}</td>
-    <td class="num">${escapeHtml(displayCi(row.firstCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.firstDeviation))}</td><td class="num">${escapeHtml(displayCi(row.secondCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.secondDeviation))}</td><td class="num">${escapeHtml(displaySignedCi(row.spread))}</td><td class="num">${escapeHtml(displaySignedCi(row.deviation))}</td>
+    <td class="num">${escapeHtml(displayCi(row.firstCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.firstDeviation))}</td><td class="num">${escapeHtml(displayCi(row.secondCi))}</td><td class="num">${escapeHtml(displaySignedCi(row.secondDeviation))}</td><td class="num">${escapeHtml(displaySignedCi(row.spread))}</td><td class="num">${escapeHtml(displaySignedCi(row.deviation))}</td><td class="num">${escapeHtml(policyAdjustedSpreadLabel(row))}</td>
     <td>${escapeHtml(plantCcsFlag(row.plant))}</td><td>${escapeHtml(plantCoproductLabel(row.plant))}</td><td class="num">${escapeHtml(plantCapacityLabel(row.plant))}</td><td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
   </tr>`).join("");
 }
@@ -282,7 +295,7 @@ function render(){
   let rows = allOutliers.filter(row => (!feed || row.feedstockClass === feed) && (!pair || row.shortLabel === pair) && (!flag || (flag === "No flag" ? !row.outlierFlag : row.outlierFlag === flag)));
   if (q) rows = rows.filter(row => [row.feedstockClass,row.shortLabel,row.outlierFlag,row.plantName,plantCoproductLabel(row.plant),plantJurisdictionsLabel(row.plant)].join(" ").toLowerCase().includes(q));
   renderSummary(rows);
-  document.getElementById("outlierTable").innerHTML = `<thead><tr><th>Feed</th><th>Pair</th><th>Flag</th><th>Plant</th><th>A CI</th><th>A vs Avg</th><th>B CI</th><th>B vs Avg</th><th>Spread</th><th>Residual Spread</th><th>CCS</th><th>DGS</th><th>Capacity</th><th>Jurisdictions</th></tr></thead><tbody>${outlierTableRows(rows) || `<tr><td colspan="14" class="status">No rows match the current filters.</td></tr>`}</tbody>`;
+  document.getElementById("outlierTable").innerHTML = `<thead><tr><th>Feed</th><th>Pair</th><th>Flag</th><th>Plant</th><th>A CI</th><th>A vs Avg</th><th>B CI</th><th>B vs Avg</th><th>Spread</th><th>Residual Spread</th><th>Policy-Adjusted Spread</th><th>CCS</th><th>DGS</th><th>Capacity</th><th>Jurisdictions</th></tr></thead><tbody>${outlierTableRows(rows) || `<tr><td colspan="15" class="status">No rows match the current filters.</td></tr>`}</tbody>`;
   document.getElementById("coproductTable").innerHTML = `<thead><tr><th>Plant</th><th>CA CI</th><th>CA vs Avg</th><th>CFA CI</th><th>CFA vs Avg</th><th>CA-CFA</th><th>DGS Type</th><th>CHP</th><th>CCS</th><th>Jurisdictions</th></tr></thead><tbody>${coproductTableRows(coproductRows) || `<tr><td colspan="10" class="status">No coproduct outlier rows available.</td></tr>`}</tbody>`;
 }
 async function init(){

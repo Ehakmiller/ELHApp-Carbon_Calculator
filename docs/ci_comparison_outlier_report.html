@@ -87,7 +87,7 @@
     </div>
     <div id="summary" class="summary"></div>
     <div class="tableWrap"><table id="outlierTable"></table></div>
-    <div class="muted" style="font-size:12px; margin-top:8px;">Policy-Adjusted Spread removes known jurisdiction policy/ILUC differences where available. CA/OR adjustment = 12.2 CI points (CA corn ILUC 19.8 less OR corn ILUC 7.6). CA/WA adjustment = 0.0 CI points. No standard adjustment is applied for BC/CFA comparisons.</div>
+    <div class="muted" style="font-size:12px; margin-top:8px;">Policy-Adjusted Spread removes known jurisdiction policy/ILUC differences where available. CA/OR starch adjustment = 12.2 CI points. Fiber pathways are not adjusted. CA/WA adjustment = 0.0 CI points. No standard adjustment is applied for BC/CFA comparisons.</div>
   </section>
 
   <section class="panel">
@@ -266,7 +266,7 @@ function renderSummary(rows){
   document.getElementById("summary").innerHTML = `<span class="chip">Rows: ${rows.length}</span><span class="chip">Flagged: ${flagged}</span><span class="chip">Pairs: ${pairs}</span>`;
 }
 function expectedPolicySpread(row){
-  if (row?.shortLabel === "CA/OR") return 12.2;
+  if (row?.shortLabel === "CA/OR") return row?.feedstockClass === "Starch" ? 12.2 : 0.0;
   if (row?.shortLabel === "CA/WA") return 0.0;
   return null;
 }

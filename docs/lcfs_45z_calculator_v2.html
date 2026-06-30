@@ -1,9 +1,9 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LCFS → 45Z Calculator (V2)</title>
+  <title>LCFS -> 45Z Calculator (V2)</title>
 
  <style>
   :root{
@@ -11,7 +11,6 @@
     --line:#223049; --good:#52d273; --bad:#ff6b6b; --warn:#ffcc66;
   }
   #outRateDetail, #outRateDetailNote, #outConvLine { white-space: pre-line; }
-
   .factorLevelsPanel{
     margin-top:14px;
     padding:12px;
@@ -134,6 +133,15 @@
     gap:14px;
     min-width:0;
   }
+  .inputColumn{
+    gap:4px;
+  }
+  .inputColumn > .card:nth-child(2){
+    background:transparent;
+    border:0;
+    border-radius:0;
+    padding:0;
+  }
   @media (max-width: 980px){
     .grid.calculatorLayout{grid-template-columns:1fr;}
   }
@@ -192,7 +200,7 @@
   display:flex;
   gap:10px;
   align-items:stretch;
-  flex-wrap:wrap;          /* ✅ allow wrapping on small screens */
+  flex-wrap:wrap;          /* OK allow wrapping on small screens */
 }
 
 .pill.pill-compact{
@@ -200,19 +208,19 @@
   font-size:0.85rem;
   line-height:1.1;
   border-radius:999px;
-  min-width:0;             /* ✅ allow shrink */
-  flex:1 1 220px;          /* ✅ 3 across on desktop, wraps on mobile */
+  min-width:0;             /* OK allow shrink */
+  flex:1 1 220px;          /* OK 3 across on desktop, wraps on mobile */
   justify-content:center;
   text-align:center;
   white-space:nowrap;      /* keep each pill single-line */
   overflow:hidden;
-  text-overflow:ellipsis;  /* ✅ prevents ugly overflow */
+  text-overflow:ellipsis;  /* OK prevents ugly overflow */
 }
 
 /* Optional: make them a bit tighter on very small phones */
 @media (max-width: 520px){
   .pill.pill-compact{
-    flex:1 1 100%;         /* ✅ stack cleanly if needed */
+    flex:1 1 100%;         /* OK stack cleanly if needed */
   }
 }
 
@@ -255,8 +263,8 @@
   align-items:flex-end; /* keep pills on the right edge */
 }
 
-/* “text lines” on the left that correspond to the right-side pills */
-/* “text lines” on the left that correspond to the right-side pills */
+/* "text lines" on the left that correspond to the right-side pills */
+/* "text lines" on the left that correspond to the right-side pills */
 .freightLabelLine{
   font-size:11px;        /* match .scoreBox .s */
   color:var(--muted);
@@ -338,7 +346,7 @@
 
 
 
-/* Make them match height and feel like “pills” */
+/* Make them match height and feel like "pills" */
 .plantSelect,
 .plantSearch{
   height: 40px;
@@ -359,7 +367,7 @@
 }
 
 .plantSearch{
-  flex: 0 0 240px;          /* tweak 200–320 */
+  flex: 0 0 240px;          /* tweak 200-320 */
   max-width: 320px;
 }
 
@@ -477,7 +485,382 @@
   
   .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted);}
 
-  /* =========================
+.operatingDetailAction{
+  display:flex;
+  justify-content:flex-start;
+  margin:0;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  padding:7px 12px;
+}
+.dropdownTopRow{
+  display:block;
+  margin-top:4px;
+}
+.dropdownTopRow .operatingDetailAction{
+  min-width:0;
+}
+.operatingDetailBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  padding:0;
+  font-size:13px;
+  font-weight:750;
+  cursor:pointer;
+}
+.operatingDetailBtn::before{
+  content:"";
+  width:0;
+  height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:6px solid var(--text);
+}
+.operatingDetailBtn:hover{
+  color:var(--accent);
+}
+.operatingDetailBtn:hover::before{
+  border-top-color:var(--accent);
+}
+.operatingDetailBtn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.operatingModalOverlay{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  background:rgba(3,7,18,.78);
+  padding:28px 14px;
+  overflow:auto;
+}
+.operatingModalOverlay.open{display:flex;}
+.operatingModal{
+  width:min(1080px, 100%);
+  max-height:calc(100vh - 56px);
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--card);
+  box-shadow:0 18px 50px rgba(0,0,0,.45);
+}
+.operatingModalHeader{
+  position:sticky;
+  top:0;
+  z-index:1;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+  background:var(--card);
+}
+.operatingModalTitle{
+  margin:0;
+  font-size:16px;
+  font-weight:750;
+}
+.operatingModalSub{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:12px;
+}
+.operatingModalClose{
+  width:32px;
+  height:32px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  color:var(--text);
+  cursor:pointer;
+  font-size:18px;
+  line-height:1;
+}
+.operatingModalBody{
+  padding:14px 16px 16px;
+}
+.operatingDetailGrid{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.operatingDetailBlock{
+  min-width:0;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  padding:12px;
+}
+.operatingDetailBlock summary{
+  cursor:pointer;
+  padding-bottom:0;
+  font-size:14px;
+  font-weight:750;
+  color:var(--text);
+  list-style-position:inside;
+}
+.operatingDetailBlock[open] summary{
+  margin-bottom:10px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+}
+.operatingDetailTable{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  font-size:12px;
+}
+.operatingDetailTable th,
+.operatingDetailTable td{
+  border-top:1px solid var(--line);
+  padding:7px 6px;
+  vertical-align:top;
+  overflow-wrap:anywhere;
+}
+.operatingDetailTable th{
+  width:42%;
+  color:var(--muted);
+  font-weight:600;
+  text-align:left;
+}
+.operatingNestedTable{
+  margin:0;
+}
+.operatingLimitSummary{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.operatingLimitMeta{
+  color:var(--muted);
+  font-size:11px;
+}
+.operatingNestedTable th,
+.operatingNestedTable td{
+  padding:4px 0;
+  border-top:0;
+}
+.operatingInlineList{
+  margin:0;
+  padding-left:16px;
+}
+.operatingInlineList li{
+  margin:2px 0;
+}
+.operatingListMore{
+  margin-top:4px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--accent);
+  font:inherit;
+  font-size:12px;
+  cursor:pointer;
+  text-decoration:underline;
+}
+.operatingFlagList{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.operatingFlag{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:3px 8px;
+  color:var(--text);
+  background:#0f1522;
+  font-size:11px;
+}
+.operatingSourceNotes{
+  margin-top:14px;
+  border-top:1px solid var(--line);
+  padding-top:10px;
+}
+.operatingSourceNotes summary{
+  cursor:pointer;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:650;
+}
+.operatingSourceNotes ul{
+  margin:8px 0 0 18px;
+  padding:0;
+  color:var(--muted);
+  font-size:12px;
+}
+.operatingDetailTable td.operatingNullValue,
+.operatingNullValue{
+  color:var(--muted);
+  font-style:italic;
+}
+.operatingTechnicalItem{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.operatingTechnicalLabel{
+  color:var(--text);
+  font-weight:650;
+}
+.operatingTechnicalLines{
+  margin:6px 0 0 18px;
+  padding:0;
+}
+.operatingSummaryGrid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:10px;
+}
+.operatingMetric{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px 12px;
+  background:#0f1522;
+}
+.operatingMetricLabel{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:5px;
+}
+.operatingMetricValue{
+  color:var(--text);
+  font-size:16px;
+  font-weight:700;
+}
+.operatingTechnicalItem{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.operatingTechnicalLabel{
+  color:var(--text);
+  font-weight:650;
+}
+.operatingTechnicalLines{
+  margin:6px 0 0 18px;
+  padding:0;
+}
+@media (max-width: 640px){
+  .operatingSummaryGrid{grid-template-columns:1fr;}
+}
+
+.policyParametersPanel,
+.scenarioInputsPanel,
+.marketPathways{
+  margin-top:4px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#0f1522;
+  padding:7px 12px;
+}
+.policyParametersPanel{
+  margin-top:0;
+  min-width:0;
+}
+.policyParametersPanel summary,
+.scenarioInputsPanel summary,
+.marketPathways summary{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  list-style:none;
+  cursor:pointer;
+  color:var(--text);
+  font-size:13px;
+  font-weight:750;
+}
+.policyParametersPanel summary::-webkit-details-marker,
+.scenarioInputsPanel summary::-webkit-details-marker,
+.marketPathways summary::-webkit-details-marker{
+  display:none;
+}
+.policyParametersPanel summary::before,
+.scenarioInputsPanel summary::before,
+.marketPathways summary::before{
+  content:"";
+  width:0;
+  height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:6px solid var(--text);
+}
+.policyParametersPanel summary:hover,
+.scenarioInputsPanel summary:hover,
+.marketPathways summary:hover{
+  color:var(--accent);
+}
+.policyParametersPanel summary:hover::before,
+.scenarioInputsPanel summary:hover::before,
+.marketPathways summary:hover::before{
+  border-top-color:var(--accent);
+}
+.policyParametersPanel[open] summary,
+.scenarioInputsPanel[open] summary,
+.marketPathways[open] summary{
+  margin-bottom:8px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--line);
+}
+.scenarioInputsBody{
+  padding-top:0;
+}
+.policyParametersBody{
+  padding-top:0;
+}
+.marketPathways .pathwayBenchmarkTable{
+  table-layout:fixed;
+  width:100%;
+  font-size:12px;
+}
+.marketPathways .pathwayBenchmarkTable th,
+.marketPathways .pathwayBenchmarkTable td{
+  padding:7px 8px;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.3;
+  text-align:left;
+}
+.marketPathways .pathwayBenchmarkTable th:first-child,
+.marketPathways .pathwayBenchmarkTable td:first-child{
+  width:auto;
+  white-space:normal;
+}
+.marketPathways .pathwayBenchmarkTable th:last-child,
+.marketPathways .pathwayBenchmarkTable td:last-child{
+  text-align:left;
+}
+.marketPathways .pathwayBenchmarkTable th:nth-child(1){width:18%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(2){width:18%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(3){width:25%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(4){width:11%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(5){width:18%;}
+.marketPathways .pathwayBenchmarkTable th:nth-child(6){width:10%;}
+.marketPathwaysDivider{
+  margin:12px 0 10px;
+  border-top:3px double var(--line);
+}
+.marketPathwaysSubhead{
+  color:var(--text);
+  font-size:12px;
+  font-weight:750;
+  margin:0 0 8px 0;
+}
+
+/* =========================
    METRIC GRID (3 columns, aligned)
    ========================= */
 .metricGrid{
@@ -504,7 +887,7 @@
   .metricPanel{ grid-template-columns: 1fr; }
 }
 
-/* A single metric “tile” */
+/* A single metric "tile" */
 .metric{
   display:flex;
   flex-direction:column;
@@ -543,7 +926,7 @@
   text-overflow:ellipsis;
 }
 
-/* Small helper line under the pill (“XXX”) */
+/* Small helper line under the pill ("XXX") */
 .metricSub{
   font-size:11px;
   color:var(--muted);
@@ -555,7 +938,7 @@
 
      
 /* =========================
-   INPUTS: make ALL numeric inputs match “Starting input number”
+   INPUTS: make ALL numeric inputs match "Starting input number"
    (bold + white + same size)
    ========================= */
 input[type="number"]{
@@ -593,7 +976,7 @@ input[type="date"]{
   margin:0;
   text-align:center;
 
-  /* ✅ Match output text style */
+  /* OK Match output text style */
   font-size:16px;
   font-weight:750;
   color:var(--text);
@@ -685,15 +1068,15 @@ input[type="date"]{
   margin-top:10px;
 }
 
-/* “text lines” on the left that correspond to the right-side pills */
+/* "text lines" on the left that correspond to the right-side pills */
 .freightLabelLine{
   font-size:11px;        /* match .scoreBox .s */
   color:var(--muted);
   line-height:1.2;
   margin:0;
   padding-top:2px;
-  text-transform:none;   /* ✅ stop ALL CAPS */
-  letter-spacing:normal; /* ✅ stop "sectionTitle" spacing feel */
+  text-transform:none;   /* OK stop ALL CAPS */
+  letter-spacing:normal; /* OK stop "sectionTitle" spacing feel */
 }
 
 /* Make the hub label match too */
@@ -701,8 +1084,8 @@ input[type="date"]{
   font-size:11px;
   color:var(--muted);
   margin:0 0 6px 0;
-  text-transform:none;   /* ✅ stop ALL CAPS */
-  letter-spacing:normal; /* ✅ stop "sectionTitle" spacing feel */
+  text-transform:none;   /* OK stop ALL CAPS */
+  letter-spacing:normal; /* OK stop "sectionTitle" spacing feel */
 }
 
 /* The two small numeric pills (1.15 and 0.0020)
@@ -808,8 +1191,8 @@ input[type="date"]{
   font-size:12px;
   color:var(--muted);
   line-height:1.4;
-  text-align: justify;          /* ✅ full justification */
-  text-justify: inter-word;     /* ✅ better spacing between words */
+  text-align: justify;          /* OK full justification */
+  text-justify: inter-word;     /* OK better spacing between words */
 }
   /* Consistent bullets everywhere */
 .note p{
@@ -852,7 +1235,7 @@ input[type="date"]{
   }
 }
 
-  /* “half size” score tile */
+  /* "half size" score tile */
   .scoreBox{
     flex: 0 0 240px;       /* fixed-ish width */
     max-width: 240px;
@@ -872,7 +1255,7 @@ input[type="date"]{
 
   .scoreNotes{
   flex: 1 1 0;      /* allow it to shrink */
-  min-width: 0;     /* key: don’t force wrap early */
+  min-width: 0;     /* key: don't force wrap early */
   margin: 0;
 }
   .scoreNotes div{margin-bottom:4px;}
@@ -1003,175 +1386,6 @@ header, main{ position:relative; z-index:1; }
   color:var(--accent);
 }
 
-.detailActions{
-  display:flex;
-  justify-content:flex-end;
-  margin-top:10px;
-}
-
-.detailToggleBlock{
-  margin-top:10px;
-}
-
-.detailToggleButton{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  border:0;
-  background:transparent;
-  color:var(--text);
-  padding:0;
-  font-size:12px;
-  font-weight:650;
-  cursor:pointer;
-}
-
-.detailToggleButton::before{
-  content:"";
-  width:0;
-  height:0;
-  border-left:5px solid transparent;
-  border-right:5px solid transparent;
-  border-top:6px solid var(--text);
-}
-
-.detailToggleButton:hover{
-  color:var(--accent);
-}
-
-.detailToggleButton:hover::before{
-  border-top-color:var(--accent);
-}
-
-.secondaryButton{
-  border:1px solid var(--line);
-  background:#0f1522;
-  color:var(--text);
-  border-radius:8px;
-  padding:8px 12px;
-  font-size:12px;
-  cursor:pointer;
-}
-
-.secondaryButton:hover{
-  border-color:var(--accent);
-}
-
-.modalBackdrop{
-  position:fixed;
-  inset:0;
-  z-index:50;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  background:rgba(2,6,23,.72);
-}
-
-.modalBackdrop.open{
-  display:flex;
-}
-
-.detailModal{
-  width:min(760px, 100%);
-  max-height:min(86vh, 900px);
-  overflow:auto;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:#0b1020;
-  box-shadow:0 24px 80px rgba(0,0,0,.45);
-}
-
-.detailModalHeader{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:14px;
-  padding:16px 18px;
-  border-bottom:1px solid var(--line);
-}
-
-.detailModalTitle{
-  font-size:16px;
-  font-weight:700;
-  margin:0;
-}
-
-.detailModalSub{
-  margin-top:4px;
-  color:var(--muted);
-  font-size:12px;
-}
-
-.iconButton{
-  width:32px;
-  height:32px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:#0f1522;
-  color:var(--text);
-  cursor:pointer;
-  line-height:1;
-}
-
-.detailModalBody{
-  padding:16px 18px 18px;
-}
-
-.operatingSummaryGrid{
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:10px;
-}
-
-.operatingMetric{
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:10px 12px;
-  background:#0f1522;
-}
-
-.operatingMetricLabel{
-  color:var(--muted);
-  font-size:12px;
-  margin-bottom:5px;
-}
-
-.operatingMetricValue{
-  color:var(--text);
-  font-size:16px;
-  font-weight:700;
-}
-
-.technicalDetails{
-  margin-top:14px;
-  border-top:1px solid var(--line);
-  padding-top:12px;
-  color:var(--muted);
-  font-size:12px;
-}
-
-.technicalDetails summary{
-  cursor:pointer;
-  color:var(--text);
-  font-weight:650;
-}
-
-.technicalDetailItem{
-  margin-top:10px;
-  line-height:1.45;
-}
-
-.technicalDetailLabel{
-  color:var(--text);
-  font-weight:650;
-}
-
-.technicalDetailLines{
-  margin:6px 0 0;
-  padding-left:16px;
-}
-
 @media (max-width: 900px){
   .lcfsDetailGrid{
     grid-template-columns: repeat(2, 1fr);
@@ -1186,9 +1400,6 @@ header, main{ position:relative; z-index:1; }
   .lcfsDetailGrid{
     grid-template-columns: 1fr;
   }
-  .operatingSummaryGrid{
-    grid-template-columns:1fr;
-  }
 }  
   
   
@@ -1202,7 +1413,7 @@ header, main{ position:relative; z-index:1; }
 </div>
 <header>
   <div>
-    <h1>LCFS → 45Z Calculator (V2)</h1>
+    <h1>LCFS -> 45Z Calculator (V2)</h1>
 
 </div>
 
@@ -1250,17 +1461,39 @@ header, main{ position:relative; z-index:1; }
 
       <div id="plantBadges" class="row" style="margin-bottom:6px;"></div>
       <div class="kv" id="plantKv"></div>
-
-      <div class="hr"></div>
-
-     
-        
-        
-        <div class="hr"></div>
-        
-       
+      <div class="dropdownTopRow">
+        <div class="row operatingDetailAction">
+          <button id="operatingDetailBtn" type="button" class="operatingDetailBtn" disabled>View Operating Detail</button>
+        </div>
+        <details id="policyParametersPanel" class="policyParametersPanel">
+          <summary>45Z Parameters</summary>
+          <div id="policyParametersBody" class="policyParametersBody"></div>
+        </details>
+      </div>
+      <details id="policy45qParametersPanel" class="policyParametersPanel">
+        <summary>45Q Parameters</summary>
+        <div id="policy45qParametersBody" class="policyParametersBody"></div>
+      </details>
+      <details id="marketPathwaysPanel" class="marketPathways" style="display:none;">
+        <summary>Market Pathways</summary>
+        <div id="marketPathwaysRows"></div>
+      </details>
+      <details id="modelMechanicsPanel" class="policyParametersPanel">
+        <summary>Model Mechanics</summary>
+        <div id="modelMechanicsBody" class="policyParametersBody"></div>
+      </details>
 
 <div id="outputPanelStart" hidden></div>
+
+<div class="factorLevelsPanel" aria-label="Estimated 45Z Factor">
+  <div class="factorLevelsHead">
+    <div class="factorLevelsTitle">Estimated 45Z Factor</div>
+    <div class="factorLevelsLabel" id="factorLevelsPlantLabel">Plant factor: -</div>
+  </div>
+  <div class="factorLevelsChart" id="factorLevelsChart">
+    <div class="factorPlantMarker isHidden" id="factorPlantMarker" aria-hidden="true"></div>
+  </div>
+</div>
 
  <p class="sectionTitle">45Z Credit Value</p>
 
@@ -1268,20 +1501,20 @@ header, main{ position:relative; z-index:1; }
 
   <div class="metric">
     <div class="metricLabel">45Z CI (kg/MMBtu)</div>
-    <div class="valuePill"><span class="value" id="out45zCi">—</span></div>
-    <div class="metricSub"><span id="outConvLine">—</span></div>
+    <div class="valuePill"><span class="value" id="out45zCi">-</span></div>
+    <div class="metricSub"><span id="outConvLine">-</span></div>
   </div>
 
   <div class="metric">
     <div class="metricLabel">45Z Credit Rate ($/gal)</div>
-    <div class="valuePill"><span class="value" id="outRate">—</span></div>
-    <div class="metricSub" id="outRateDetail">—</div>
+    <div class="valuePill"><span class="value" id="outRate">-</span></div>
+    <div class="metricSub" id="outRateDetail">-</div>
   </div>
 
   <div class="metric">
     <div class="metricLabel">Estimated payout ($/yr)</div>
-    <div class="valuePill"><span class="value" id="outPayout">—</span></div>
-    <div class="metricSub" id="outPayoutDetail_inline">Rate × Capacity</div>
+    <div class="valuePill"><span class="value" id="outPayout">-</span></div>
+    <div class="metricSub" id="outPayoutDetail_inline">Rate x Capacity</div>
   </div>
 
   
@@ -1294,20 +1527,20 @@ header, main{ position:relative; z-index:1; }
 
     <div class="metric">
       <div class="metricLabel">Estimated Biogenic CO2</div>
-      <div class="valuePill"><span class="value" id="outBiogenicCo2">—</span></div>
+      <div class="valuePill"><span class="value" id="outBiogenicCo2">-</span></div>
       <div class="metricSub">Capacity x 2,853 metric tons CO2/MMGY</div>
     </div>
 
     <div class="metric">
       <div class="metricLabel">45Q annual value per gallon</div>
-      <div class="valuePill"><span class="value" id="out45qValuePerGal">—</span></div>
+      <div class="valuePill"><span class="value" id="out45qValuePerGal">-</span></div>
       <div class="metricSub">Annual value / annual gallons</div>
     </div>
 
     <div class="metric">
       <div class="metricLabel">45Q annual value ($/yr)</div>
-      <div class="valuePill"><span class="value" id="out45qAnnualValue">—</span></div>
-      <div class="metricSub">Biogenic CO2 × $/ton</div>
+      <div class="valuePill"><span class="value" id="out45qAnnualValue">-</span></div>
+      <div class="metricSub">Biogenic CO2 x $/ton</div>
     </div>
 
   </div>
@@ -1319,13 +1552,13 @@ header, main{ position:relative; z-index:1; }
 
   <div class="metric">
     <div class="metricLabel">45Z remaining years</div>
-    <div class="valuePill"><span class="value" id="out45zRemainingYears">—</span></div>
+    <div class="valuePill"><span class="value" id="out45zRemainingYears">-</span></div>
     <div class="metricSub">Years remaining through Dec 2029</div>
   </div>
 
   <div class="metric">
     <div class="metricLabel">45Q effective years</div>
-    <div class="valuePill"><span class="value" id="out45qEffectiveYearsTop">—</span></div>
+    <div class="valuePill"><span class="value" id="out45qEffectiveYearsTop">-</span></div>
     <div class="metricSub">Years of 45Q value after 45Z ends</div>
   </div>
 
@@ -1345,7 +1578,7 @@ header, main{ position:relative; z-index:1; }
 
   <div class="metric">
     <div class="metricLabel">Total discounted value ($)</div>
-    <div class="valuePill"><span class="value" id="outTotalDiscountedValue">—</span></div>
+    <div class="valuePill"><span class="value" id="outTotalDiscountedValue">-</span></div>
     <div class="metricSub" id="outTotalDiscountedValueNote">Discounted 45Z & 45Q Value</div>
   </div>
 
@@ -1359,32 +1592,19 @@ header, main{ position:relative; z-index:1; }
 
   <div class="metric">
     <div class="metricLabel">Final credit value ($)</div>
-    <div class="valuePill"><span class="value" id="outFinalCreditValue">—</span></div>
-    <div class="metricSub" id="outFinalCreditValueDetail">Total discounted value × discount</div>
+    <div class="valuePill"><span class="value" id="outFinalCreditValue">-</span></div>
+    <div class="metricSub" id="outFinalCreditValueDetail">Total discounted value x discount</div>
   </div>
 
 </div>
-
-<div class="factorLevelsPanel" aria-label="Possible 45Z Factor Levels">
-  <div class="factorLevelsHead">
-    <div class="factorLevelsTitle">Possible 45Z Factor Levels</div>
-    <div class="factorLevelsLabel" id="factorLevelsPlantLabel">Plant factor: â€”</div>
-  </div>
-  <div class="factorLevelsChart" id="factorLevelsChart">
-    <div class="factorPlantMarker isHidden" id="factorPlantMarker" aria-hidden="true"></div>
-  </div>
-</div>
-
 
         
         <!-- Details live below so the top row can stay tight -->
         <div class="note" style="margin-top:8px;">
           
-          <div><span class="mono">Payout detail:</span> <span id="outPayoutDetail">rate × capacity</span></div>
+          <div><span class="mono">Payout detail:</span> <span id="outPayoutDetail">rate x capacity</span></div>
         </div>
-        
-        <div class="hr"></div>
-
+<div id="policyParametersContent">
 <p class="sectionTitle">45Z policy parameters</p>
 
 <div class="metricGrid">
@@ -1394,7 +1614,7 @@ header, main{ position:relative; z-index:1; }
     <div class="valuePill">
       <input id="ciBenchmark" type="number" step="0.1" value="50.0" />
     </div>
-    <div class="metricSub">Unit of measure equivilant to <span id="benchGmjEq">—</span> g/MJ</div>
+    <div class="metricSub">Unit of measure equivilant to <span id="benchGmjEq">-</span> g/MJ</div>
   </div>
 
   <div class="metric">
@@ -1413,13 +1633,14 @@ header, main{ position:relative; z-index:1; }
 
 </div>
 
+<div id="policy45qParametersContent">
 <p class="sectionTitle" style="margin-top:14px;">45Q policy parameters</p>
 
 <div class="metricGrid">
 
   <div class="metric">
     <div class="metricLabel">45Q remaining years</div>
-    <div class="valuePill"><span class="value" id="out45qRemainingYearsPolicy">—</span></div>
+    <div class="valuePill"><span class="value" id="out45qRemainingYearsPolicy">-</span></div>
     <div class="metricSub">12-year term remaining from in-service date</div>
   </div>
 
@@ -1443,11 +1664,13 @@ header, main{ position:relative; z-index:1; }
 </div>
 
 
+</div>
+
      
         
  <div class="hr"></div>
 
-      <div class="sectionTitle">Note – 45Z</div>
+      <div class="sectionTitle">Note - 45Z</div>
       <div class="note" id="notes">
       <p>
   The Section 45Z Clean Fuel Production Credit is a federal tax incentive that rewards producers of transportation fuels based on lifecycle greenhouse gas emissions. Fuels with lower carbon intensity receive larger per-gallon credits, creating a direct financial incentive to reduce emissions through process improvements, feedstock changes, carbon capture, and low-carbon agricultural practices. The credit applies to qualifying fuels produced in the United States for use as transportation fuel and is currently scheduled to run from 2025 through 2029, replacing prior biofuel tax credit programs.
@@ -1457,32 +1680,35 @@ header, main{ position:relative; z-index:1; }
   The credit applies to qualifying fuels produced in the United States for use as transportation fuel. This calculator assumes 45Z value runs through Dec. 31, 2029 for modeling purposes.
 </p>
 
-<div class="sectionTitle" style="margin-top:18px;">Note – 45Q</div>
+<div id="policy45qNotesContent">
+<div class="sectionTitle" style="margin-top:18px;">Note - 45Q</div>
 
 <p>
-The Section 45Q Carbon Sequestration Credit is a federal tax incentive designed to encourage the capture and permanent storage of carbon dioxide emissions. Facilities that capture CO₂ and either store it in secure geological formations or utilize it in approved industrial processes can receive a per-ton tax credit. Higher credit values are provided for CO₂ that is permanently sequestered underground, creating a strong financial incentive for investments in carbon capture and storage (CCS) infrastructure.
+The Section 45Q Carbon Sequestration Credit is a federal tax incentive designed to encourage the capture and permanent storage of carbon dioxide emissions. Facilities that capture CO2 and either store it in secure geological formations or utilize it in approved industrial processes can receive a per-ton tax credit. Higher credit values are provided for CO2 that is permanently sequestered underground, creating a strong financial incentive for investments in carbon capture and storage (CCS) infrastructure.
 </p>
 
 <p>
-The credit applies to qualifying carbon capture projects located in the United States and is available for twelve years after a carbon capture facility is placed in service. For projects that permanently sequester captured carbon dioxide in geological formations, the credit value is currently set at up to $85 per metric ton of CO₂. Because the credit is earned on each ton of carbon captured and stored, the total financial benefit depends on both the amount of CO₂ captured annually and the duration of the credit eligibility period following project start-up. Utilization pathways, including Enhanced Oil Recovery (EOR), qualify for a lower credit value of up to $60 per metric ton, as these uses may not ensure the same level of permanent carbon storage as dedicated geologic sequestration.
+The credit applies to qualifying carbon capture projects located in the United States and is available for twelve years after a carbon capture facility is placed in service. For projects that permanently sequester captured carbon dioxide in geological formations, the credit value is currently set at up to $85 per metric ton of CO2. Because the credit is earned on each ton of carbon captured and stored, the total financial benefit depends on both the amount of CO2 captured annually and the duration of the credit eligibility period following project start-up. Utilization pathways, including Enhanced Oil Recovery (EOR), qualify for a lower credit value of up to $60 per metric ton, as these uses may not ensure the same level of permanent carbon storage as dedicated geologic sequestration.
 </p>
+</div>
 
 
 <div class="hr"></div>
 
 
 
+<div id="modelMechanicsContent">
 <div class="noteSubhead">Model Mechanics</div>
 <ul class="noteList">
   <li>Starts with a facility carbon intensity in <span class="mono">gCO2e/MJ</span> (LCFS CI or proxy estimate).</li>
   <li>Applies adjustments (freight, ILUC, CCS, agricultural practices, misc) in <span class="mono">gCO2e/MJ</span>. Checked boxes are included in the calculations.</li>
   <li>Converts to the 45Z policy unit <span class="mono">kgCO2e/MMBtu</span> at the final step for rate mapping.</li>
   <li>Uses <span class="mono">Benchmark</span> and <span class="mono">Max Rate</span> to compute a raw emissions factor, rounds that factor to the nearest <span class="mono">0.1</span>, and maps the rounded factor to a $/gal credit rate.</li>
-  <li>Calculates annual value as <span class="mono">rate × gallons</span> using ethanol capacity.</li>
+  <li>Calculates annual value as <span class="mono">rate x gallons</span> using ethanol capacity.</li>
   <li><span class="mono">Starting CI rule</span>: use California LCFS CI when available; otherwise use Oregon CI if California is absent; otherwise use technology proxy.</li>
   <li>If Oregon is used, the delivery hub is fixed to <span class="mono">Portland</span> for freight normalization.</li>
-  <li>The tool estimates <span class="mono">FOB CI</span> by subtracting freight CI per mile × distance × multiplier, less the 300-mile baseline.</li>
-  <li><span class="mono">45Z proxy CI</span> = starting CI − freight (if checked) − ILUC (if checked) − CCS reduction (if checked) − agricultural reduction (if checked) − misc reduction (if checked, by your chosen sign convention).</li>
+  <li>The tool estimates <span class="mono">FOB CI</span> by subtracting freight CI per mile x distance x multiplier, less the 300-mile baseline.</li>
+  <li><span class="mono">45Z proxy CI</span> = starting CI - freight (if checked) - ILUC (if checked) - CCS reduction (if checked) - agricultural reduction (if checked) - misc reduction (if checked, by your chosen sign convention).</li>
   <li>$ /gal policy mapping is parameterized and editable in V1.</li>
 </ul>
 
@@ -1490,15 +1716,16 @@ The credit applies to qualifying carbon capture projects located in the United S
 
   <!-- keep ONLY if JS uses it -->
   <div id="modelSection"></div>
+</div>
 </div> <!-- closes #notes -->
+</div>
 <div id="outputPanelEnd" hidden></div>
 </div> <!-- closes LEFT .card -->
 
 <!-- RIGHT column card: Scenario inputs -->
 <div class="card">
-  <p class="sectionTitle">Market Pathways</p>
-  <div class="pathwayBenchmarkTitle" style="margin-bottom:8px;">Pathway Summary Statistics</div>
-  <div id="pathwayBenchmark" class="pathwayBenchmarkGrid">
+  <p class="sectionTitle" style="display:none;">Pathway Benchmark</p>
+  <div id="pathwayBenchmark" class="pathwayBenchmarkGrid" style="display:none;">
     <div class="pathwayBenchmarkCard">
       <div class="pathwayBenchmarkTitle">Active Pathways</div>
       <div id="benchmarkActiveRows"></div>
@@ -1512,17 +1739,18 @@ The credit applies to qualifying carbon capture projects located in the United S
       <div id="benchmarkRankRows"></div>
     </div>
   </div>
-  <div class="hr"></div>
 
-  <p class="sectionTitle">Scenario inputs</p>
+  <details id="scenarioInputsPanel" class="scenarioInputsPanel">
+    <summary>Scenario Inputs</summary>
+    <div class="scenarioInputsBody">
 
   <p class="sectionTitle">Starting CI</p>
 
    <div class="scoreRow nowrap" style="margin-bottom:10px;">
     <div class="scoreBox">
       <div class="t">Starting CI used for calculations (gCO2e/MJ)</div>
-      <div class="n" id="startCiValue">—</div>
-      <div class="s" id="startCiNote">—</div>
+      <div class="n" id="startCiValue">-</div>
+      <div class="s" id="startCiNote">-</div>
     </div>
 
     <div class="note scoreNotes" id="startCiFeedstocks">
@@ -1533,26 +1761,58 @@ The credit applies to qualifying carbon capture projects located in the United S
 
   <div class="hr"></div>
 
-  <p class="sectionTitle">Additional Gallons</p>
+
+  <p class="sectionTitle">Additional Gallons (MM gal)</p>
 
   <div class="scoreRow nowrap" style="margin-bottom:10px;">
     <div class="scoreBox">
-      <div class="t">Additional annual gallons</div>
+      <div class="t">Additional annual volume (million gallons)</div>
       <input
         id="additionalGallons"
         class="small numBox"
         type="number"
-        step="1000000"
+        step="1"
         min="0"
         value="0"
-        title="Additional annual scenario gallons"
+        title="Additional annual scenario volume in million gallons"
       />
-      <div class="s">Added to plant capacity for scenario value math only</div>
+      <div class="s">Enter million gallons; added to plant capacity for scenario value math only</div>
+    </div>
+  
+
+    <div class="scoreBox">
+      <div class="t">Total scenario volume (million gallons)</div>
+      <div class="n" id="scenarioGallonsTotal">-</div>
+      <div class="s">Base capacity + additional volume</div>
+    </div>
+  </div>
+
+  <p class="sectionTitle">Ethanol Yield Improvement (gal/bu)</p>
+
+  <div class="scoreRow nowrap" style="margin-bottom:10px;">
+    <div class="scoreBox">
+      <div class="t">Ethanol Yield Improvement (gal/bu)</div>
+      <input
+        id="yieldImprovementGalBu"
+        class="small numBox"
+        type="number"
+        step="0.01"
+        min="-0.20"
+        max="0.20"
+        value="0.00"
+        title="Published pathway scores already reflect current plant performance. This input estimates how a future ethanol yield improvement could reduce the estimated 45Z CI score."
+      />
+      <div class="s">Scenario-only sensitivity from the certified pathway baseline</div>
+    </div>
+
+    <div class="scoreBox">
+      <div class="t">Yield scenario impact</div>
+      <div class="n" id="yieldScenarioImpact">-</div>
+      <div class="s">+0.01 gal/bu = -0.20 CI points</div>
     </div>
   </div>
 
   <div class="hr"></div>
-
       <!-- CHAPTER 2 (compact, matches Starting CI panel) -->
 <!-- CHAPTER 2 (compact, matches Starting CI panel) -->
 
@@ -1585,8 +1845,8 @@ The credit applies to qualifying carbon capture projects located in the United S
     <div style="display:flex; align-items:center;">
   <input id="ccsReduction" class="small numBox" type="number" step="0.1" value="0" title="Misc reduction gCO2e/MJ" />
   <div class="nudge">
-    <button type="button" id="miscUp" title="Increase misc reduction">▲</button>
-    <button type="button" id="miscDown" title="Decrease misc reduction">▼</button>
+    <button type="button" id="miscUp" title="Increase misc reduction">+</button>
+    <button type="button" id="miscDown" title="Decrease misc reduction">-</button>
   </div>
 </div>
   </div>
@@ -1628,14 +1888,14 @@ The credit applies to qualifying carbon capture projects located in the United S
 
         <div>
           <div class="valuePill" style="width:65px;">
-            <span class="value" id="ckf_delta_display">—</span>
+            <span class="value" id="ckf_delta_display">-</span>
           </div>
           <div class="s" style="margin-top:4px;">CI Fiber Delta</div>
         </div>
 
         <div>
           <div class="valuePill" style="width:65px;">
-            <span class="value" id="ckf_adjustment_display">—</span>
+            <span class="value" id="ckf_adjustment_display">-</span>
           </div>
           <div class="s" style="margin-top:4px;">LCFS Fiber Adjustment</div>
         </div>
@@ -1643,7 +1903,7 @@ The credit applies to qualifying carbon capture projects located in the United S
       </div>
 
       <div id="ckfStatusLabel" style="font-size:11px; color:var(--accent); line-height:1.2;">
-        ✅ CKF identified
+        OK CKF identified
       </div>
 
     </div>
@@ -1685,7 +1945,7 @@ The credit applies to qualifying carbon capture projects located in the United S
       <div style="flex:1;">
           <div class="labelStrong">Apply Freight Adjustment</div>
           <div class="muted" style="flex:1; min-width:0; font-size:11px; line-height:1.4; text-transform:none;">
-          Miles × Multiplier
+          Miles x Multiplier
         </div>
         </div>
     </div>
@@ -1729,14 +1989,14 @@ The credit applies to qualifying carbon capture projects located in the United S
 
     <div class="outPill">
       <div class="t">Net freight miles</div>
-      <div class="n" id="outMilesHub">—</div>
-      <div class="s">Plant to Hub × Multiplier − 300</div>
+      <div class="n" id="outMilesHub">-</div>
+      <div class="s">Plant to Hub x Multiplier - 300</div>
     </div>
 
     <div class="outPill">
       <div class="t">Freight CI (g/MJ)</div>
-      <div class="n" id="outFreightHub">—</div>
-      <div class="s">miles × factor</div>
+      <div class="n" id="outFreightHub">-</div>
+      <div class="s">miles x factor</div>
     </div>
 
   </div>
@@ -1744,50 +2004,6 @@ The credit applies to qualifying carbon capture projects located in the United S
 </div>
 
 <div class="hr"></div>
-
-<div class="hr"></div>
-
-<p class="sectionTitle">DGS Co-product Bridge</p>
-
-<div class="scoreRow nowrap" style="margin-bottom:10px;">
-  <div class="scoreBox">
-    <div class="t">DGS bridge adjustment (gCO2e/MJ)</div>
-
-    <div class="row" style="gap:8px; align-items:center; margin-top:6px; flex-wrap:nowrap;">
-      <select
-        id="dgs_bridge_type"
-        class="wide"
-        style="min-width:0; flex:1; border:none; background:transparent;"
-        title="DGS co-product bridge type"
-      >
-        <option value="none">None</option>
-        <option value="wet_baseline">Wet baseline</option>
-        <option value="mixed">Mixed wet/dry</option>
-        <option value="dry_ddgs">Dry DDGS</option>
-      </select>
-      <input
-        id="dgs_bridge_score"
-        class="small numBox"
-        type="number"
-        step="0.1"
-        value="0"
-        title="DGS bridge adjustment (gCO2e/MJ)"
-      />
-    </div>
-
-    <div class="s" id="dgsBridgeNote" style="margin-top:6px;">This bridge is a residual LCFS-to-45Z coproduct-method adjustment only. It does not model dryer energy, which is already embedded in the starting LCFS CI.</div>
-  </div>
-
-  <div class="note scoreNotes">
-    <div style="margin-bottom:6px;">DGS bridge logic</div>
-    <ul class="noteList">
-      <li><span class="mono">Wet baseline</span> = 0.0</li>
-      <li><span class="mono">Mixed wet/dry</span> = +1.0</li>
-      <li><span class="mono">Dry DDGS</span> = +2.0</li>
-      <li><span class="mono">None</span> = 0.0</li>
-    </ul>
-  </div>
-</div>
 
 <div class="hr"></div>
 
@@ -1825,6 +2041,48 @@ The credit applies to qualifying carbon capture projects located in the United S
   </div>
 </div>
 
+<p class="sectionTitle">DGS Co-product Bridge</p>
+
+<div class="scoreRow nowrap" style="margin-bottom:10px;">
+  <div class="scoreBox">
+    <div class="t">DGS co-product adjustment (gCO2e/MJ)</div>
+
+    <div class="row" style="gap:8px; align-items:center; margin-top:6px; flex-wrap:nowrap;">
+      <input id="dgs_bridge_apply" type="checkbox" checked />
+      <div style="flex:1; min-width:0; font-size:12px; color:var(--muted); line-height:1.2; white-space:nowrap;">
+        Apply
+      </div>
+      <input
+        id="dgs_bridge_score"
+        class="small numBox"
+        type="number"
+        step="0.1"
+        value="0"
+        title="DGS co-product bridge adjustment (gCO2e/MJ)"
+      />
+    </div>
+
+    <div style="margin-top:10px;">
+      <select id="dgs_bridge_type" class="hubSelect" title="DGS co-product bridge type">
+        <option value="none" data-score="0">No DGS adjustment</option>
+        <option value="wet_best_case" data-score="-8.0">Wet DGS best case</option>
+        <option value="dry_reference" data-score="0">Dry DDGS reference</option>
+        <option value="mixed" data-score="-4.0">Mixed wet/dry</option>
+      </select>
+    </div>
+
+    <div class="s" style="margin-top:6px;">Negative values reduce CI; user-editable after selecting a bridge type</div>
+  </div>
+
+  <div class="note scoreNotes">
+    <div style="margin-bottom:6px;">DGS bridge logic</div>
+    <ul class="noteList">
+      <li><span class="mono">Wet DGS best case</span> = -8.0</li>
+      <li><span class="mono">Mixed wet/dry</span> = -4.0</li>
+      <li><span class="mono">Dry DDGS reference</span> = 0.0</li>
+    </ul>
+  </div>
+</div>
 <p class="sectionTitle">CO2 sequestration reduction</p>
 
 <div class="scoreRow nowrap" style="margin-bottom:10px;">
@@ -1947,13 +2205,16 @@ The credit applies to qualifying carbon capture projects located in the United S
   </div>
 </div>
 
+    </div>
+  </details>
+
 <div class="hr"></div>
 
 <div class="note" id="programSummaryPanel" style="margin-top:10px; display:none;">
   <div style="margin-bottom:6px;">Program summary</div>
   <div style="font-size:12px; color:var(--muted); line-height:1.45;">
-    For <span class="mono">ethanol</span>, California’s LCFS assigns carbon intensity using full lifecycle analysis that
-    <b>includes ILUC</b>, significantly increasing CI scores for crop-based pathways like corn. Oregon’s Clean Fuels
+    For <span class="mono">ethanol</span>, California's LCFS assigns carbon intensity using full lifecycle analysis that
+    <b>includes ILUC</b>, significantly increasing CI scores for crop-based pathways like corn. Oregon's Clean Fuels
     Program follows a similar framework but <b>generally excludes ILUC</b>, resulting in lower CI scores for the same
     ethanol plant and pathway. Both programs include transportation emissions, but California typically models longer,
     destination-specific rail routes, while Oregon often reflects shorter delivery to Portland, further widening the CI
@@ -1965,10 +2226,6 @@ The credit applies to qualifying carbon capture projects located in the United S
 </div>
 
 <div class="hr"></div>
-
-<div id="operatingDetailAction" class="detailToggleBlock" style="display:none;">
-  <button id="operatingDetailOpen" class="detailToggleButton" type="button">View Operating Detail</button>
-</div>
 
 <div class="note" id="lcfsDetailPanel" style="margin-top:10px; display:none;">
   <div style="margin-bottom:10px;">LCFS pathway detail</div>
@@ -2006,16 +2263,16 @@ The credit applies to qualifying carbon capture projects located in the United S
 </div>  <!-- closes .grid -->
 </main>
 
-<div id="operatingDetailModal" class="modalBackdrop" aria-hidden="true">
-  <div class="detailModal" role="dialog" aria-modal="true" aria-labelledby="operatingDetailTitle">
-    <div class="detailModalHeader">
+<div id="operatingDetailModal" class="operatingModalOverlay" role="dialog" aria-modal="true" aria-labelledby="operatingDetailTitle">
+  <div class="operatingModal">
+    <div class="operatingModalHeader">
       <div>
-        <h2 id="operatingDetailTitle" class="detailModalTitle">Operating Detail</h2>
-        <div id="operatingDetailSubtitle" class="detailModalSub"></div>
+        <h2 id="operatingDetailTitle" class="operatingModalTitle">Operating Profile</h2>
+        <div id="operatingDetailSubtitle" class="operatingModalSub">-</div>
       </div>
-      <button id="operatingDetailClose" class="iconButton" type="button" aria-label="Close operating detail">x</button>
+      <button id="operatingDetailClose" type="button" class="operatingModalClose" aria-label="Close operating detail">x</button>
     </div>
-    <div id="operatingDetailBody" class="detailModalBody"></div>
+    <div id="operatingDetailBody" class="operatingModalBody"></div>
   </div>
 </div>
 
@@ -2031,9 +2288,46 @@ The credit applies to qualifying carbon capture projects located in the United S
     const cards = Array.from(grid.children).filter((el) => el.classList && el.classList.contains("card"));
     const plantCard = cards[0];
     const scenarioCard = cards[1];
+    const scenarioInputsPanel = document.getElementById("scenarioInputsPanel");
+    const marketPathwaysPanel = document.getElementById("marketPathwaysPanel");
+    const policyParametersPanel = document.getElementById("policyParametersPanel");
+    const policyParametersContent = document.getElementById("policyParametersContent");
+    const policyParametersBody = document.getElementById("policyParametersBody");
+    const policy45qParametersPanel = document.getElementById("policy45qParametersPanel");
+    const policy45qParametersContent = document.getElementById("policy45qParametersContent");
+    const policy45qNotesContent = document.getElementById("policy45qNotesContent");
+    const policy45qParametersBody = document.getElementById("policy45qParametersBody");
+    const modelMechanicsPanel = document.getElementById("modelMechanicsPanel");
+    const modelMechanicsContent = document.getElementById("modelMechanicsContent");
+    const modelMechanicsBody = document.getElementById("modelMechanicsBody");
     const outputStart = document.getElementById("outputPanelStart");
     const outputEnd = document.getElementById("outputPanelEnd");
     if (!plantCard || !scenarioCard || !outputStart || !outputEnd) return;
+
+    if (policyParametersContent && policyParametersBody){
+      policyParametersBody.appendChild(policyParametersContent);
+    }
+
+    if (policy45qParametersBody){
+      if (policy45qParametersContent) policy45qParametersBody.appendChild(policy45qParametersContent);
+      if (policy45qNotesContent) policy45qParametersBody.appendChild(policy45qNotesContent);
+    }
+
+    if (modelMechanicsContent && modelMechanicsBody){
+      modelMechanicsBody.appendChild(modelMechanicsContent);
+    }
+
+    if (scenarioInputsPanel && marketPathwaysPanel){
+      marketPathwaysPanel.insertAdjacentElement("afterend", scenarioInputsPanel);
+      if (policyParametersPanel) scenarioInputsPanel.insertAdjacentElement("afterend", policyParametersPanel);
+      if (policy45qParametersPanel){
+        (policyParametersPanel || scenarioInputsPanel).insertAdjacentElement("afterend", policy45qParametersPanel);
+      }
+      if (modelMechanicsPanel){
+        (marketPathwaysPanel || policy45qParametersPanel || policyParametersPanel || scenarioInputsPanel).insertAdjacentElement("afterend", modelMechanicsPanel);
+      }
+      scenarioCard.style.display = "none";
+    }
 
     const outputCard = document.createElement("div");
     outputCard.className = "card outputCard";
@@ -2137,11 +2431,10 @@ The credit applies to qualifying carbon capture projects located in the United S
   const WORKER_BASE_URL = "https://flat-silence-a8a3.elhakmiller.workers.dev";
   const SEARCH_URL = `${WORKER_BASE_URL}/search`;
   const PLANT_URL = `${WORKER_BASE_URL}/plant`;
-  const REGULATORY_JSON_URL = "./static_data/LCFS/lcfs_dropdown_v2.json";
   const DATA_URL = SEARCH_URL;
-    console.log("✅ RUNNING CALC FILE:", window.location.href);
-    console.log("✅ BUILD_STAMP:", "2026-06-08 14:24:38");
-    console.log("✅ SEARCH_URL:", SEARCH_URL);
+    console.log("OK RUNNING CALC FILE:", window.location.href);
+    console.log("OK BUILD_STAMP:", "2026-06-08 14:24:38");
+    console.log("OK SEARCH_URL:", SEARCH_URL);
   
 
 
@@ -2177,7 +2470,7 @@ function bootRender(){
   if (plantSel && plantSel.options.length === 0){
     const o = document.createElement("option");
     o.value = "";
-    o.textContent = "Loading plants…";
+    o.textContent = "Loading plants...";
     plantSel.appendChild(o);
   }
 
@@ -2259,7 +2552,7 @@ function syncChapter2PipelineUI(){
 
   if (note) {
     note.textContent = def.label
-      ? `Uses auto-defaults by plant flags • ${def.label}`
+      ? `Uses auto-defaults by plant flags * ${def.label}`
       : "Uses auto-defaults by plant flags";
   }
 
@@ -2295,85 +2588,12 @@ function syncElectricityBridgeUI(){
   }
 }
 
-function selectedStartingCoproductText(plant){
-  if (!plant) return "";
-
-  const start = startingCI(plant);
-  if (start.source === "wa_calibrated"){
-    const rows = asArray(plant?.wa_lcfs_ci_detail)
-      .filter(row => isActivePathway(row))
-      .map(row => {
-        const waCi = Number(row?.CI);
-        const feedstockClass = waFeedstockClass(row);
-        const adjustment = WA_CA_MEDIAN_ADJUSTMENTS[feedstockClass];
-        if (!Number.isFinite(waCi) || adjustment === undefined) return null;
-        return { row, value: waCi + adjustment };
-      })
-      .filter(Boolean)
-      .sort((a, b) => a.value - b.value);
-
-    return rows.length ? benchmarkCoproductLabel("WA", rows[0].row) : "";
-  }
-
-  const rows =
-    start.source === "or"
-      ? (plant?.or_detail ?? plant?.lcfs_detail?.or_detail ?? [])
-      : (plant?.ca_detail ?? plant?.lcfs_detail?.ca_detail ?? []);
-
-  if (!Array.isArray(rows) || !rows.length) return "";
-
-  const scoredRows = rows
-    .map(row => ({ row, ci: Number(row?.ci_score) }))
-    .filter(item => Number.isFinite(item.ci) && item.ci > 0);
-
-  const selected = scoredRows.length
-    ? scoredRows.reduce((best, item) => item.ci < best.ci ? item : best, scoredRows[0]).row
-    : rows[0];
-
-  return firstNonEmpty(selected?.coproduct_type, selected?.co_product, selected?.coproduct);
-}
-
-function classifyDgsBridge(coproductText){
-  const text = String(coproductText || "").trim();
-  if (!text) return { type: "none", score: 0, label: "" };
-
-  const lower = text.toLowerCase();
-  const hasWet = /\bwet\b|\bwdgs\b|wet\s+distillers/.test(lower);
-  const hasDry = /\bdry\b|\bddgs\b|dried\s+distillers/.test(lower);
-  const mixed = (
-    (hasWet && hasDry) ||
-    /\bmodified\b|\bmwdgs\b|wet\s*\/\s*dry|wet\s+and\s+dry|wdgs\s*\/\s*ddgs/.test(lower)
-  );
-
-  if (mixed) return { type: "mixed", score: 1, label: text };
-  if (hasDry) return { type: "dry_ddgs", score: 2, label: text };
-  if (hasWet) return { type: "wet_baseline", score: 0, label: text };
-  return { type: "none", score: 0, label: text };
-}
-
-function syncDgsBridgeUI(){
-  const typeEl = document.getElementById("dgs_bridge_type");
-  const scoreEl = document.getElementById("dgs_bridge_score");
-  const note = document.getElementById("dgsBridgeNote");
-  if (!typeEl || !scoreEl) return;
-
-  const coproduct = selectedStartingCoproductText(selectedPlant);
-  const def = classifyDgsBridge(coproduct);
-
-  typeEl.value = def.type;
-  scoreEl.value = String(def.score.toFixed(1));
-
-  if (note){
-    note.textContent = "This bridge is a residual LCFS-to-45Z coproduct-method adjustment only. It does not model dryer energy, which is already embedded in the starting LCFS CI.";
-  }
-}
-
 
   // ----------------------------
   // UTILS
   // ----------------------------
   function fmt(n, digits=2){
-    if (n === null || n === undefined || Number.isNaN(n)) return "—";
+    if (n === null || n === undefined || Number.isNaN(n)) return "-";
     return Number(n).toFixed(digits);
   }
   function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
@@ -2408,9 +2628,10 @@ function compute45zRateBlock({
   miscReduction,
   pipelineScore,
   agReduction,
+  yieldScenarioImpact,
   ckfAdjustment,
-  electricityBridge,
   dgsBridge,
+  electricityBridge,
   benchmarkKgPerMmbtu,
   maxRate
 }){
@@ -2433,9 +2654,12 @@ function compute45zRateBlock({
   if (Number.isFinite(miscReduction)) ci -= miscReduction;
   if (Number.isFinite(pipelineScore)) ci -= pipelineScore;
   if (Number.isFinite(agReduction)) ci -= agReduction;
+  if (Number.isFinite(yieldScenarioImpact)) ci -= yieldScenarioImpact;
   if (Number.isFinite(ckfAdjustment)) ci -= ckfAdjustment;
-  if (Number.isFinite(electricityBridge)) ci += electricityBridge;
   if (Number.isFinite(dgsBridge)) ci += dgsBridge;
+  if (Number.isFinite(electricityBridge)) ci += electricityBridge;
+
+  if (Number.isFinite(ci)) ci = Math.max(0, ci);
 
   const emissionsKgmmbtu = Number.isFinite(ci)
     ? (ci * CONV_G_PER_MJ_TO_KG_PER_MMBTU)
@@ -2512,7 +2736,7 @@ function parseLooseNumber(x){
   if (!s) return null;
 
   const low = s.toLowerCase();
-  if (low === "nan" || low === "none" || low === "null" || low === "<na>" || low === "—" || low === "-") return null;
+  if (low === "nan" || low === "none" || low === "null" || low === "<na>" || low === "-" || low === "-") return null;
 
   // remove commas and pull the first numeric token (handles "120 MGY", "120.0 (est)", etc.)
   s = s.replace(/,/g, "");
@@ -2612,7 +2836,7 @@ function proxy45zStartFromBtu(p){
 // If no LCFS CI, start at 70 and reduce by tech score.
 const DEFAULT_NO_LCFS_PROXY = 70.0;
 
-const THERMAL_CI_PER_BTU_GAL = 0.001114; // BTU/gal → gCO2e/MJ
+const THERMAL_CI_PER_BTU_GAL = 0.001114; // BTU/gal -> gCO2e/MJ
 
 const NON_THERMAL_BASE_BY_TECH_DRYER = [
   { technology: "ICM", dryer: "Rotary Dryer", count: 52, base: 22.244267 },
@@ -2646,9 +2870,11 @@ const FORTYFIVEZ_LAST_YEAR = 2029;
 const CURRENT_MODEL_YEAR = new Date().getFullYear();
 const FORTYFIVEQ_TERM_YEARS = 12;
 const DEFAULT_DISCOUNT_RATE = 0.10;
+const YIELD_SCENARIO_BASELINE_GAL_PER_BU = 2.98;
+const YIELD_SCENARIO_CI_PER_0_01_GAL_BU = 0.20;
 
 
-// ✅ SET YOUR REDUCTIONS HERE (gCO2e/MJ)
+// OK SET YOUR REDUCTIONS HERE (gCO2e/MJ)
 // Put the exact reductions you told me last night.
 const TECH_REDUCTION = {
   high_pro: -1,
@@ -2732,7 +2958,7 @@ function asBool(v){
   const n = Number(low);
   if (Number.isFinite(n)) return n !== 0;
 
-  // ✅ Key change: any other non-empty string counts as true
+  // OK Key change: any other non-empty string counts as true
   // (covers "CHP", "White Fox", "ICM HI PRO", etc.)
   return true;
 }
@@ -2746,7 +2972,7 @@ function pickFirstField(p, fields){
     if (v === null || v === undefined || v === "") continue;
 
     const s = String(v).trim().toLowerCase();
-    if (s === "nan" || s === "none" || s === "null" || s === "<na>" || s === "—" || s === "-") continue;
+    if (s === "nan" || s === "none" || s === "null" || s === "<na>" || s === "-" || s === "-") continue;
 
     return v;
   }
@@ -2773,7 +2999,7 @@ function getEnhancements(p){
   }
 
   // 2) Synthetic enhancement: Fiber CI exists in LCFS feedstock CIs
-  //    (This is your “plant has corn fiber use already” signal.)
+  //    (This is your "plant has corn fiber use already" signal.)
   const fs = getFeedstockCI(p);
   const hasFiberCI = (fs && fs.fiber !== null && Number.isFinite(fs.fiber) && fs.fiber > 0);
 
@@ -3037,7 +3263,7 @@ return {
   mode: "proxy",
   source: "proxy",
   value: v,
-  note: `Fallback proxy start ${DEFAULT_NO_LCFS_PROXY.toFixed(1)} − enhancements (${totalRed.toFixed(1)})`,
+  note: `Fallback proxy start ${DEFAULT_NO_LCFS_PROXY.toFixed(1)} - enhancements (${totalRed.toFixed(1)})`,
   enhancements: enh,
   proxyStart: DEFAULT_NO_LCFS_PROXY,
   totalRed: totalRed,
@@ -3047,7 +3273,7 @@ return {
   ilucDefaultValue: 0
 };
 
-} // ✅ closes startingCI()
+} // OK closes startingCI()
 
 function renderCkfPanel(){
   const panel = document.getElementById("ckfPanel");
@@ -3066,8 +3292,8 @@ function renderCkfPanel(){
     title.style.display = "none";
     apply.checked = false;
     share.value = "3.5";
-    deltaEl.textContent = "—";
-    adjEl.textContent = "—";
+    deltaEl.textContent = "-";
+    adjEl.textContent = "-";
     note.textContent = "CA starch and fiber CI required";
     return;
   }
@@ -3080,15 +3306,15 @@ function renderCkfPanel(){
   title.style.display = "";
   panel.style.display = "";
 
-  status.textContent = "✅ CKF identified";
+  status.textContent = "OK CKF identified";
   status.style.color = "var(--accent)";
 
    if (!apply.dataset.userTouched){
     apply.checked = true;
   }
 
-  deltaEl.textContent = Number.isFinite(ckf.delta) ? fmt(ckf.delta, 2) : "—";
-  adjEl.textContent = Number.isFinite(adjustment) ? fmt(adjustment, 2) : "—";
+  deltaEl.textContent = Number.isFinite(ckf.delta) ? fmt(ckf.delta, 2) : "-";
+  adjEl.textContent = Number.isFinite(adjustment) ? fmt(adjustment, 2) : "-";
   
 }
 
@@ -3122,7 +3348,7 @@ function renderCkfChart(){
   const distribution = selectedPlant.ckf_distribution;
   const plantValue = Number(selectedPlant.ckf_ci_score);
 
-  const labels = distribution.map(d => `${Number(d.bin_min).toFixed(1)}–${Number(d.bin_max).toFixed(1)}`);
+  const labels = distribution.map(d => `${Number(d.bin_min).toFixed(1)}-${Number(d.bin_max).toFixed(1)}`);
   const counts = distribution.map(d => Number(d.count) || 0);
 
   const colors = distribution.map((d, idx) => {
@@ -3304,11 +3530,11 @@ function renderLcfsDetail(){
     return (
       `<div class="lcfsDetailGrid">` +
       rows.map(d => {
-        const pathway = d?.pathway_type || "—";
-        const feedstock = d?.feedstock || "—";
-        const coproduct = d?.coproduct_type || "—";
+        const pathway = d?.pathway_type || "-";
+        const feedstock = d?.feedstock || "-";
+        const coproduct = d?.coproduct_type || "-";
         const score = (d?.ci_score === null || d?.ci_score === undefined || Number.isNaN(Number(d?.ci_score)))
-          ? "—"
+          ? "-"
           : Number(d.ci_score).toFixed(2);
 
         return `
@@ -3485,7 +3711,7 @@ function renderHubs(){
 
     const o = document.createElement("option");
     o.value = OR_PORTLAND_HUB.id;
-    o.textContent = `${OR_PORTLAND_HUB.name} — ${OR_PORTLAND_HUB.role}`;
+    o.textContent = `${OR_PORTLAND_HUB.name} - ${OR_PORTLAND_HUB.role}`;
     sel.appendChild(o);
 
     sel.value = OR_PORTLAND_HUB.id;
@@ -3513,7 +3739,7 @@ function renderHubs(){
   for (const h of hubs) {
     const o = document.createElement("option");
     o.value = h.id;
-    o.textContent = `${h.name} — ${h.railroad} — ${h.role}`;
+    o.textContent = `${h.name} - ${h.railroad} - ${h.role}`;
     sel.appendChild(o);
   }
 
@@ -3536,15 +3762,15 @@ function renderStartingPanel(){
   if (!vEl || !nEl || !boxEl) return;
 
   if (!selectedPlant){
-    vEl.textContent = "—";
-    nEl.textContent = "—";
+    vEl.textContent = "-";
+    nEl.textContent = "-";
     boxEl.innerHTML = "";
     return;
   }
 
   const s = startingCI(selectedPlant);
-  vEl.textContent = Number.isFinite(s.value) ? fmt(s.value, 2) : "—";
-  nEl.textContent = s.note || "—";
+  vEl.textContent = Number.isFinite(s.value) ? fmt(s.value, 2) : "-";
+  nEl.textContent = s.note || "-";
 
   // Build the right-side detail content
   if (s.mode === "lcfs"){
@@ -3561,11 +3787,11 @@ function renderStartingPanel(){
       boxEl.innerHTML = rows.length
         ? `<div class="threeColGrid">` +
             rows.map(([k,v]) =>
-              `<div class="gridItem">• <span class="mono">${k}</span>: ${fmt(v,2)}</div>`
+              `<div class="gridItem">* <span class="mono">${k}</span>: ${fmt(v,2)}</div>`
             ).join("") +
           `</div>
-          <div style="margin-top:8px; color:var(--muted);">• <span class="mono">Source</span>: California LCFS</div>
-          <div style="margin-top:4px; color:var(--muted);">• <span class="mono">Freight hub</span>: selected California hub</div>`
+          <div style="margin-top:8px; color:var(--muted);">* <span class="mono">Source</span>: California LCFS</div>
+          <div style="margin-top:4px; color:var(--muted);">* <span class="mono">Freight hub</span>: selected California hub</div>`
         : `<div class="muted">California LCFS CI selected.</div>`;
     } else if (s.source === "or"){
       const or = s.orCalibrated || {};
@@ -3599,15 +3825,15 @@ function renderStartingPanel(){
 
       boxEl.innerHTML = `
         <div class="threeColGrid">
-          <div class="gridItem">â€¢ <span class="mono">Source</span>: Washington CI</div>
-          <div class="gridItem">â€¢ <span class="mono">CI source</span>: WA_CALIBRATED</div>
-          <div class="gridItem">â€¢ <span class="mono">Feed</span>: ${escapeHtml(feed)}</div>
-          <div class="gridItem">â€¢ <span class="mono">WA CI</span>: ${Number.isFinite(waCi) ? fmt(waCi,2) : "â€”"}</div>
-          <div class="gridItem">â€¢ <span class="mono">Median spread</span>: ${Number.isFinite(adjustment) ? `+${fmt(adjustment,2)}` : "â€”"}</div>
-          <div class="gridItem">â€¢ <span class="mono">Starting CI</span>: ${Number.isFinite(calibrated) ? fmt(calibrated,2) : "â€”"}</div>
+          <div class="gridItem">* <span class="mono">Source</span>: Washington CI</div>
+          <div class="gridItem">* <span class="mono">CI source</span>: WA_CALIBRATED</div>
+          <div class="gridItem">* <span class="mono">Feed</span>: ${escapeHtml(feed)}</div>
+          <div class="gridItem">* <span class="mono">WA CI</span>: ${Number.isFinite(waCi) ? fmt(waCi,2) : "-"}</div>
+          <div class="gridItem">* <span class="mono">Median spread</span>: ${Number.isFinite(adjustment) ? `+${fmt(adjustment,2)}` : "-"}</div>
+          <div class="gridItem">* <span class="mono">Starting CI</span>: ${Number.isFinite(calibrated) ? fmt(calibrated,2) : "-"}</div>
         </div>
-        <div style="margin-top:8px; color:var(--muted);">â€¢ California score not available; starting score is based on Washington pathway and adjusted using matched WA-to-CA pathway spreads.</div>
-        <div style="margin-top:4px; color:var(--muted);">â€¢ No separate Port of Tacoma freight correction is applied.</div>
+        <div style="margin-top:8px; color:var(--muted);">* California score not available; starting score is based on Washington pathway and adjusted using matched WA-to-CA pathway spreads.</div>
+        <div style="margin-top:4px; color:var(--muted);">* No separate Port of Tacoma freight correction is applied.</div>
       `;
     } else {
       boxEl.innerHTML = `<div class="muted">LCFS CI selected.</div>`;
@@ -3639,13 +3865,13 @@ enh.sort((a,b) => (b.reduction||0) - (a.reduction||0));
 
 const lines = enh.map(e => {
   const r = Number.isFinite(e.reduction) ? e.reduction : 0;
-  const suffix = (r > 0) ? `: −${fmt(r, 1)} g/MJ` : "";
-  return `<div>• <span class="mono">${e.label}</span>${suffix}</div>`;
+  const suffix = (r > 0) ? `: -${fmt(r, 1)} g/MJ` : "";
+  return `<div>* <span class="mono">${e.label}</span>${suffix}</div>`;
 }).join("");
 
 const math =
   `<div style="margin-bottom:6px;">
-    Proxy math: <span class="mono">${s.proxyStart.toFixed(1)} − ${s.totalRed.toFixed(1)} = ${fmt(s.value, 2)}</span>
+    Proxy math: <span class="mono">${s.proxyStart.toFixed(1)} - ${s.totalRed.toFixed(1)} = ${fmt(s.value, 2)}</span>
   </div>`;
 
 boxEl.innerHTML = math + lines;
@@ -3654,10 +3880,10 @@ boxEl.innerHTML = math + lines;
   function haversineMiles(lat1, lon1, lat2, lon2){
     const R = 3958.7613; // miles
     const toRad = d => d * Math.PI / 180;
-    const φ1 = toRad(lat1), φ2 = toRad(lat2);
-    const Δφ = toRad(lat2 - lat1);
-    const Δλ = toRad(lon2 - lon1);
-    const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+    const phi1 = toRad(lat1), phi2 = toRad(lat2);
+    const dPhi = toRad(lat2 - lat1);
+    const dLambda = toRad(lon2 - lon1);
+    const a = Math.sin(dPhi/2)**2 + Math.cos(phi1)*Math.cos(phi2)*Math.sin(dLambda/2)**2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
   }
@@ -3688,7 +3914,7 @@ function firstNonEmpty(...vals){
   const niceName  = name || "Unknown";
   const tail = [city, st].filter(Boolean).join(", ");
   return owner
-    ? `${owner} — ${niceName}${tail ? " ("+tail+")" : ""}`
+    ? `${owner} - ${niceName}${tail ? " ("+tail+")" : ""}`
     : `${niceName}${tail ? " ("+tail+")" : ""}`;
 }
 
@@ -3726,6 +3952,7 @@ function normalizePlantRow(p, i=0){
     canadian_fed_ci: p?.canadian_fed_ci ?? detail.canadian_fed_ci ?? null,
     canadian_fed_ci_detail: p?.canadian_fed_ci_detail ?? detail.canadian_fed_ci_detail ?? null,
     bc_lcfs_ci_detail: p?.bc_lcfs_ci_detail ?? detail.bc_lcfs_ci_detail ?? [],
+    operating_permit: p?.operating_permit ?? p?.operatingPermit ?? p?.operating_permit_detail ?? p?.operatingPermitDetail ?? null,
     high_pro: p?.high_pro ?? tech.high_pro ?? null,
     chp: p?.chp ?? tech.chp ?? null,
     white_fox: p?.white_fox ?? tech.white_fox ?? null,
@@ -3970,7 +4197,7 @@ function sync45QValueSection(){
   const inp = document.getElementById("ccsReduction");
   if (!cb || !inp) return;
 
-  // ✅ Always unlocked: user override box
+  // OK Always unlocked: user override box
   cb.disabled = false;
   inp.disabled = false;
 
@@ -4016,7 +4243,6 @@ function syncFreightUI(){
   let filteredPlants = [];
   let selectedPlant = null;
   const plantDetailCache = new Map();
-  let regulatoryLookupPromise = null;
   let plantSelectionSeq = 0;
   let benchmarkUniverseIds = [];
 
@@ -4036,86 +4262,66 @@ function plantId(p){
   ).trim();
 }
 
-function hasRegulatoryPathways(p){
-  return !!(
-    p &&
-    p.regulatory_pathways &&
-    p.regulatory_pathways.registered_programs &&
-    typeof p.regulatory_pathways.registered_programs === "object"
-  );
-}
-
-async function loadRegulatoryLookup(){
-  if (regulatoryLookupPromise) return regulatoryLookupPromise;
-
-  regulatoryLookupPromise = (async () => {
-    const map = new Map();
-    try {
-      const resp = await fetch(REGULATORY_JSON_URL, { cache: "no-store" });
-      if (!resp.ok) throw new Error(`Regulatory JSON fetch failed ${resp.status}`);
-      const rows = await resp.json();
-      if (Array.isArray(rows)){
-        rows.forEach((row, i) => {
-          const plant = normalizePlantRow(row, i);
-          const id = plantId(plant);
-          if (id && hasRegulatoryPathways(plant)){
-            map.set(id, plant.regulatory_pathways);
-          }
-        });
-      }
-    } catch (e) {
-      console.warn("Regulatory pathway lookup failed:", e);
-    }
-    return map;
-  })();
-
-  return regulatoryLookupPromise;
-}
-
-async function withRegulatoryPathways(plant, fallbackPlant=null){
-  if (!plant) return plant;
-  if (hasRegulatoryPathways(plant)) return plant;
-  if (hasRegulatoryPathways(fallbackPlant)){
-    return { ...plant, regulatory_pathways: fallbackPlant.regulatory_pathways };
-  }
-
-  const id = plantId(plant);
-  if (!id) return plant;
-  const lookup = await loadRegulatoryLookup();
-  const regulatoryPathways = lookup.get(id);
-  return regulatoryPathways
-    ? { ...plant, regulatory_pathways: regulatoryPathways }
-    : plant;
-}
-
-function logSelectedPlantRegulatory(plant){
-  if (!plant) return;
-  console.log(
-    "Selected plant regulatory_pathways",
-    plant.epm_number ?? plant.epm ?? plant.EPM_NUMBER ?? plant.facility_id ?? plant.fac_info?.epm ?? "",
-    plant.plant_name,
-    plant.regulatory_pathways
-  );
-}
-
 async function fetchPlantDetail(id){
   const key = String(id || "").trim();
   if (!key) return null;
   if (plantDetailCache.has(key)) return plantDetailCache.get(key);
 
   const url = `${PLANT_URL}?id=${encodeURIComponent(key)}`;
-  const resp = await fetch(url, { cache: "no-store" });
-  if (!resp.ok){
-    const txt = await resp.text().catch(() => "(no body)");
-    throw new Error(`Plant fetch failed ${resp.status}: ${txt}`);
+  let resp = null;
+  let lastError = null;
+  for (let attempt = 0; attempt < 3; attempt++){
+    try {
+      resp = await fetch(url, { cache: "no-store" });
+      if (resp.ok) break;
+      const txt = await resp.text().catch(() => "(no body)");
+      lastError = new Error(`Plant fetch failed ${resp.status}: ${txt}`);
+      if (resp.status !== 503) throw lastError;
+    } catch (e) {
+      lastError = e;
+      if (attempt >= 2) throw lastError;
+    }
+    await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
   }
+  if (!resp || !resp.ok) throw lastError || new Error("Plant fetch failed");
   const raw = await resp.json();
   const row = Array.isArray(raw)
     ? raw[0]
     : raw && typeof raw === "object"
     ? (raw.plant || raw.row || raw.data || raw)
     : raw;
+  const rawKeys = raw && typeof raw === "object" ? Object.keys(raw) : [];
+  const rowKeys = row && typeof row === "object" ? Object.keys(row) : [];
+  console.log("[Operating Detail] Worker plant response", {
+    requestedId: key,
+    rawKeys,
+    rowKeys,
+    rawHasOperatingPermit: !!(
+      raw?.operating_permit ||
+      raw?.operatingPermit ||
+      raw?.operating_permit_detail ||
+      raw?.operatingPermitDetail ||
+      raw?.plant?.operating_permit ||
+      raw?.plant?.operatingPermit ||
+      raw?.row?.operating_permit ||
+      raw?.row?.operatingPermit ||
+      raw?.data?.operating_permit ||
+      raw?.data?.operatingPermit
+    ),
+    rowHasOperatingPermit: !!(
+      row?.operating_permit ||
+      row?.operatingPermit ||
+      row?.operating_permit_detail ||
+      row?.operatingPermitDetail
+    )
+  });
   const plant = normalizePlantRow(row, 0);
+  const opBlock = getOperatingPermitBlock(plant);
+  console.log("[Operating Detail] normalized plant detail", {
+    epm: plantId(plant),
+    hasOperatingPermit: !!opBlock,
+    operatingPermitKeys: opBlock && typeof opBlock === "object" ? Object.keys(opBlock) : []
+  });
   plantDetailCache.set(key, plant);
   return plant;
 }
@@ -4224,7 +4430,7 @@ function addBenchmarkEntry(entries, plant, program, row){
   if (!isActivePathway(row)) return;
 
   const ci = benchmarkCiValue(program, row);
-  if (ci === null) return;
+  if (ci === null || ci === 0) return;
 
   const feedstock = benchmarkFeedstockLabel(program, row);
   if (!feedstock || feedstock === "-") return;
@@ -4288,7 +4494,7 @@ function percentileFromRank(rank, count){
   return (1 - ((rank - 1) / (count - 1))) * 100;
 }
 
-function benchmarkTable(headers, rows, emptyText="—"){
+function benchmarkTable(headers, rows, emptyText="-"){
   if (!rows.length) return `<div class="muted" style="font-size:12px;">${emptyText}</div>`;
   return `
     <table class="pathwayBenchmarkTable">
@@ -4312,14 +4518,14 @@ async function renderPathwayBenchmark(){
   if (!activeEl || !avgEl || !rankEl) return;
 
   if (!selectedPlant){
-    setBenchmarkLoading("—");
+    setBenchmarkLoading("-");
     return;
   }
 
   const selectedEntries = benchmarkEntriesForPlant(selectedPlant);
   const selectedActiveEntries = dedupeBenchmarkEntries(selectedEntries);
   if (!selectedActiveEntries.length){
-    setBenchmarkLoading("—");
+    setBenchmarkLoading("-");
     return;
   }
 
@@ -4329,13 +4535,13 @@ async function renderPathwayBenchmark(){
       <tr>
         <td>${escapeHtml(entry.program)}</td>
         <td>${escapeHtml(entry.feedstock)}${entry.feedstock_source ? `<span class="pathwayBenchmarkSource">${escapeHtml(entry.feedstock_source)}</span>` : ""}</td>
-        <td>${entry.coproduct ? escapeHtml(entry.coproduct) : "—"}</td>
+        <td>${entry.coproduct ? escapeHtml(entry.coproduct) : "-"}</td>
         <td>${escapeHtml(displayCi(entry.ci))}</td>
       </tr>
     `)
   );
-  avgEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers…</div>`;
-  rankEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers…</div>`;
+  avgEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers...</div>`;
+  rankEl.innerHTML = `<div class="muted" style="font-size:12px;">Loading peers...</div>`;
 
   let peers = [];
   try {
@@ -4364,7 +4570,7 @@ async function renderPathwayBenchmark(){
         <tr>
           <td>${escapeHtml(entry.program)}</td>
           <td>${escapeHtml(entry.feedstock)}</td>
-          <td>${mean === null ? "—" : escapeHtml(displayCi(mean))}</td>
+          <td>${mean === null ? "-" : escapeHtml(displayCi(mean))}</td>
         </tr>
       `;
     })
@@ -4380,7 +4586,7 @@ async function renderPathwayBenchmark(){
       const pct = percentileFromRank(rank, group.length);
       const label = rank > 0
         ? `${rank}/${group.length}${pct === null ? "" : ` (${fmt(pct,0)}%)`}`
-        : "—";
+        : "-";
       return `
         <tr>
           <td>${escapeHtml(entry.program)}</td>
@@ -4419,7 +4625,7 @@ function renderHubs(){
 
     const o = document.createElement("option");
     o.value = OR_PORTLAND_HUB.id;
-    o.textContent = `${OR_PORTLAND_HUB.name} — ${OR_PORTLAND_HUB.role}`;
+    o.textContent = `${OR_PORTLAND_HUB.name} - ${OR_PORTLAND_HUB.role}`;
     sel.appendChild(o);
 
     sel.value = OR_PORTLAND_HUB.id;
@@ -4447,7 +4653,7 @@ function renderHubs(){
   for (const h of hubs) {
     const o = document.createElement("option");
     o.value = h.id;
-    o.textContent = `${h.name} — ${h.railroad} — ${h.role}`;
+    o.textContent = `${h.name} - ${h.railroad} - ${h.role}`;
     sel.appendChild(o);
   }
 
@@ -4593,7 +4799,7 @@ async function applyFilters(){
       
       
     
-      // ✅ deterministic freight reset when no plant
+      // OK deterministic freight reset when no plant
       const freightCb = document.getElementById("applyFreight");
       if (freightCb) freightCb.checked = false;
     
@@ -4609,7 +4815,7 @@ async function applyFilters(){
     for (let i=0; i<filteredPlants.length; i++){
       const p = filteredPlants[i];
       const o = document.createElement("option");
-      o.value = String(p.facility_id ?? p.ca_facility_id ?? p.__id ?? "").trim(); // ✅ key fix
+      o.value = String(p.facility_id ?? p.ca_facility_id ?? p.__id ?? "").trim(); // OK key fix
       o.textContent = plantLabel(p);
       sel.appendChild(o);
     }
@@ -4634,7 +4840,7 @@ async function applyFilters(){
     
     syncChapter2PipelineUI();
     
-    // ✅ Force freight default + sync AFTER selectedPlant is finalized
+    // OK Force freight default + sync AFTER selectedPlant is finalized
     const freightCb = document.getElementById("applyFreight");
     if (freightCb){
       const start = selectedPlant ? startingCI(selectedPlant) : null;
@@ -4720,230 +4926,785 @@ function getTercileCutoffs(values){
 }
 
 function classifyImpliedDryerFigure(v){
-  if (v === null || v === undefined || v === "") return "—";
+  if (v === null || v === undefined || v === "") return "-";
 
   const num = Number(v);
-  if (!Number.isFinite(num)) return "—";
+  if (!Number.isFinite(num)) return "-";
 
   const values = getNumericDryerValues();
   const { lowCut, highCut } = getTercileCutoffs(values);
 
-  if (lowCut === null || highCut === null) return "—";
+  if (lowCut === null || highCut === null) return "-";
 
   if (num <= lowCut) return "Low";
   if (num >= highCut) return "High";
   return "Medium";
 }
 
-// ----------------------------
-// PLANT DETAILS
-// ----------------------------
-function htmlEscape(value){
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
 
-function asList(value){
-  if (Array.isArray(value)) return value;
-  if (value === null || value === undefined || value === "") return [];
-  return [value];
-}
-
-function operatingMetricValue(metric){
-  if (!metric || typeof metric !== "object") return null;
-  if (String(metric.confidence || "").toLowerCase() === "missing_inputs") return null;
-  const raw = metric.value;
-  if (raw === null || raw === undefined || raw === "") return null;
-  const n = Number(raw);
+function ciNumber(value){
+  const n = Number(value);
   return Number.isFinite(n) ? n : null;
 }
 
-function formatOperatingValue(value, units){
-  const u = String(units || "").trim();
-  const abs = Math.abs(value);
-  if (u === "bu"){
-    if (abs >= 1_000_000) return `${fmt(value / 1_000_000, 1)} million bu`;
-    return `${Math.round(value).toLocaleString("en-US")} bu`;
+function ciSame(a, b){
+  const x = ciNumber(a);
+  const y = ciNumber(b);
+  return x !== null && y !== null && Math.abs(x - y) < 0.005;
+}
+
+function marketPathwayClass(text){
+  const raw = String(text || "").toLowerCase();
+  if (raw.includes("fiber") || raw.includes("ckf") || raw.includes("cellulosic")) return "Fiber / CKF";
+  if (raw.includes("corn") || raw.includes("starch")) return "Corn / Starch";
+  return text ? String(text) : "Pathway";
+}
+
+function marketPathwayDate(program, row){
+  if (program === "Washington") return row?.["Eff. Start Qtr/Yr"] || row?.effective_date || "";
+  if (program === "British Columbia") return row?.effective_date || "";
+  if (program === "Canadian Federal") return row?.approval_date || row?.effective_date || "";
+  return row?.detail_date || row?.effective_date || "";
+}
+
+function marketPathwayFeedstock(program, row){
+  if (program === "Washington") return row?.feedstock_class || row?.["Fuel Name"] || "";
+  if (program === "British Columbia") return row?.pathway_base ? `Pathway ${row.pathway_base}.${row.pathway_version ?? ""}` : "";
+  if (program === "Canadian Federal") return [row?.fuel_type, row?.grain_source, row?.feedstock_origin].filter(Boolean).join(" / ");
+  return [row?.pathway_type, row?.feedstock, row?.coproduct_type].filter(Boolean).join(" / ");
+}
+
+function addMarketPathway(rows, program, pathway, ci, source, date="", status=""){
+  const n = ciNumber(ci);
+  if (n === null || n === 0) return;
+  const isObj = pathway && typeof pathway === "object";
+  const pathwayText = isObj
+    ? [pathway.pathway_type, pathway.feedstock, pathway.feedstock_class, pathway["Fuel Name"], pathway.fuel_type, pathway.pathway_base].filter(Boolean).join(" ")
+    : String(pathway || "");
+  rows.push({
+    program,
+    pathway: marketPathwayClass(pathwayText),
+    detail: marketPathwayFeedstock(program, isObj ? pathway : {}) || pathwayText,
+    ci: n,
+    source,
+    date: date || "",
+    status: status || ""
+  });
+}
+
+function marketPathwayDedupeKey(row){
+  return [
+    row.program,
+    row.pathway,
+    row.detail,
+    row.source
+  ].join("||").toLowerCase();
+}
+
+function marketPathwayDateValue(row){
+  const parsed = Date.parse(row?.date || "");
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function estimated45zMarketRow(){
+  try {
+    if (!selectedPlant) return null;
+    const r = compute();
+    const ci = ciNumber(r?.ci45z_g_per_mj);
+    if (ci === null) return null;
+    const kg = ciNumber(r?.emissions_kg_per_mmbtu);
+    return {
+      program: "Estimated",
+      pathway: "45Z Score",
+      detail: kg === null ? "Calculator estimate" : `${displayCi(kg)} kg/MMBtu`,
+      ci,
+      source: "Estimated 45Z Score",
+      date: ""
+    };
+  } catch (e) {
+    console.warn("Estimated 45Z row skipped:", e);
+    return null;
   }
-  if (u === "bu/day") return `${Math.round(value).toLocaleString("en-US")} bu/day`;
-  if (u === "days") return `${fmt(value, 1)} days`;
-  if (u === "hours") return `${fmt(value, 1)} hours`;
-  if (u === "gal/bu") return `${fmt(value, 2)} gal/bu`;
-  if (u === "bu/gal") return `${fmt(value, 3)} bu/gal`;
-  if (u === "lb/bu") return `${fmt(value, 2)} lb/bu`;
-  if (u === "tons/day") return `${fmt(value, 1)} tons/day`;
-  if (u === "gal/min") return `${Math.round(value).toLocaleString("en-US")} gal/min`;
-  if (u === "gal/year") return `${Math.round(value).toLocaleString("en-US")} gal/year`;
-  if (u === "BTU/gal") return `${Math.round(value).toLocaleString("en-US")} BTU/gal`;
-  if (u === "MMBtu/hr") return `${fmt(value, 1)} MMBtu/hr`;
-  if (u === "MMBtu/hr/MGY") return `${fmt(value, 2)} MMBtu/hr/MGY`;
-  if (u === "percent") return `${fmt(value, 1)}%`;
-  return `${fmt(value, 2)}${u ? ` ${u}` : ""}`;
 }
 
-function scenarioGallonsPerYear(){
-  const capMgy = selectedPlant
-    ? Number(selectedPlant.ethanol_capacity_mgy ?? selectedPlant["ethanol_capacity_mgy"])
-    : NaN;
-  if (!Number.isFinite(capMgy)) return NaN;
-
-  const baseGallons = capMgy * 1_000_000;
-  const additionalGallonsRaw = getNumber("additionalGallons");
-  const additionalGallons = Number.isFinite(additionalGallonsRaw)
-    ? Math.max(0, additionalGallonsRaw)
-    : 0;
-
-  return baseGallons + additionalGallons;
+function marketNameForProgram(program){
+  if (program === "CA") return "California";
+  if (program === "OR") return "Oregon";
+  if (program === "WA") return "Washington";
+  if (program === "BC") return "British Columbia";
+  if (program === "Canada") return "Canada";
+  return program || "Market";
 }
 
-function scenarioGallonsMgy(){
-  const gallons = scenarioGallonsPerYear();
-  return Number.isFinite(gallons) ? gallons / 1_000_000 : NaN;
+function marketPathwayComparisonRows(selectedEntries, peerEntries){
+  const peerGroups = new Map();
+  peerEntries
+    .filter(entry => Number.isFinite(entry.ci))
+    .forEach(entry => {
+      const key = groupKey(entry);
+      if (!peerGroups.has(key)) peerGroups.set(key, []);
+      peerGroups.get(key).push(entry);
+    });
+
+  return selectedEntries.map(entry => {
+    const group = (peerGroups.get(groupKey(entry)) || [])
+      .filter(row => Number.isFinite(row.ci))
+      .sort((a, b) => a.ci - b.ci);
+    const mean = avg(group.map(row => row.ci));
+    const rank = group.findIndex(row => row.plant_id === entry.plant_id && row.ci === entry.ci) + 1;
+    const rankLabel = rank > 0 ? `${rank}/${group.length}` : "-";
+    const pathwayLabel = [marketNameForProgram(entry.program), entry.feedstock, entry.coproduct]
+      .filter(Boolean)
+      .join(" / ");
+
+    return `
+      <tr>
+        <td>${escapeHtml(pathwayLabel)}</td>
+        <td>${escapeHtml(String(group.length))}</td>
+        <td>${mean === null ? "-" : escapeHtml(displayCi(mean))}</td>
+        <td>${escapeHtml(rankLabel)}</td>
+      </tr>
+    `;
+  });
 }
 
-const OPERATING_METRIC_ORDER = [
-  ["total_corn_storage", "Total Grain Storage"],
-  ["grain_storage_days", "Estimated Storage Days"],
-  ["grain_throughput_per_day", "Daily Grain Grind"],
-  ["estimated_fermentation_time", "Fermentation Time"],
-  ["estimated_btu_per_gal_from_heat_input", "BTU/Gal"],
-  ["thermal_btu_per_gal", "Thermal BTU/Gal"],
-  ["dryer_btu_per_gal", "Dryer BTU/Gal"],
-  ["ethanol_yield", "Yield"],
-  ["corn_grind_per_gallon", "Corn Grind Per Gallon"],
-  ["ddgs_lb_per_bu", "DDGS Yield"],
-  ["corn_oil_lb_per_bu", "Corn Oil Yield"],
-  ["ddgs_tons_per_day", "DDGS Tons Per Day"],
-  ["beer_feed_gpm", "Beer Feed"],
-  ["beer_well_hold_time", "Beer Well Hold Time"],
-  ["centrifuge_total_flow_gpm", "Centrifuge Flow"],
-  ["centrifuge_total_flow_gal_per_year", "Centrifuge Annual Flow"],
-  ["dryer_mmbtu_hr", "Dryer Heat Input"],
-  ["boiler_mmbtu_hr", "Boiler Heat Input"],
-  ["rto_thermal_oxidizer_mmbtu_hr", "RTO Heat Input"],
-  ["waste_heat_boiler_mmbtu_hr", "Waste Heat Boiler"],
-  ["total_thermal_mmbtu_hr", "Total Heat Input"],
-  ["total_thermal_mmbtu_hr_per_mgy", "Heat Input Per MGY"],
-  ["utilization_against_permitted_capacity", "Utilization"]
-];
-
-function operatingPermitBlock(){
-  return selectedPlant?.operating_permit && typeof selectedPlant.operating_permit === "object"
-    ? selectedPlant.operating_permit
-    : null;
+function programCiRows(plant, program){
+  if (!plant || typeof plant !== "object") return [];
+  return program === "CA" ? asArray(plant.ca_detail ?? plant.lcfs_detail?.ca_detail) :
+    program === "OR" ? asArray(plant.or_detail ?? plant.lcfs_detail?.or_detail) :
+    program === "WA" ? asArray(plant.wa_lcfs_ci_detail) :
+    program === "BC" ? asArray(plant.bc_lcfs_ci_detail) :
+    program === "Canada" ? asArray(plant.canadian_fed_ci_detail) :
+    [];
 }
 
-function renderOperatingTechnicalDetails(permit, visibleRows){
-  const derivatives = permit?.derivatives && typeof permit.derivatives === "object" ? permit.derivatives : {};
-  const labels = new Map(OPERATING_METRIC_ORDER);
-  const visibleKeys = new Set(visibleRows.map(row => row.key));
-  const items = [];
+function programFeedstockClass(row){
+  const text = [
+    row?.pathway_type,
+    row?.feedstock,
+    row?.feedstock_class,
+    row?.grain_source,
+    row?.fuel_type,
+    row?.pathway,
+    row?.pathway_base,
+    row?.["Fuel Name"],
+    row?.["Pathway Description"]
+  ].filter(value => value !== null && value !== undefined).join(" ").toLowerCase();
 
-  for (const [key, metric] of Object.entries(derivatives)){
-    if (!visibleKeys.has(key) || !metric || typeof metric !== "object") continue;
-    const details = [];
-    if (metric.confidence) details.push(`<div><span class="mono">Confidence:</span> ${htmlEscape(metric.confidence)}</div>`);
-    if (metric.formula) details.push(`<div><span class="mono">Formula:</span> ${htmlEscape(metric.formula)}</div>`);
-    if (metric.notes) details.push(`<div><span class="mono">Assumptions:</span> ${htmlEscape(metric.notes)}</div>`);
-    if (metric.method) details.push(`<div><span class="mono">Method:</span> ${htmlEscape(metric.method)}</div>`);
-    const sourceLines = asList(metric.source_lines || metric.source_line).filter(Boolean);
-    if (sourceLines.length){
-      details.push(
-        `<div><span class="mono">Source evidence:</span><ul class="technicalDetailLines">` +
-        sourceLines.slice(0, 8).map(line => `<li>${htmlEscape(line)}</li>`).join("") +
-        `</ul></div>`
-      );
+  if (/fiber|cellulosic|biomass/.test(text)) return "Fiber";
+  if (/starch|corn|sorghum|wheat|grain/.test(text)) return "Starch";
+  return "Unknown";
+}
+
+function lowestActiveProgramCi(plant, program, feedstockClass){
+  const scores = activeProgramCiCandidates(plant, program, feedstockClass);
+  return scores.length ? Math.min(...scores) : null;
+}
+
+function activeProgramCiCandidates(plant, program, feedstockClass){
+  return programCiRows(plant, program)
+    .filter(row => isActivePathway(row))
+    .filter(row => program === "BC" || programFeedstockClass(row) === feedstockClass)
+    .map(row => benchmarkCiValue(program, row))
+    .filter(ci => Number.isFinite(ci) && ci > 0);
+}
+
+function pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass){
+  const firstCandidates = activeProgramCiCandidates(plant, firstKey, feedstockClass);
+  const secondCandidates = activeProgramCiCandidates(plant, secondKey, feedstockClass);
+  if (!firstCandidates.length || !secondCandidates.length) return null;
+  const firstCi = Math.min(...firstCandidates);
+  const secondCi = Math.min(...secondCandidates);
+  return {
+    plant,
+    firstCi,
+    secondCi,
+    spread: firstCi - secondCi,
+    firstCandidateCount: firstCandidates.length,
+    secondCandidateCount: secondCandidates.length
+  };
+}
+
+function pairedProgramComparisonRows(plants, feedstockClass){
+  const comparisons = [
+    ["California", "CA", "Canadian Federal", "Canada"],
+    ["Oregon", "OR", "Canadian Federal", "Canada"],
+    ["Washington", "WA", "Canadian Federal", "Canada"],
+    ["British Columbia", "BC", "Canadian Federal", "Canada"],
+    ["California", "CA", "British Columbia", "BC"],
+    ["Oregon", "OR", "British Columbia", "BC"],
+    ["Washington", "WA", "British Columbia", "BC"],
+    ["California", "CA", "Oregon", "OR"],
+    ["California", "CA", "Washington", "WA"],
+    ["Oregon", "OR", "Washington", "WA"]
+  ].filter(([, firstKey, , secondKey]) => feedstockClass !== "Fiber" || (firstKey !== "BC" && secondKey !== "BC"));
+
+  return comparisons.map(([firstLabel, firstKey, secondLabel, secondKey]) => {
+    const spreads = asArray(plants).map(plant => {
+      const record = pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass);
+      return record ? record.spread : null;
+    }).filter(spread => Number.isFinite(spread));
+
+    const count = spreads.length;
+    if (!count) return "";
+
+    const mean = avg(spreads);
+    const min = Math.min(...spreads);
+    const max = Math.max(...spreads);
+    const stdDev = standardDeviation(spreads);
+
+    return `
+      <tr>
+        <td>${escapeHtml(`${firstLabel} vs ${secondLabel}`)}</td>
+        <td>${escapeHtml(String(count))}</td>
+        <td>${escapeHtml(displaySignedCi(mean))}</td>
+        <td>${escapeHtml(displaySignedCi(min))}</td>
+        <td>${escapeHtml(displaySignedCi(max))}</td>
+        <td>${escapeHtml(displayCi(stdDev))}</td>
+      </tr>
+    `;
+  }).filter(Boolean);
+}
+
+function standardDeviation(values){
+  const nums = asArray(values).filter(value => Number.isFinite(value));
+  if (!nums.length) return null;
+  const mean = avg(nums);
+  const variance = avg(nums.map(value => (value - mean) ** 2));
+  return Math.sqrt(variance);
+}
+
+function ciComparisonPairs(feedstockClass){
+  const pairs = [
+    ["CA/CFA", "California", "CA", "Canadian Federal", "Canada"],
+    ["OR/CFA", "Oregon", "OR", "Canadian Federal", "Canada"],
+    ["BC/CFA", "British Columbia", "BC", "Canadian Federal", "Canada"],
+    ["CA/BC", "California", "CA", "British Columbia", "BC"],
+    ["WA/BC", "Washington", "WA", "British Columbia", "BC"],
+    ["CA/OR", "California", "CA", "Oregon", "OR"],
+    ["CA/WA", "California", "CA", "Washington", "WA"],
+    ["OR/WA", "Oregon", "OR", "Washington", "WA"]
+  ];
+  return pairs.filter(([, , firstKey, , secondKey]) => feedstockClass !== "Fiber" || (firstKey !== "BC" && secondKey !== "BC"));
+}
+
+function pairedProgramComparisonRecords(plants, feedstockClass){
+  return ciComparisonPairs(feedstockClass).flatMap(([shortLabel, firstLabel, firstKey, secondLabel, secondKey]) => {
+    const records = asArray(plants).map(plant => {
+      const record = pairedProgramRecordForPlant(plant, firstKey, secondKey, feedstockClass);
+      if (!record) return null;
+      return {
+        feedstockClass,
+        comparison: `${firstLabel} vs ${secondLabel}`,
+        shortLabel,
+        plant,
+        plantName: firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name),
+        epm: plantId(plant),
+        firstCi: record.firstCi,
+        secondCi: record.secondCi,
+        spread: record.spread
+      };
+    }).filter(Boolean);
+
+    const mean = avg(records.map(row => row.spread));
+    const withDeviation = records.map(row => ({
+      ...row,
+      averageSpread: mean,
+      deviation: row.spread - mean,
+      absDeviation: Math.abs(row.spread - mean)
+    }));
+
+    const positives = [...withDeviation]
+      .filter(row => row.deviation > 0)
+      .sort((a, b) => b.deviation - a.deviation)
+      .slice(0, 3);
+    const negatives = [...withDeviation]
+      .filter(row => row.deviation < 0)
+      .sort((a, b) => a.deviation - b.deviation)
+      .slice(0, 3);
+    const positiveKeys = new Set(positives.map(outlierKey));
+    const negativeKeys = new Set(negatives.map(outlierKey));
+
+    return withDeviation
+      .sort((a, b) => b.absDeviation - a.absDeviation)
+      .map(row => ({
+        ...row,
+        outlierFlag: positiveKeys.has(outlierKey(row)) ? "High +" : negativeKeys.has(outlierKey(row)) ? "Low -" : ""
+      }));
+  });
+}
+
+function outlierKey(row){
+  return `${row.feedstockClass}|${row.shortLabel}|${row.epm}|${row.spread}`;
+}
+
+function plantCapacityLabel(plant){
+  const cap = Number(plant?.ethanol_capacity_mgy ?? plant?.fac_info?.ethanol_capacity_mgy);
+  return Number.isFinite(cap) ? fmt(cap, 1) : "-";
+}
+
+function yesNo(value){
+  return asBool(value) ? "Y" : "N";
+}
+
+function plantFiberFlag(plant){
+  return yesNo(plant?.fiber_technology || hasCaliforniaCkf(plant));
+}
+
+function plantCornOilFlag(plant){
+  return yesNo(
+    plant?.dco_enhancement ||
+    plant?.operating_permit?.equipment?.corn_oil_systems?.present ||
+    plant?.operating_permit?.equipment?.technology_flags?.corn_oil_extraction ||
+    plant?.operating_permit?.equipment?.special_equipment?.corn_oil_extraction
+  );
+}
+
+function plantCcsFlag(plant){
+  const def = computePipelineDefault(plant);
+  return def.applied ? "Y" : "N";
+}
+
+function plantCoproductLabel(plant){
+  const details = [
+    ...programCiRows(plant, "CA"),
+    ...programCiRows(plant, "OR")
+  ];
+  const text = details.map(row => firstNonEmpty(row?.coproduct_type, row?.co_product, row?.coproduct)).filter(Boolean).join(" ");
+  const dryer = firstNonEmpty(plant?.dryer_used, getDryerText(plant), plant?.dryer_types, plant?.operating_permit?.equipment?.dryers?.type);
+  const combined = `${text} ${dryer}`.toLowerCase();
+  const hasWet = /\bwet\b|wdgs|wet distillers|wetcake/.test(combined);
+  const hasDry = /\bdry\b|ddgs|dried distillers|dryer/.test(combined);
+  if (hasWet && hasDry) return "Mixed";
+  if (hasDry) return "Dry";
+  if (hasWet) return "Wet";
+  return "-";
+}
+
+function plantJurisdictionsLabel(plant){
+  const jurisdictions = [];
+  if (lowestActiveProgramCi(plant, "CA", "Starch") !== null || lowestActiveProgramCi(plant, "CA", "Fiber") !== null) jurisdictions.push("CA");
+  if (lowestActiveProgramCi(plant, "OR", "Starch") !== null || lowestActiveProgramCi(plant, "OR", "Fiber") !== null) jurisdictions.push("OR");
+  if (lowestActiveProgramCi(plant, "WA", "Starch") !== null || lowestActiveProgramCi(plant, "WA", "Fiber") !== null) jurisdictions.push("WA");
+  if (lowestActiveProgramCi(plant, "BC", "Starch") !== null) jurisdictions.push("BC");
+  if (lowestActiveProgramCi(plant, "Canada", "Starch") !== null || lowestActiveProgramCi(plant, "Canada", "Fiber") !== null) jurisdictions.push("CFA");
+  return jurisdictions.length ? jurisdictions.join(", ") : "-";
+}
+
+function ciComparisonOutlierRows(plants){
+  const records = [
+    ...pairedProgramComparisonRecords(plants, "Starch"),
+    ...pairedProgramComparisonRecords(plants, "Fiber")
+  ];
+
+  return records.map(row => `
+    <tr>
+      <td>${escapeHtml(row.feedstockClass)}</td>
+      <td>${escapeHtml(row.shortLabel)}</td>
+      <td>${escapeHtml(row.outlierFlag || "")}</td>
+      <td>${escapeHtml(row.plantName || "-")}</td>
+      <td>${escapeHtml(row.epm || "-")}</td>
+      <td>${escapeHtml(displayCi(row.firstCi))}</td>
+      <td>${escapeHtml(displayCi(row.secondCi))}</td>
+      <td>${escapeHtml(displaySignedCi(row.spread))}</td>
+      <td>${escapeHtml(displaySignedCi(row.deviation))}</td>
+      <td>${escapeHtml(yesNo(row.plant?.chp))}</td>
+      <td>${escapeHtml(plantFiberFlag(row.plant))}</td>
+      <td>${escapeHtml(plantCornOilFlag(row.plant))}</td>
+      <td>${escapeHtml(plantCcsFlag(row.plant))}</td>
+      <td>${escapeHtml(plantCoproductLabel(row.plant))}</td>
+      <td>${escapeHtml(plantCapacityLabel(row.plant))}</td>
+      <td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
+    </tr>
+  `);
+}
+
+function coproductMethodologyText(row){
+  if (!row || typeof row !== "object") return "";
+  return [
+    row?.coproduct_type,
+    row?.co_product,
+    row?.coproduct,
+    row?.feedstock,
+    row?.feedstock_class,
+    row?.grain_source,
+    row?.fuel_type,
+    row?.pathway_type,
+    row?.pathway,
+    row?.pathway_base,
+    row?.detail,
+    row?.status,
+    row?.source,
+    row?.["Fuel Name"],
+    row?.["Pathway Description"],
+    row?.["Fuel Pathway Code"]
+  ].filter(value => value !== null && value !== undefined).join(" ");
+}
+
+function plantCoproductMethodologyType(plant){
+  const rows = [
+    ...programCiRows(plant, "CA"),
+    ...programCiRows(plant, "BC"),
+    ...programCiRows(plant, "Canada")
+  ];
+  const rowText = rows.map(coproductMethodologyText).join(" ");
+  const dryerText = firstNonEmpty(
+    plant?.dryer_used,
+    getDryerText(plant),
+    plant?.dryer_types,
+    plant?.operating_permit?.equipment?.dryers?.type,
+    plant?.operating_permit?.equipment?.ddgs_system?.description
+  );
+  const text = `${rowText} ${dryerText}`.toLowerCase();
+
+  const modified = /\bmdgs\b|\bmwdgs\b|modified|mixed|wet\s*\/\s*dry|wet\s+and\s+dry|wdgs\s*\/\s*ddgs|multiple/.test(text);
+  const dry = /\bddgs\b|dry distillers|dried distillers|\bdry\b|dryer/.test(text);
+  const wet = /\bwdgs\b|wet distillers|\bwet\b|wetcake/.test(text);
+
+  if (modified || (wet && dry)) return "Modified/Mixed";
+  if (dry) return "Dry";
+  if (wet) return "Wet";
+  return "Unknown";
+}
+
+function coproductDiagnosticRecords(plants){
+  return asArray(plants).map(plant => {
+    const caCi = lowestActiveProgramCi(plant, "CA", "Starch");
+    const cfaCi = lowestActiveProgramCi(plant, "Canada", "Starch");
+    const bcCi = lowestActiveProgramCi(plant, "BC", "Starch");
+    const caCfa = Number.isFinite(caCi) && Number.isFinite(cfaCi) ? caCi - cfaCi : null;
+    const bcCfa = Number.isFinite(bcCi) && Number.isFinite(cfaCi) ? bcCi - cfaCi : null;
+    const caBc = Number.isFinite(caCi) && Number.isFinite(bcCi) ? caCi - bcCi : null;
+    if (!Number.isFinite(caCfa) && !Number.isFinite(bcCfa) && !Number.isFinite(caBc)) return null;
+    return {
+      plant,
+      plantName: firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name),
+      epm: plantId(plant),
+      dgsType: plantCoproductMethodologyType(plant),
+      caCi,
+      cfaCi,
+      bcCi,
+      caCfa,
+      bcCfa,
+      caBc
+    };
+  }).filter(Boolean);
+}
+
+function averageNullable(values){
+  const nums = asArray(values).filter(value => Number.isFinite(value));
+  return nums.length ? avg(nums) : null;
+}
+
+function coproductMethodologySummaryRows(plants){
+  const records = coproductDiagnosticRecords(plants);
+  const groups = ["Wet", "Modified/Mixed", "Dry", "Unknown"];
+  const comparisons = [
+    ["CA-CFA", "caCfa"],
+    ["BC-CFA", "bcCfa"],
+    ["CA-BC", "caBc"]
+  ];
+
+  return groups.flatMap(group => comparisons.map(([label, field]) => {
+    const spreads = records
+      .filter(row => row.dgsType === group)
+      .map(row => row[field])
+      .filter(value => Number.isFinite(value));
+    if (!spreads.length) return "";
+    return `
+      <tr>
+        <td>${escapeHtml(group)}</td>
+        <td>${escapeHtml(label)}</td>
+        <td>${escapeHtml(String(spreads.length))}</td>
+        <td>${escapeHtml(displaySignedCi(avg(spreads)))}</td>
+        <td>${escapeHtml(displaySignedCi(Math.min(...spreads)))}</td>
+        <td>${escapeHtml(displaySignedCi(Math.max(...spreads)))}</td>
+        <td>${escapeHtml(displayCi(standardDeviation(spreads)))}</td>
+      </tr>
+    `;
+  })).filter(Boolean);
+}
+
+function coproductOutlierReviewRows(plants){
+  return coproductDiagnosticRecords(plants)
+    .filter(row => Number.isFinite(row.caCfa))
+    .sort((a, b) => b.caCfa - a.caCfa)
+    .map(row => `
+      <tr>
+        <td>${escapeHtml(row.plantName || "-")}</td>
+        <td>${escapeHtml(row.epm || "-")}</td>
+        <td>${escapeHtml(displayCi(row.caCi))}</td>
+        <td>${escapeHtml(displayCi(row.cfaCi))}</td>
+        <td>${escapeHtml(displaySignedCi(row.caCfa))}</td>
+        <td>${escapeHtml(row.dgsType)}</td>
+        <td>${escapeHtml(plantCornOilFlag(row.plant))}</td>
+        <td>${escapeHtml(plantFiberFlag(row.plant))}</td>
+        <td>${escapeHtml(yesNo(row.plant?.chp))}</td>
+        <td>${escapeHtml(plantCcsFlag(row.plant))}</td>
+        <td>${escapeHtml(plantJurisdictionsLabel(row.plant))}</td>
+      </tr>
+    `);
+}
+
+function caCfaReconciliationRecords(plants){
+  const coproductRecordsByEpm = new Map(coproductDiagnosticRecords(plants)
+    .filter(row => Number.isFinite(row.caCfa))
+    .map(row => [row.epm, row]));
+
+  return asArray(plants).map(plant => {
+    const caCandidates = activeProgramCiCandidates(plant, "CA", "Starch");
+    const cfaCandidates = activeProgramCiCandidates(plant, "Canada", "Starch");
+    const record = pairedProgramRecordForPlant(plant, "CA", "Canada", "Starch");
+    const epm = plantId(plant);
+    const inOriginal = !!record;
+    const inCoproduct = coproductRecordsByEpm.has(epm);
+    let exclusion = "Included";
+    if (!inOriginal){
+      if (!caCandidates.length && !cfaCandidates.length) exclusion = "No active CA or CFA starch CI";
+      else if (!caCandidates.length) exclusion = "No active CA starch CI";
+      else if (!cfaCandidates.length) exclusion = "No active CFA starch CI";
     }
-    if (!details.length) continue;
-    items.push(`
-      <div class="technicalDetailItem">
-        <div class="technicalDetailLabel">${htmlEscape(labels.get(key) || key)}</div>
-        ${details.join("")}
-      </div>
-    `);
-  }
-
-  const notes = asList(permit?.parsing_notes || permit?.notes || permit?.assumptions).filter(Boolean);
-  if (notes.length){
-    items.push(`
-      <div class="technicalDetailItem">
-        <div class="technicalDetailLabel">Parsing Notes</div>
-        <ul class="technicalDetailLines">${notes.slice(0, 8).map(note => `<li>${htmlEscape(note)}</li>`).join("")}</ul>
-      </div>
-    `);
-  }
-
-  if (!items.length) return "";
-  return `<details class="technicalDetails"><summary>Technical Details</summary>${items.join("")}</details>`;
+    return {
+      plant,
+      epm,
+      plantName: firstNonEmpty(plant?.plant_name, plant?.Name, plant?.["Plant Name"], plant?.fac_info?.plant_name),
+      caCount: caCandidates.length,
+      cfaCount: cfaCandidates.length,
+      caCi: caCandidates.length ? Math.min(...caCandidates) : null,
+      cfaCi: cfaCandidates.length ? Math.min(...cfaCandidates) : null,
+      inOriginal,
+      inCoproduct,
+      exclusion,
+      duplicateCandidates: caCandidates.length > 1 || cfaCandidates.length > 1
+    };
+  });
 }
 
-function renderOperatingDetailModal(){
-  const modal = document.getElementById("operatingDetailModal");
-  const subtitle = document.getElementById("operatingDetailSubtitle");
-  const body = document.getElementById("operatingDetailBody");
-  if (!modal || !subtitle || !body) return;
-
-  const permit = operatingPermitBlock();
-  const derivatives = permit?.derivatives && typeof permit.derivatives === "object" ? permit.derivatives : {};
-  const rows = OPERATING_METRIC_ORDER
-    .map(([key, label]) => {
-      const metric = derivatives[key];
-      const value = operatingMetricValue(metric);
-      return value === null ? null : { key, label, value: formatOperatingValue(value, metric.units) };
+function caCfaReconciliationRows(plants){
+  return caCfaReconciliationRecords(plants)
+    .filter(row => row.inOriginal || row.inCoproduct || row.duplicateCandidates)
+    .sort((a, b) => {
+      if (a.inOriginal !== b.inOriginal) return a.inOriginal ? -1 : 1;
+      if (a.duplicateCandidates !== b.duplicateCandidates) return a.duplicateCandidates ? -1 : 1;
+      return String(a.epm).localeCompare(String(b.epm));
     })
-    .filter(Boolean);
+    .map(row => `
+      <tr>
+        <td>${escapeHtml(row.epm || "-")}</td>
+        <td>${escapeHtml(row.plantName || "-")}</td>
+        <td>${escapeHtml(String(row.caCount))}</td>
+        <td>${escapeHtml(String(row.cfaCount))}</td>
+        <td>${escapeHtml(displayCi(row.caCi))}</td>
+        <td>${escapeHtml(displayCi(row.cfaCi))}</td>
+        <td>${escapeHtml(row.inOriginal ? "Y" : "N")}</td>
+        <td>${escapeHtml(row.inCoproduct ? "Y" : "N")}</td>
+        <td>${escapeHtml(row.exclusion)}</td>
+      </tr>
+    `);
+}
 
-  subtitle.textContent = selectedPlant
-    ? [selectedPlant.plant_name, selectedPlant.city, selectedPlant.state].filter(Boolean).join(" | ")
-    : "";
+function caCfaPairingDiagnosticSummaryRows(plants){
+  const rows = caCfaReconciliationRecords(plants);
+  const paired = rows.filter(row => row.inOriginal).length;
+  const excluded = rows.filter(row => !row.inOriginal);
+  const duplicate = rows.filter(row => row.duplicateCandidates);
+  const reasons = new Map();
+  excluded.forEach(row => reasons.set(row.exclusion, (reasons.get(row.exclusion) || 0) + 1));
+  const reasonText = [...reasons.entries()].map(([reason, count]) => `${reason}: ${count}`).join("; ");
 
-  if (!permit || !rows.length){
-    body.innerHTML = `<div class="muted">No calculated operating metrics are available for this plant.</div>`;
+  return [
+    ["Total unique plants examined", rows.length],
+    ["Total paired plants", paired],
+    ["Plants excluded", excluded.length],
+    ["Exclusion reasons", reasonText || "-"],
+    ["Plants with duplicate pathway candidates", duplicate.length],
+    ["Duplicate candidate EPMs", duplicate.map(row => row.epm).filter(Boolean).join(", ") || "-"]
+  ].map(([metric, value]) => `
+    <tr>
+      <td>${escapeHtml(metric)}</td>
+      <td>${escapeHtml(String(value))}</td>
+    </tr>
+  `);
+}
+
+function displaySignedCi(value){
+  if (!Number.isFinite(value)) return "-";
+  const rounded = fmt(value, 2);
+  return value > 0 ? `+${rounded}` : rounded;
+}
+
+async function renderMarketPathwayStats(statsEl, selectedEntries){
+  if (!statsEl) return;
+  if (!selectedEntries.length){
+    statsEl.innerHTML = "";
     return;
   }
 
-  body.innerHTML =
-    `<div class="operatingSummaryGrid">` +
-    rows.map(row => `
-      <div class="operatingMetric">
-        <div class="operatingMetricLabel">${htmlEscape(row.label)}</div>
-        <div class="operatingMetricValue">${htmlEscape(row.value)}</div>
-      </div>
-    `).join("") +
-    `</div>` +
-    renderOperatingTechnicalDetails(permit, rows);
+  statsEl.innerHTML = `<div class="marketPathwaysDivider"></div><div class="marketPathwaysSubhead">Pathway Summary Statistics</div><div class="muted" style="font-size:12px;">Loading peers...</div>`;
+
+  let peers = [];
+  try {
+    peers = await loadBenchmarkPeers();
+  } catch (e) {
+    console.error("Market pathway peer load failed:", e);
+    statsEl.innerHTML = `<div class="marketPathwaysDivider"></div><div class="marketPathwaysSubhead">Pathway Summary Statistics</div><div class="muted" style="font-size:12px;">Peer load failed</div>`;
+    return;
+  }
+
+  const peerEntries = dedupeBenchmarkEntries(peers.flatMap(benchmarkEntriesForPlant));
+
+  statsEl.innerHTML = `
+    <div class="marketPathwaysDivider"></div>
+    <div class="marketPathwaysSubhead">Pathway Summary Statistics</div>
+    ${benchmarkTable(
+      ["Market / Pathway", "Count", "Average CI", "Plant Rank"],
+      marketPathwayComparisonRows(selectedEntries, peerEntries),
+      "No pathway summary statistics available."
+    )}
+`;
+}
+function marketPathwayRowsForPlant(plant){
+  const rows = [];
+  if (!plant || typeof plant !== "object") return rows;
+
+  asArray(plant.ca_detail ?? plant.lcfs_detail?.ca_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "California", row, row?.ci_score, "California LCFS", marketPathwayDate("California", row), row?.status || "Approved");
+  });
+  asArray(plant.or_detail ?? plant.lcfs_detail?.or_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "Oregon", row, row?.ci_score, "Oregon CFP", marketPathwayDate("Oregon", row), row?.status || "Approved");
+  });
+  asArray(plant.wa_lcfs_ci_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "Washington", row, row?.CI, "Washington CFS", marketPathwayDate("Washington", row), row?.status ?? row?.Active ?? "Approved");
+  });
+  asArray(plant.bc_lcfs_ci_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "British Columbia", row, row?.carbon_intensity_gCO2e_per_MJ, "BC LCFS", marketPathwayDate("British Columbia", row), row?.status || "Approved");
+  });
+  asArray(plant.canadian_fed_ci_detail).forEach(row => {
+    if (!isActivePathway(row)) return;
+    addMarketPathway(rows, "Canadian Federal", row, row?.approved_ci_gco2e_mj, "Canadian Federal CFR", marketPathwayDate("Canadian Federal", row), row?.status || "Approved");
+  });
+
+  if (ciNumber(plant.canadian_fed_ci) !== null && ciNumber(plant.canadian_fed_ci) > 0){
+    addMarketPathway(rows, "Canadian Federal", "Federal CI", plant.canadian_fed_ci, "Canadian Federal");
+  }
+
+  const byKey = new Map();
+  rows.forEach(row => {
+    const key = marketPathwayDedupeKey(row);
+    const existing = byKey.get(key);
+    if (
+      !existing ||
+      marketPathwayDateValue(row) > marketPathwayDateValue(existing) ||
+      (marketPathwayDateValue(row) === marketPathwayDateValue(existing) && row.ci < existing.ci)
+    ){
+      byKey.set(key, row);
+    }
+  });
+
+  return [...byKey.values()].sort((a, b) => {
+    const programOrder = ["California", "Oregon", "Washington", "British Columbia", "Canadian Federal"];
+    const ap = programOrder.indexOf(a.program);
+    const bp = programOrder.indexOf(b.program);
+    if (ap !== bp) return (ap < 0 ? 99 : ap) - (bp < 0 ? 99 : bp);
+    if (a.pathway !== b.pathway) return a.pathway.localeCompare(b.pathway);
+    return a.ci - b.ci;
+  });
 }
 
-function setOperatingDetailOpen(open){
-  const modal = document.getElementById("operatingDetailModal");
-  if (!modal) return;
-  if (open){
-    renderOperatingDetailModal();
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-  } else {
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
+function renderMarketPathways(){
+  const panel = document.getElementById("marketPathwaysPanel");
+  const rowsEl = document.getElementById("marketPathwaysRows");
+  if (!panel || !rowsEl) return;
+
+  try {
+    const marketRows = marketPathwayRowsForPlant(selectedPlant);
+    const selectedEntries = dedupeBenchmarkEntries(benchmarkEntriesForPlant(selectedPlant));
+    const estimated45z = estimated45zMarketRow();
+    const rows = estimated45z ? [...marketRows, estimated45z] : marketRows;
+
+    if (!selectedPlant || !rows.length){
+      panel.style.display = "none";
+      rowsEl.innerHTML = "";
+      return;
+    }
+
+    panel.style.display = "block";
+    const scoreRowsHtml = benchmarkTable(
+      ["Market", "Pathway", "Detail", "CI", "Source", "Date"],
+      rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.program)}</td>
+          <td>${escapeHtml(row.pathway)}</td>
+          <td>${escapeHtml(row.detail || row.status || "-")}</td>
+          <td>${escapeHtml(displayCi(row.ci))}</td>
+          <td>${escapeHtml(row.source)}</td>
+          <td>${escapeHtml(row.date || "-")}</td>
+        </tr>
+      `),
+      "No market pathway CI scores available."
+    );
+    rowsEl.innerHTML = `${scoreRowsHtml}<div id="marketPathwayStatsRows"></div>`;
+    renderMarketPathwayStats(document.getElementById("marketPathwayStatsRows"), selectedEntries)
+      .catch(e => console.error("Market pathway stats render failed:", e));
+  } catch (e) {
+    console.warn("Market Pathways render skipped:", e);
+    panel.style.display = "none";
+    rowsEl.innerHTML = "";
   }
 }
+function uniqueCiSummaryRows(plant){
+  if (!plant) return [];
+  const feed = plant.ci_by_feedstock || plant.ci_summary?.ci_by_feedstock || {};
+  const delivered = plant.ci_lcfs_delivered_g_per_mj ?? plant.ci_summary?.ci_lcfs_delivered_g_per_mj;
+  const corn = feed.ci_corn_g_per_mj;
+  const fiber = feed.ci_fiber_g_per_mj;
+  const ckf = plant.ckf_ci_score;
+  const rows = [];
 
+  if (ciNumber(corn) !== null) rows.push(["Corn CI", `${displayCi(corn)} g/MJ`]);
+  if (ciNumber(fiber) !== null) rows.push(["Fiber CI", `${displayCi(fiber)} g/MJ`]);
+  if (ciNumber(delivered) !== null && !ciSame(delivered, corn)) rows.push(["Delivered CI", `${displayCi(delivered)} g/MJ`]);
+  if (ciNumber(ckf) !== null && !ciSame(ckf, fiber)) rows.push(["CKF CI", `${displayCi(ckf)} g/MJ`]);
+  return rows;
+}
+
+
+// ----------------------------
+// PLANT DETAILS
+// ----------------------------
 function renderPlantDetails(){
   const badges = document.getElementById("plantBadges");
   const kv = document.getElementById("plantKv");
-  const operatingAction = document.getElementById("operatingDetailAction");
+  const operatingBtn = document.getElementById("operatingDetailBtn");
   if (!badges || !kv) return;
 
     badges.innerHTML = "";
     kv.innerHTML = "";
-    if (operatingAction) operatingAction.style.display = "none";
+    renderMarketPathways();
+    if (operatingBtn) operatingBtn.disabled = true;
 
     if (!selectedPlant){
       badges.innerHTML = `<span class="pill warn">No plant selected</span>`;
+      renderMarketPathways();
       return;
+    }
+
+    if (operatingBtn) {
+      const operatingInfo = operatingPermitDebugInfo(selectedPlant);
+      operatingBtn.disabled = !hasOperatingPermitDetail(selectedPlant);
+      console.log("[Operating Detail] button state", {
+        epm: operatingInfo.epm,
+        hasOperatingPermit: operatingInfo.hasOperatingPermit,
+        operatingPermitType: operatingInfo.operatingPermitType,
+        operatingPermitKeys: operatingInfo.operatingPermitKeys,
+        disabled: operatingBtn.disabled,
+        reason: operatingBtn.disabled ? operatingInfo.reason : "enabled",
+        selectedPlantKeys: selectedPlant ? Object.keys(selectedPlant) : []
+      });
     }
 
     
@@ -5014,47 +5775,48 @@ const enhText = enhList.length
   ? enhList.map(e => e.label).join(", ")
   : "No Enhanced Technologies";
 
+// --- Regulatory Pathways line (plant-level display) ---
+// Required order: D6, D3, EP#
+const d6Raw = selectedPlant.d6_non_cellulosic ?? "";
+const d3Raw = selectedPlant.d3_cellulosic ?? "";
+const epRaw =
+  selectedPlant.reg_pathway ??
+  selectedPlant["Efficient Producer"] ??
+  "";
+
+const d6 = String(d6Raw || "").trim();
+const d3 = String(d3Raw || "").trim();
+const ep = String(epRaw || "").trim();
+
 const clean = (s) => {
   const t = String(s || "").trim();
   if (!t) return "";
   const low = t.toLowerCase();
-  if (low === "nan" || low === "none" || low === "null" || low === "<na>" || low === "â€”" || low === "-") return "";
+  if (low === "nan" || low === "none" || low === "null" || low === "<na>" || low === "-" || low === "-") return "";
   return t;
 };
 
-const activeProgramRows = (rows) =>
-  asArray(rows).some(row => isActivePathway(row));
+const programRowsPresent = (rows) => asArray(rows).length > 0;
+const hasProgramValue = (...values) => values.some(value => clean(value));
+const hasAnyNamedProgramFlag = (names) => names.some(name => {
+  const value = selectedPlant?.[name] ?? selectedPlant?.certifications?.[name] ?? selectedPlant?.regulatory_programs?.[name];
+  const cleaned = clean(value);
+  if (!cleaned) return false;
+  const low = cleaned.toLowerCase();
+  return low !== "no" && low !== "false" && low !== "0";
+});
 
-const regPathways = selectedPlant.regulatory_pathways || {};
-const registeredPrograms = regPathways.registered_programs || {};
-const programFlags = {
-  ca_lcfs: !!registeredPrograms.ca_lcfs || activeProgramRows(selectedPlant.ca_detail ?? selectedPlant.lcfs_detail?.ca_detail),
-  or_lcfs: !!registeredPrograms.or_lcfs || activeProgramRows(selectedPlant.or_detail ?? selectedPlant.lcfs_detail?.or_detail),
-  wa_lcfs: !!registeredPrograms.wa_lcfs || activeProgramRows(selectedPlant.wa_lcfs_ci_detail),
-  canadian_cfr: !!registeredPrograms.canadian_cfr || activeProgramRows(selectedPlant.canadian_fed_ci_detail),
-  bc_carbon: !!registeredPrograms.bc_carbon || activeProgramRows(selectedPlant.bc_lcfs_ci_detail),
-  iscc: !!registeredPrograms.iscc
-};
+const lowCarbonProgramParts = [];
+if (hasProgramValue(selectedPlant.ci_lcfs_delivered_g_per_mj, selectedPlant.ci_summary?.ci_lcfs_delivered_g_per_mj, selectedPlant.ci_by_feedstock?.ci_corn_g_per_mj, selectedPlant.ci_by_feedstock?.ci_fiber_g_per_mj) || programRowsPresent(selectedPlant.ca_detail ?? selectedPlant.lcfs_detail?.ca_detail)) lowCarbonProgramParts.push("CA LCFS");
+if (programRowsPresent(selectedPlant.or_detail ?? selectedPlant.lcfs_detail?.or_detail)) lowCarbonProgramParts.push("OR LCFS");
+if (programRowsPresent(selectedPlant.wa_lcfs_ci_detail)) lowCarbonProgramParts.push("WA LCFS");
+if (hasProgramValue(selectedPlant.canadian_fed_ci) || programRowsPresent(selectedPlant.canadian_fed_ci_detail)) lowCarbonProgramParts.push("Canada CFR");
+if (programRowsPresent(selectedPlant.bc_lcfs_ci_detail)) lowCarbonProgramParts.push("B.C. Carbon");
+if (hasAnyNamedProgramFlag(["iscc_eu", "isccEU", "iscc_eu_certified", "iscc_eu_status", "ISCC EU"])) lowCarbonProgramParts.push("ISCC EU");
+if (hasAnyNamedProgramFlag(["iscc_plus", "isccPlus", "iscc_plus_certified", "iscc_plus_status", "ISCC PLUS", "ISCC Plus"])) lowCarbonProgramParts.push("ISCC PLUS");
 
-const registeredProgramLabels = [
-  ["ca_lcfs", "California LCFS"],
-  ["or_lcfs", "Oregon CFP/LCFS"],
-  ["wa_lcfs", "Washington CFS"],
-  ["canadian_cfr", "Canadian CFR"],
-  ["bc_carbon", "B.C. Low Carbon Fuel Standard"],
-  ["iscc", "ISCC"]
-]
-  .filter(([key]) => programFlags[key])
-  .map(([, label]) => label);
-
-const registeredProgramsText = registeredProgramLabels.length
-  ? registeredProgramLabels.join(", ")
-  : "";
-
-const isccTypes = asArray(regPathways.iscc_types).map(clean).filter(Boolean);
-const isccTypesText = isccTypes.length
-  ? isccTypes.join(", ")
-  : "No ISCC registration found.";
+const regParts = [...new Set([clean(d6), clean(d3), clean(ep), ...lowCarbonProgramParts].filter(Boolean))];
+const regText = regParts.length ? regParts.join(", ") : "";
 
 const items = [
   ["Ownership", selectedPlant.ownership],
@@ -5065,23 +5827,23 @@ const items = [
   ["Ethanol capacity",
     Number.isFinite(Number(selectedPlant.ethanol_capacity_mgy))
       ? `${fmt(Number(selectedPlant.ethanol_capacity_mgy), 1)} MGY`
-      : "—"
+      : "-"
   ],
 ["Gas supply",
   selectedPlant.epa_ghg_derived?.gas_supply_effective
   || selectedPlant.fuel_summary?.fuel_type_master
   || selectedPlant.tech_flags?.gas_supply
-  || "—"
+  || "-"
 ],
   ["Technology", selectedPlant.technology],
  ["Total BTU per Gal (2023)",
   (() => {
     const v = selectedPlant?.thermal_btu_per_gal_est;
 
-    if (v === null || v === undefined || v === "") return "—";
+    if (v === null || v === undefined || v === "") return "-";
 
     const num = Number(v);
-    if (!Number.isFinite(num)) return "—";
+    if (!Number.isFinite(num)) return "-";
 
     if (num < 12000) return "Likely Partial Year";
 
@@ -5122,16 +5884,16 @@ const items = [
     if (adj < 0) label = "Clean Grid";
     if (adj > 0) label = "Dirty Grid";
 
-    return grid ? `${grid} (${label})` : "—";
+    return grid ? `${grid} (${label})` : "-";
   })()
 ],
   
  
-  ["Registered Programs", registeredProgramsText],
-  ["ISCC Types", isccTypesText],
+  ["Regulatory Pathways", regText],
   ["CA Facility ID", selectedPlant.ca_facility_id || selectedPlant.facility_id || ""],
   ["Year Built", selectedPlant.year_build || ""],
-  ["CI date", selectedPlant.ci_date]
+  ["CI date", selectedPlant.ci_date],
+  ...uniqueCiSummaryRows(selectedPlant)
 ];
 
 
@@ -5142,14 +5904,11 @@ const items = [
 
       const dv = document.createElement("div");
       dv.className = "v";
-      dv.textContent = (v === null || v === undefined || v === "") ? "—" : String(v);
+      dv.textContent = (v === null || v === undefined || v === "") ? "-" : String(v);
 
       kv.appendChild(dk);
       kv.appendChild(dv);
     }
-
-    const permit = operatingPermitBlock();
-    if (operatingAction) operatingAction.style.display = permit ? "block" : "none";
 
     // If odd number of items, add 2 blank cells so the grid stays balanced
     if (items.length % 2 !== 0){
@@ -5164,6 +5923,718 @@ const items = [
       kv.appendChild(blankK);
       kv.appendChild(blankV);
     }
+
+    renderMarketPathways();
+}
+
+function getOperatingPermitBlock(plant){
+  if (!plant || typeof plant !== "object") return null;
+  return plant.operating_permit ||
+    plant.operatingPermit ||
+    plant.operating_permit_detail ||
+    plant.operatingPermitDetail ||
+    null;
+}
+
+function operatingPermitDebugInfo(plant){
+  const epm =
+    plantId(plant) ||
+    plant?.fac_info?.epm ||
+    plant?.EPM_NUMBER ||
+    plant?.epm_number ||
+    plant?.epm ||
+    "";
+  const op = getOperatingPermitBlock(plant);
+  let reason = "enabled";
+  if (!plant) reason = "no selectedPlant";
+  else if (!op) reason = "missing operating_permit/operatingPermit on selectedPlant";
+  else if (typeof op !== "object") reason = `operating_permit is ${typeof op}`;
+  else if (!(op.equipment || op.limits || op.derivatives || op.permit_missing)) {
+    reason = "operating_permit has no equipment/limits/derivatives/permit_missing";
+  }
+  return {
+    epm,
+    hasOperatingPermit: !!op,
+    operatingPermitType: op ? typeof op : "missing",
+    operatingPermitKeys: op && typeof op === "object" ? Object.keys(op) : [],
+    reason
+  };
+}
+
+function hasOperatingPermitDetail(plant){
+  const op = getOperatingPermitBlock(plant);
+  return !!op && typeof op === "object" && (
+    !!op.equipment || !!op.limits || !!op.derivatives || !!op.permit_missing
+  );
+}
+
+function operatingIsBlank(value){
+  if (value === null || value === undefined || value === "") return true;
+  if (value === false) return true;
+  if (Array.isArray(value)) return !value.some(item => !operatingIsBlank(item));
+  if (typeof value === "object") return !Object.values(value).some(item => !operatingIsBlank(item));
+  return false;
+}
+
+function operatingTitle(key){
+  const acronyms = new Map([
+    ["ddgs", "DDGS"],
+    ["rto", "RTO"],
+    ["rtos", "RTOs"],
+    ["mmbtu", "MMBtu"],
+    ["mgy", "MGY"],
+    ["btu", "BTU"],
+    ["bu", "bu"],
+    ["hr", "hr"],
+    ["gpm", "gpm"],
+    ["rng", "RNG"],
+    ["chp", "CHP"],
+    ["ccs", "CCS"],
+    ["co2", "CO2"],
+    ["d3", "D3"],
+    ["icm", "ICM"],
+    ["fst", "FST"],
+    ["bpx", "BPX"]
+  ]);
+  return String(key || "")
+    .replace(/_/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .map(word => acronyms.get(word.toLowerCase()) || word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function operatingScalarText(value){
+  if (typeof value === "boolean") return value ? "Yes" : "";
+  const n = Number(value);
+  if (Number.isFinite(n) && String(value).trim() !== ""){
+    return Math.abs(n) >= 1000
+      ? n.toLocaleString("en-US", { maximumFractionDigits: 1 })
+      : n.toLocaleString("en-US", { maximumFractionDigits: 3 });
+  }
+  return String(value);
+}
+
+const operatingExpandedListKeys = new Set();
+const OPERATING_LIST_PREVIEW_LIMIT = 10;
+
+function operatingHtmlValue(value, pathKey=""){
+  if (operatingIsBlank(value)) return "";
+  if (Array.isArray(value)){
+    const items = value.filter(item => !operatingIsBlank(item));
+    if (!items.length) return "";
+    const key = pathKey || `list-${items.join("|").slice(0, 80)}`;
+    const expanded = operatingExpandedListKeys.has(key);
+    const visible = expanded ? items : items.slice(0, OPERATING_LIST_PREVIEW_LIMIT);
+    const moreCount = items.length - visible.length;
+    const moreButton = moreCount > 0
+      ? `<button type="button" class="operatingListMore" data-operating-list-key="${escapeHtml(key)}">+${moreCount} more</button>`
+      : "";
+    return `<ul class="operatingInlineList">${visible.map((item, index) => `<li>${operatingHtmlValue(item, `${key}.${index}`)}</li>`).join("")}</ul>${moreButton}`;
+  }
+  if (typeof value === "object"){
+    const rows = operatingFlattenRows(value, "", pathKey);
+    if (!rows.length) return "";
+    return `<table class="operatingDetailTable operatingNestedTable"><tbody>${rows.map(([k, v]) => `<tr><th>${escapeHtml(k)}</th><td>${v}</td></tr>`).join("")}</tbody></table>`;
+  }
+  return escapeHtml(operatingScalarText(value));
+}
+
+function operatingFlattenRows(obj, prefix="", pathPrefix=""){
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return [];
+  const rows = [];
+  for (const [key, value] of Object.entries(obj)){
+    if (operatingIsBlank(value)) continue;
+    const label = prefix ? `${prefix} ${operatingTitle(key)}` : operatingTitle(key);
+    const childPath = pathPrefix ? `${pathPrefix}.${key}` : key;
+    if (Array.isArray(value)){
+      const html = operatingHtmlValue(value, childPath);
+      if (html) rows.push([label, html]);
+    } else if (value && typeof value === "object"){
+      const metricLike = Object.prototype.hasOwnProperty.call(value, "value") || Object.prototype.hasOwnProperty.call(value, "units");
+      if (metricLike && !operatingIsBlank(value.value)){
+        const metricText = `${operatingScalarText(value.value)}${value.units ? ` ${escapeHtml(value.units)}` : ""}`;
+        rows.push([label, metricText]);
+        for (const [childKey, childValue] of Object.entries(value)){
+          if (childKey === "value" || childKey === "units" || operatingIsBlank(childValue)) continue;
+          rows.push([`${label} ${operatingTitle(childKey)}`, operatingHtmlValue(childValue, `${childPath}.${childKey}`)]);
+        }
+      } else {
+        rows.push(...operatingFlattenRows(value, label, childPath));
+      }
+    } else {
+      const html = operatingHtmlValue(value, childPath);
+      if (html) rows.push([label, html]);
+    }
+  }
+  return rows;
+}
+
+function renderOperatingTable(rows){
+  if (!rows.length) return `<div class="muted">Not available</div>`;
+  return `
+    <table class="operatingDetailTable">
+      <tbody>
+        ${rows.map(([k,v]) => `
+          <tr><th>${escapeHtml(k)}</th><td>${v}</td></tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderOperatingFlags(flags){
+  if (!flags || typeof flags !== "object") return "";
+  const labels = [
+    ["chp", "CHP"],
+    ["white_fox_membrane", "White Fox membrane"],
+    ["molecular_sieve_only", "Molecular sieve only"],
+    ["waste_heat_recovery", "Waste heat recovery"],
+    ["fiber_to_ethanol", flags.fiber_to_ethanol_technology ? `Fiber-to-ethanol: ${flags.fiber_to_ethanol_technology}` : "Fiber-to-ethanol"],
+    ["generic_fiber_separation", "Generic fiber separation"],
+    ["d3_capable", "D3 capable"],
+    ["edeniq", "Edeniq"],
+    ["fluid_quip", "Fluid Quip"],
+    ["high_protein", "High protein"],
+    ["corn_oil_extraction", "Corn oil extraction"],
+    ["co2_capture", "CO2 capture"],
+    ["rng_biogas", "RNG / biogas"],
+    ["icm_selective_milling", "ICM selective milling"],
+    ["icm_fst", "ICM FST"]
+  ].filter(([key]) => !!flags[key]);
+  if (!labels.length) return "";
+  return `<div class="operatingFlagList">${labels.map(([,label]) => `<span class="operatingFlag">${escapeHtml(label)}</span>`).join("")}</div>`;
+}
+
+function operatingGetPath(obj, path){
+  return String(path || "").split(".").filter(Boolean).reduce((current, part) => (
+    current && typeof current === "object" ? current[part] : undefined
+  ), obj);
+}
+
+function operatingRowsFromPaths(op, paths){
+  const rows = [];
+  for (const path of paths){
+    const value = operatingGetPath(op, path);
+    if (operatingIsBlank(value)) continue;
+    const leaf = path.split(".").pop();
+    const flattened = operatingFlattenRows(value, "", path);
+    if (flattened.length) rows.push(...flattened);
+    else rows.push([operatingTitle(leaf), operatingHtmlValue(value, path)]);
+  }
+  return rows;
+}
+
+function renderOperatingSection(op, title, paths){
+  const rows = operatingRowsFromPaths(op, paths);
+  if (!rows.length) return "";
+  return `
+    <section class="operatingDetailBlock">
+      <h3>${escapeHtml(title)}</h3>
+      ${renderOperatingTable(rows)}
+    </section>
+  `;
+}
+
+function operatingPath(obj, path){
+  return String(path || "").split(".").filter(Boolean).reduce((current, part) => (
+    current && typeof current === "object" ? current[part] : undefined
+  ), obj);
+}
+
+function operatingValueIsPresent(value){
+  if (value === null || value === undefined || value === "") return false;
+  const text = String(value).trim().toLowerCase();
+  if (!text) return false;
+  if (["nan", "none", "null", "<na>", "not available", "not identified", "not matched", "unknown", "n/a"].includes(text)) return false;
+  if (/^not\s+(clearly\s+)?(available|identified|provided|reported)/i.test(text)) return false;
+  if (/not\s+explicitly\s+identified/i.test(text)) return false;
+  if (/missing\s+input/i.test(text)) return false;
+  return true;
+}
+
+function operatingMetricNumber(metric){
+  if (!metric || typeof metric !== "object") return null;
+  if (!operatingValueIsPresent(metric.value)) return null;
+  const n = Number(metric.value);
+  return Number.isFinite(n) ? n : null;
+}
+
+function operatingFormatNumber(value, digits=0){
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  return n.toLocaleString("en-US", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits
+  });
+}
+
+function operatingFormatValue(value, units="", options={}){
+  if (!operatingValueIsPresent(value)) return null;
+  if (typeof value === "boolean") return value ? "Yes" : "No";
+
+  const u = String(units || "").trim();
+  const n = Number(value);
+  if (!Number.isFinite(n)) return String(value);
+
+  if (u === "bu"){
+    if (Math.abs(n) >= 1_000_000) return `${operatingFormatNumber(n / 1_000_000, 1)} million bu`;
+    return `${operatingFormatNumber(n, 0)} bu`;
+  }
+  if (u === "bu/day") return `${operatingFormatNumber(n, 0)} bu/day`;
+  if (u === "bu/year") return `${operatingFormatNumber(n, 0)} bu/year`;
+  if (u === "days") return `${operatingFormatNumber(n, 1)} days`;
+  if (u === "hours") return `${operatingFormatNumber(n, 1)} hr`;
+  if (u === "gal") return `${operatingFormatNumber(n, 0)} gal`;
+  if (u === "gal/min") return `${operatingFormatNumber(n, 0)} gal/min`;
+  if (u === "gal/hr") return `${operatingFormatNumber(n, 0)} gal/hr`;
+  if (u === "gal/year") return `${operatingFormatNumber(n, 0)} gal/year`;
+  if (u === "MGY") return `${operatingFormatNumber(n, n < 10 ? 2 : 1)} MGY`;
+  if (u === "tons/year") return `${operatingFormatNumber(n, 0)} tons/year`;
+  if (u === "tons/day") return `${operatingFormatNumber(n, 1)} tons/day`;
+  if (u === "tons/hr") return `${operatingFormatNumber(n, 1)} tons/hr`;
+  if (u === "tons_per_year") return `${operatingFormatNumber(n, 0)} tons/year`;
+  if (u === "ton/yr") return `${operatingFormatNumber(n, 0)} tons/year`;
+  if (u === "BTU/gal") return `${operatingFormatNumber(n, 0)} BTU/gal`;
+  if (u === "MMBtu/hr") return `${operatingFormatNumber(n, 1)} MMBtu/hr`;
+  if (u === "MMBtu/hr/MGY") return `${operatingFormatNumber(n, 2)} MMBtu/hr/MGY`;
+  if (u === "gal/bu") return `${operatingFormatNumber(n, 2)} gal/bu`;
+  if (u === "bu/gal") return `${operatingFormatNumber(n, 3)} bu/gal`;
+  if (u === "lb/bu") return `${operatingFormatNumber(n, 2)} lb/bu`;
+  if (u === "percent") return `${operatingFormatNumber(n, 1)}%`;
+  if (u === "g/MJ") return `${operatingFormatNumber(n, 2)} g/MJ`;
+  if (u === "kg/gal") return `${operatingFormatNumber(n, 3)} kg/gal`;
+  if (u === "lb/gal") return `${operatingFormatNumber(n, 3)} lb/gal`;
+  if (u === "mtCO2e") return `${operatingFormatNumber(n, 0)} mtCO2e`;
+  if (u === "mt") return `${operatingFormatNumber(n, 0)} mt`;
+
+  const digits = options.digits ?? (Math.abs(n) >= 1000 ? 0 : 2);
+  return `${operatingFormatNumber(n, digits)}${u ? ` ${u}` : ""}`;
+}
+
+function operatingFormatMetric(metric, fallbackUnits="", options={}){
+  if (!metric || typeof metric !== "object") return null;
+  const units = metric.units || fallbackUnits;
+  return operatingFormatValue(metric.value, units, options);
+}
+
+function operatingFormatLimitMetric(metric, fallbackUnits=""){
+  if (!metric || typeof metric !== "object") return null;
+  const direct = operatingFormatMetric(metric, fallbackUnits);
+  if (direct && !(metric.units === "MGY" && Number(metric.value) > 0 && Number(metric.value) < 1)) return direct;
+
+  const source = String(metric.source_line || "");
+  const gallons = source.match(/([0-9][0-9,]*(?:\.\d+)?)\s*gallons?/i);
+  if (gallons){
+    const n = Number(gallons[1].replace(/,/g, ""));
+    if (Number.isFinite(n)){
+      return `${operatingFormatNumber(n / 1_000_000, 1)} million gal/year`;
+    }
+  }
+  return direct;
+}
+
+function operatingCleanText(value){
+  if (!operatingValueIsPresent(value)) return null;
+  return String(value).trim();
+}
+
+function operatingRow(label, value, options={}){
+  const present = operatingValueIsPresent(value);
+  if (!present && !options.always) return null;
+  const text = present ? value : "Null";
+  const cls = present ? "" : ` class="operatingNullValue"`;
+  return [label, `<span${cls}>${escapeHtml(text)}</span>`];
+}
+
+function operatingMetricRow(label, metric, fallbackUnits="", options={}){
+  const text = options.limit ? operatingFormatLimitMetric(metric, fallbackUnits) : operatingFormatMetric(metric, fallbackUnits);
+  return operatingRow(label, text, options);
+}
+
+function operatingPlainMetricRow(label, value, units="", options={}){
+  return operatingRow(label, operatingFormatValue(value, units, options), options);
+}
+
+function operatingBoolRow(label, value, options={}){
+  if (value === true) return operatingRow(label, "Yes", options);
+  if (value === false) return operatingRow(label, "No", options);
+  return operatingRow(label, null, options);
+}
+
+function operatingRows(...rows){
+  return rows.filter(Boolean);
+}
+
+function renderOperatingProfileSection(title, rows, options={}){
+  const shown = rows.filter(Boolean);
+  if (!shown.length) return "";
+  return `
+    <details class="operatingDetailBlock${options.wide ? " wide" : ""}">
+      <summary>${escapeHtml(title)}</summary>
+      ${renderOperatingTable(shown)}
+    </details>
+  `;
+}
+
+function operatingAnyBool(...values){
+  for (const value of values){
+    if (value === true || value === false) return value;
+    if (typeof value === "string" && operatingValueIsPresent(value)){
+      const text = value.trim().toLowerCase();
+      if (["yes", "true", "y", "1"].includes(text)) return true;
+      if (["no", "false", "n", "0"].includes(text)) return false;
+      return true;
+    }
+  }
+  return null;
+}
+
+function operatingSummaryDerivativeRows(derivatives){
+  const d = derivatives || {};
+  return operatingRows(
+    operatingMetricRow("Total Grain Storage", d.total_corn_storage, "bu", { always: true }),
+    operatingMetricRow("Grain Storage Days", d.grain_storage_days, "days", { always: true }),
+    operatingMetricRow("Daily Grain Grind", d.grain_throughput_per_day, "bu/day", { always: true }),
+    operatingMetricRow("Fermentation Time", d.estimated_fermentation_time, "hours", { always: true }),
+    operatingMetricRow("BTU/Gal From Heat Input", d.estimated_btu_per_gal_from_heat_input, "BTU/gal", { always: true }),
+    operatingMetricRow("Thermal BTU/Gal", d.thermal_btu_per_gal, "BTU/gal", { always: true }),
+    operatingMetricRow("Dryer BTU/Gal", d.dryer_btu_per_gal, "BTU/gal", { always: true }),
+    operatingMetricRow("Ethanol Yield", d.ethanol_yield, "gal/bu", { always: true }),
+    operatingMetricRow("Corn Grind Per Gallon", d.corn_grind_per_gallon, "bu/gal", { always: true }),
+    operatingMetricRow("DDGS lb/bu", d.ddgs_lb_per_bu, "lb/bu", { always: true }),
+    operatingMetricRow("Corn Oil lb/bu", d.corn_oil_lb_per_bu, "lb/bu", { always: true }),
+    operatingMetricRow("DDGS Tons/Day", d.ddgs_tons_per_day, "tons/day", { always: true }),
+    operatingMetricRow("Beer Feed", d.beer_feed_gpm, "gal/min", { always: true }),
+    operatingMetricRow("Beer Well Hold Time", d.beer_well_hold_time, "hours", { always: true }),
+    operatingMetricRow("Centrifuge Flow", d.centrifuge_total_flow_gpm, "gal/min", { always: true }),
+    operatingMetricRow("Centrifuge Annual Flow", d.centrifuge_total_flow_gal_per_year, "gal/year", { always: true }),
+    operatingMetricRow("Dryer Heat Input", d.dryer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Boiler Heat Input", d.boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("RTO Heat Input", d.rto_thermal_oxidizer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Waste Heat Boiler", d.waste_heat_boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Total Heat Input", d.total_thermal_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Heat Input Per MGY", d.total_thermal_mmbtu_hr_per_mgy, "MMBtu/hr/MGY", { always: true }),
+    operatingMetricRow("Utilization", d.utilization_against_permitted_capacity, "percent", { always: true })
+  );
+}
+
+function operatingEquipmentRows(op){
+  const eq = op?.equipment || {};
+  const grain = eq.grain_handling || {};
+  const grinding = eq.grinding || {};
+  const ferm = eq.fermenters || {};
+  const dist = eq.distillation || {};
+  const evap = eq.evaporators || {};
+  const dec = eq.decanters_centrifuges || {};
+  const dryers = eq.dryers || {};
+  const boilers = eq.boilers_process_heaters || {};
+  const rto = eq.thermal_oxidizers_rtos || {};
+  const ddgs = eq.ddgs_system || {};
+  const oil = eq.corn_oil_systems || {};
+  const tanks = eq.tanks || {};
+  const d = op?.derivatives || {};
+
+  return operatingRows(
+    operatingMetricRow("Total Grain Storage", d.total_corn_storage, "bu", { always: true }),
+    operatingPlainMetricRow("Grain Storage", grain.total_storage_bu, "bu", { always: true }),
+    operatingPlainMetricRow("Grain Receiving Limit", grain.grain_receiving_limit_bushels_per_year, "bu/year", { always: true }),
+    operatingPlainMetricRow("Corn Elevator Capacity", grain.corn_elevator_tons_per_hour, "tons/hr", { always: true }),
+    operatingPlainMetricRow("Corn Bin Unloading Conveyor", grain.corn_bin_unloading_conveyor_tons_per_hour, "tons/hr", { always: true }),
+    operatingMetricRow("Daily Grain Grind", d.grain_throughput_per_day, "bu/day", { always: true }),
+    operatingPlainMetricRow("Hammermills", grinding.hammermill_count, "", { always: true }),
+    operatingPlainMetricRow("Hammermill Capacity Each", grinding.hammermill_capacity_each_bu_hr, "bu/hr", { always: true }),
+    operatingPlainMetricRow("Total Grinding Capacity", grinding.total_grinding_capacity_bu_hr, "bu/hr", { always: true }),
+    operatingPlainMetricRow("Theoretical Grind Capacity", grinding.theoretical_grind_capacity_bu_per_year, "bu/year", { always: true }),
+    operatingPlainMetricRow("Fermenters", ferm.count, "", { always: true }),
+    operatingPlainMetricRow("Fermenter Size Each", ferm.size_gal_each, "gal", { always: true }),
+    operatingPlainMetricRow("Total Fermenter Volume", ferm.total_volume_gal, "gal", { always: true }),
+    operatingPlainMetricRow("Beer Well Volume", ferm.beer_well_volume_gal, "gal", { always: true }),
+    operatingPlainMetricRow("Beer Feed", dist.beer_feed_gpm, "gal/min", { always: true }),
+    operatingPlainMetricRow("Evaporator Capacity", evap.evaporator_gal_per_hour, "gal/hr", { always: true }),
+    operatingPlainMetricRow("Concentrate Tank", evap.concentrate_tank_gal, "gal", { always: true }),
+    operatingPlainMetricRow("Thin Stillage Recycle", evap.thin_stillage_recycle_percent, "percent", { always: true }),
+    operatingPlainMetricRow("Evaporation Stages", evap.evaporation_stages, "", { always: true }),
+    operatingPlainMetricRow("Decanters / Centrifuges", dec.count, "", { always: true }),
+    operatingPlainMetricRow("Centrifuge Flow Each", dec.gpm_each, "gal/min", { always: true }),
+    operatingPlainMetricRow("Centrifuge Total Flow", dec.gpm_total, "gal/min", { always: true }),
+    operatingPlainMetricRow("Centrifuge Hourly Flow", dec.gph_total, "gal/hr", { always: true }),
+    operatingPlainMetricRow("Centrifuge Annual Flow", dec.gpy_total, "gal/year", { always: true }),
+    operatingPlainMetricRow("Dryers", dryers.count, "", { always: true }),
+    operatingRow("Dryer Type", operatingCleanText(dryers.type || dryers.type_from_technology_flags), { always: true }),
+    operatingMetricRow("Dryer Heat Input", d.dryer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Dryer Heat Input", dryers.heat_input, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Boilers / Process Heaters", boilers.count, "", { always: true }),
+    operatingRow("Boiler Fuel", operatingCleanText(boilers.fuel), { always: true }),
+    operatingMetricRow("Boiler Heat Input", d.boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Boiler Heat Input", boilers.heat_input, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("RTOs / Thermal Oxidizers", rto.count, "", { always: true }),
+    operatingMetricRow("RTO Heat Input", d.rto_thermal_oxidizer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingMetricRow("Waste Heat Boiler", d.waste_heat_boiler_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Wetcake Production Rate", ddgs.wetcake_tons_per_hour, "tons/hr", { always: true }),
+    operatingPlainMetricRow("Wetcake Limit", ddgs.wetcake_limit_tons_per_year, "tons/year", { always: true }),
+    operatingPlainMetricRow("Syrup Limit", ddgs.syrup_limit_tons_per_year, "tons/year", { always: true }),
+    operatingBoolRow("Corn Oil Recovery", operatingAnyBool(oil.present), { always: true }),
+    operatingBoolRow("Corn Oil Centrifuge Stack", operatingAnyBool(oil.corn_oil_centrifuge_stack), { always: true }),
+    operatingPlainMetricRow("Storage Tanks", tanks.count, "", { always: true })
+  );
+}
+
+function operatingLimitItemRows(op){
+  const items = asArray(op?.operational_limits || op?.limits?.operational_limits);
+  const rows = [];
+  const seen = new Set();
+  for (const item of items){
+    if (!item || typeof item !== "object") continue;
+    const limitType = operatingCleanText(item.limit_type || item.type || item.kind) || "Operational Constraint";
+    if (/emission/i.test(limitType)) continue;
+    const label = operatingCleanText(item.label || item.name || item.category || item.metric) || "Operational Constraint";
+    const valueText = operatingFormatValue(item.value, item.units || item.unit || "") || operatingCleanText(item.description || item.text);
+    const period = operatingCleanText(item.period || item.frequency || item.basis);
+    const key = [label, valueText, limitType, period].join("|").toLowerCase();
+    if (!valueText || seen.has(key)) continue;
+    seen.add(key);
+    const meta = [limitType, period].filter(Boolean).join(" | ");
+    rows.push([
+      label,
+      `<span class="operatingLimitSummary"><span>${escapeHtml(valueText)}</span>${meta ? `<span class="operatingLimitMeta">${escapeHtml(meta)}</span>` : ""}</span>`
+    ]);
+  }
+  return rows;
+}
+
+function operatingLimitRows(op){
+  const limits = op?.limits || {};
+  return operatingRows(
+    ...operatingLimitItemRows(op),
+    operatingMetricRow("Ethanol Production Limit", limits.ethanol_production, "MGY", { always: true, limit: true }),
+    operatingMetricRow("Corn Throughput Limit", limits.corn_grind, "bu/year", { always: true, limit: true }),
+    operatingMetricRow("DDGS Throughput Limit", limits.dryer_ddgs, "tons/year", { always: true, limit: true }),
+    operatingMetricRow("Beer Well Limit", limits.beer_well, "gal", { always: true, limit: true }),
+    operatingMetricRow("Boiler / Natural Gas Limit", limits.natural_gas_boiler, "MMBtu/hr", { always: true, limit: true }),
+    operatingMetricRow("Wetcake Limit", limits.wetcake, "tons/year", { always: true, limit: true }),
+    operatingMetricRow("Syrup Limit", limits.syrup, "tons/year", { always: true, limit: true })
+  );
+}
+
+function operatingTechnologyRows(plant, op){
+  const tech = plant?.tech_flags || {};
+  const ci = plant?.ci_summary || {};
+  const feed = ci.ci_by_feedstock || {};
+  const epa = plant?.epa_ghg_derived || {};
+  const dryer = plant?.dryer_analysis || {};
+  const rin = plant?.rin_info || {};
+  const flags = op?.equipment?.technology_flags || op?.equipment?.special_equipment || {};
+
+  return operatingRows(
+    operatingRow("Technology", operatingCleanText(tech.technology), { always: true }),
+    operatingRow("Dryer Type", operatingCleanText(tech.dryer_types), { always: true }),
+    operatingRow("Fuel", operatingCleanText(plant?.fuel_summary?.fuel_type_master || tech.gas_supply || epa.gas_supply_effective), { always: true }),
+    operatingRow("Electricity", operatingCleanText(tech.electricity_type), { always: true }),
+    operatingRow("Grid", operatingCleanText(tech.electrical_grid_designation), { always: true }),
+    operatingRow("RIN Pathways", [rin.d6_non_cellulosic, rin.d3_cellulosic, tech.reg_pathway].map(operatingCleanText).filter(Boolean).join(", "), { always: true }),
+    operatingRow("Enhanced Technologies", [
+      tech.chp,
+      tech.white_fox,
+      tech.icm_p10,
+      tech.special_tech,
+      tech.wind_turbine,
+      tech.waste_heat,
+      tech.dco_enhancement,
+      tech.fiber_technology
+    ].map(operatingCleanText).filter(Boolean).join(", "), { always: true }),
+    operatingBoolRow("CHP", operatingAnyBool(tech.chp, flags.chp), { always: true }),
+    operatingBoolRow("Fiber to Ethanol", operatingAnyBool(flags.fiber_to_ethanol, tech.fiber_technology), { always: true }),
+    operatingRow("Fiber Technology", operatingCleanText(flags.fiber_to_ethanol_technology || tech.fiber_technology), { always: true }),
+    operatingBoolRow("D3 Capable", operatingAnyBool(flags.d3_capable, rin.d3_cellulosic), { always: true }),
+    operatingBoolRow("Corn Oil Extraction", operatingAnyBool(flags.corn_oil_extraction), { always: true }),
+    operatingBoolRow("CO2 Capture", operatingAnyBool(flags.co2_capture), { always: true }),
+    operatingRow("CI Date", operatingCleanText(ci.ci_date), { always: true }),
+    ...operatingUniqueCiRows(plant),
+    operatingPlainMetricRow("EPA Thermal BTU/Gal", epa.thermal_btu_per_gal_est, "BTU/gal", { always: true }),
+    operatingPlainMetricRow("EPA Thermal MMBtu", epa.thermal_mmbtu_est, "MMBtu/hr", { digits: 0, always: true }),
+    operatingPlainMetricRow("EPA CO2", epa.co2_kg_per_gal_est, "kg/gal", { always: true }),
+    operatingPlainMetricRow("EPA CO2", epa.co2_lb_per_gal_est, "lb/gal", { always: true }),
+    operatingPlainMetricRow("Wet/Dry CI Spread", dryer.ci_spread, "g/MJ", { always: true }),
+    operatingPlainMetricRow("Implied Dryer BTU/Gal", dryer.implied_dryer_btu_per_gal, "BTU/gal", { always: true }),
+    operatingRow("Dryer Profile", operatingCleanText(epa.dryer_profile_bucket || dryer.relative_dryer_efficiency_bucket), { always: true })
+  );
+}
+function operatingUniqueCiRows(plant){
+  const ci = plant?.ci_summary || {};
+  const feed = ci.ci_by_feedstock || plant?.ci_by_feedstock || {};
+  const delivered = plant?.ci_lcfs_delivered_g_per_mj ?? ci.ci_lcfs_delivered_g_per_mj;
+  const corn = feed.ci_corn_g_per_mj;
+  const fiber = feed.ci_fiber_g_per_mj;
+  const ckf = plant?.ckf_ci_score;
+  const rows = [];
+
+  if (ciNumber(corn) !== null) rows.push(operatingPlainMetricRow("Corn CI", corn, "g/MJ"));
+  if (ciNumber(fiber) !== null) rows.push(operatingPlainMetricRow("Fiber CI", fiber, "g/MJ"));
+  if (ciNumber(delivered) !== null && !ciSame(delivered, corn)) rows.push(operatingPlainMetricRow("Delivered CI", delivered, "g/MJ"));
+  if (ciNumber(ckf) !== null && !ciSame(ckf, fiber)) rows.push(operatingPlainMetricRow("CKF CI", ckf, "g/MJ"));
+  return rows;
+}
+function operatingPlantInformationRows(plant, op){
+  const fac = plant?.fac_info || plant || {};
+  return operatingRows(
+    operatingRow("Plant", operatingCleanText(fac.plant_name || plant?.plant_name), { always: true }),
+    operatingRow("Owner", operatingCleanText(fac.ownership || plant?.ownership), { always: true }),
+    operatingRow("Location", [fac.city || plant?.city, fac.state || plant?.state].map(operatingCleanText).filter(Boolean).join(", "), { always: true }),
+    operatingPlainMetricRow("Ethanol Capacity", fac.ethanol_capacity_mgy || plant?.ethanol_capacity_mgy, "MGY", { always: true }),
+    operatingRow("EPM", operatingCleanText(fac.epm || plant?.epm || plantId(plant)), { always: true }),
+    operatingRow("Facility ID", operatingCleanText(fac.facility_id || plant?.facility_id || plant?.ca_facility_id), { always: true }),
+    operatingRow("Rail", operatingCleanText(fac.rail_lines || plant?.rail_lines), { always: true }),
+    operatingRow("Year Built", operatingCleanText(fac.year_build || plant?.year_build), { always: true }),
+    operatingRow("Operating Permit", operatingCleanText(op?.permit_number), { always: true }),
+    operatingRow("Permit Type", operatingCleanText(op?.permit_type), { always: true })
+  );
+}
+
+function operatingOperationalHighlightRows(plant, op){
+  const fac = plant?.fac_info || plant || {};
+  const limits = op?.limits || {};
+  const d = op?.derivatives || {};
+  const tech = plant?.tech_flags || {};
+  const flags = op?.equipment?.technology_flags || op?.equipment?.special_equipment || {};
+  const dryers = op?.equipment?.dryers || {};
+  const boilers = op?.equipment?.boilers_process_heaters || {};
+  const rto = op?.equipment?.thermal_oxidizers_rtos || {};
+  return operatingRows(
+    operatingPlainMetricRow("Nameplate Capacity", fac.ethanol_capacity_mgy || plant?.ethanol_capacity_mgy, "MGY", { always: true }),
+    operatingMetricRow("Permitted Ethanol Capacity", limits.ethanol_production, "MGY", { always: true, limit: true }),
+    operatingMetricRow("Corn Throughput", limits.corn_grind, "bu/year", { always: true, limit: true }),
+    operatingMetricRow("DDGS Production", limits.dryer_ddgs, "tons/year", { always: true, limit: true }),
+    operatingMetricRow("Daily Grain Grind", d.grain_throughput_per_day, "bu/day", { always: true }),
+    operatingMetricRow("DDGS Tons/Day", d.ddgs_tons_per_day, "tons/day", { always: true }),
+    operatingMetricRow("Ethanol Yield", d.ethanol_yield, "gal/bu", { always: true }),
+    operatingPlainMetricRow("Dryers", dryers.count, "", { always: true }),
+    operatingMetricRow("Dryer Heat Input", d.dryer_mmbtu_hr, "MMBtu/hr", { always: true }),
+    operatingPlainMetricRow("Boilers", boilers.count, "", { always: true }),
+    operatingPlainMetricRow("RTOs", rto.count, "", { always: true }),
+    operatingRow("Primary Fuel", operatingCleanText(plant?.fuel_summary?.fuel_type_master || tech.gas_supply), { always: true }),
+    operatingBoolRow("Fiber / D3 Feature", operatingAnyBool(flags.fiber_to_ethanol, tech.fiber_technology), { always: true }),
+    operatingBoolRow("Corn Oil Recovery", operatingAnyBool(flags.corn_oil_extraction, op?.equipment?.corn_oil_systems?.present), { always: true })
+  );
+}
+
+function collectOperatingSourceGroups(obj, prefix="", groups=[]){
+  if (!obj || typeof obj !== "object") return groups;
+  for (const [key, value] of Object.entries(obj)){
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (key === "source_lines" || key === "source_line"){
+      const lines = asArray(value).filter(Boolean);
+      if (lines.length) groups.push({ label: operatingTitle(prefix || key), lines });
+    } else if (value && typeof value === "object"){
+      collectOperatingSourceGroups(value, path, groups);
+    }
+  }
+  return groups;
+}
+
+function renderOperatingTechnicalDetails(op){
+  const items = [];
+  const notes = [
+    op?.source_file ? `Source file: ${op.source_file}` : "",
+    op?.summary_file ? `Summary file: ${op.summary_file}` : "",
+    op?.permit_number ? `Permit number: ${op.permit_number}` : "",
+    op?.permit_type ? `Permit type: ${op.permit_type}` : "",
+    op?.confidence ? `Permit match confidence: ${op.confidence}` : "",
+    ...asArray(op?.parsing_notes),
+    ...asArray(op?.notes),
+    ...asArray(op?.assumptions)
+  ].filter(Boolean);
+
+  if (notes.length){
+    items.push(`
+      <div class="operatingTechnicalItem">
+        <div class="operatingTechnicalLabel">Permit Notes</div>
+        <ul class="operatingTechnicalLines">${notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+      </div>
+    `);
+  }
+
+  const derivatives = op?.derivatives && typeof op.derivatives === "object" ? op.derivatives : {};
+  const derivativeItems = Object.entries(derivatives).map(([key, metric]) => {
+    if (!metric || typeof metric !== "object") return "";
+    const details = [];
+    if (metric.confidence) details.push(`<div><span class="mono">Confidence:</span> ${escapeHtml(metric.confidence)}</div>`);
+    if (metric.formula) details.push(`<div><span class="mono">Formula:</span> ${escapeHtml(metric.formula)}</div>`);
+    if (metric.notes) details.push(`<div><span class="mono">Assumptions:</span> ${escapeHtml(metric.notes)}</div>`);
+    return details.length
+      ? `<div class="operatingTechnicalItem"><div class="operatingTechnicalLabel">${escapeHtml(operatingTitle(key))}</div>${details.join("")}</div>`
+      : "";
+  }).filter(Boolean);
+  items.push(...derivativeItems);
+
+  const sourceGroups = collectOperatingSourceGroups(op).slice(0, 80);
+  for (const group of sourceGroups){
+    items.push(`
+      <div class="operatingTechnicalItem">
+        <div class="operatingTechnicalLabel">${escapeHtml(group.label)}</div>
+        <ul class="operatingTechnicalLines">${group.lines.slice(0, 12).map(line => `<li>${escapeHtml(line)}</li>`).join("")}</ul>
+      </div>
+    `);
+  }
+
+  return items.length
+    ? `<details class="operatingSourceNotes"><summary>Technical Details / Source Notes</summary>${items.join("")}</details>`
+    : "";
+}
+
+function renderOperatingDetailModal(){
+  const body = document.getElementById("operatingDetailBody");
+  const sub = document.getElementById("operatingDetailSubtitle");
+  if (!body || !sub) return;
+
+  const op = getOperatingPermitBlock(selectedPlant);
+  sub.textContent = selectedPlant ? plantLabel(selectedPlant) : "No plant selected";
+
+  const sections = [];
+  sections.push(renderOperatingProfileSection("Plant Information", operatingPlantInformationRows(selectedPlant, op)));
+  sections.push(renderOperatingProfileSection("Technology / CI Features", operatingTechnologyRows(selectedPlant, op), { wide: true }));
+  sections.push(renderOperatingProfileSection("Equipment", operatingEquipmentRows(op || {}), { wide: true }));
+  sections.push(renderOperatingProfileSection("Permit Limitations", operatingLimitRows(op || {}), { wide: true }));
+  sections.push(renderOperatingProfileSection("Derived Metrics", operatingSummaryDerivativeRows(op?.derivatives || {}), { wide: true }));
+  sections.push(renderOperatingProfileSection("Operational Highlights", operatingOperationalHighlightRows(selectedPlant, op), { wide: true }));
+
+  body.innerHTML = `
+    <div class="operatingDetailGrid">
+      ${sections.filter(Boolean).join("")}
+    </div>
+    ${op ? renderOperatingTechnicalDetails(op) : `<details class="operatingSourceNotes"><summary>Technical Details / Source Notes</summary><div class="muted" style="margin-top:8px;">Null</div></details>`}
+  `;
+}
+function openOperatingDetailModal(){
+  const modal = document.getElementById("operatingDetailModal");
+  if (!modal) return;
+  renderOperatingDetailModal();
+  modal.classList.add("open");
+}
+
+function closeOperatingDetailModal(){
+  const modal = document.getElementById("operatingDetailModal");
+  if (modal) modal.classList.remove("open");
+}
+
+function scenarioGallonsPerYear(){
+  const capMgy = selectedPlant
+    ? Number(selectedPlant.ethanol_capacity_mgy ?? selectedPlant["ethanol_capacity_mgy"])
+    : NaN;
+  if (!Number.isFinite(capMgy)) return NaN;
+
+  const baseGallons = capMgy * 1_000_000;
+  const additionalGallonsRaw = getNumber("additionalGallons");
+  const additionalGallons = Number.isFinite(additionalGallonsRaw)
+    ? Math.max(0, additionalGallonsRaw) * 1_000_000
+    : 0;
+
+  return baseGallons + additionalGallons;
+}
+
+function scenarioGallonsMgy(){
+  const gallons = scenarioGallonsPerYear();
+  return Number.isFinite(gallons) ? gallons / 1_000_000 : NaN;
 }
 
 function compute(){
@@ -5171,11 +6642,13 @@ function compute(){
    hasPlant: !!selectedPlant,
   electricityGrid: "",
   electricityBridgeAdj: 0,
-  dgsBridgeAdj: 0,
   ckf_eligible: false,
   ckf_share_pct: NaN,
   ckf_delta_g_per_mj: NaN,
   ckf_adjustment_g_per_mj: NaN,
+  yield_improvement_gal_per_bu: 0,
+  yield_scenario_baseline_gal_per_bu: YIELD_SCENARIO_BASELINE_GAL_PER_BU,
+  yield_scenario_impact_g_per_mj: 0,
   hasCI: false,
   ciDelivered: NaN,
   miles: NaN,
@@ -5237,11 +6710,6 @@ const electricityBridgeInput =
 res.electricityGrid = selectedPlant?.electrical_grid_designation || "";
 res.electricityBridgeAdj = electricityBridgeApply ? electricityBridgeInput : 0;
 
-const dgsBridgeInput =
-  Number(document.getElementById("dgs_bridge_score")?.value || 0);
-
-res.dgsBridgeAdj = Number.isFinite(dgsBridgeInput) ? dgsBridgeInput : 0;
-
   const lat   = Number(selectedPlant.latitude);
   const lon   = Number(selectedPlant.longitude);
   const ciDel = toFinitePositiveNumberOrNull(selectedPlant?.ci_lcfs_delivered_g_per_mj);
@@ -5270,16 +6738,19 @@ res.dgsBridgeAdj = Number.isFinite(dgsBridgeInput) ? dgsBridgeInput : 0;
   const doMisc = getChecked("applyMisc");
   const misc = getNumber("ccsReduction");
 
+  const yieldImprovementRaw = getNumber("yieldImprovementGalBu");
+  const yieldImprovement = Number.isFinite(yieldImprovementRaw) ? yieldImprovementRaw : 0;
+  const yieldScenarioImpact = yieldImprovement * (YIELD_SCENARIO_CI_PER_0_01_GAL_BU / 0.01);
+  res.yield_improvement_gal_per_bu = yieldImprovement;
+  res.yield_scenario_impact_g_per_mj = Number.isFinite(yieldScenarioImpact) ? yieldScenarioImpact : 0;
+
   const electricityBridge =
     Number.isFinite(res.electricityBridgeAdj)
       ? res.electricityBridgeAdj
       : 0;
-
-  const dgsBridge =
-    Number.isFinite(res.dgsBridgeAdj)
-      ? res.dgsBridgeAdj
-      : 0;
   
+  
+  const dgsBridge = getChecked("dgs_bridge_apply") ? getNumber("dgs_bridge_score") : 0;
   const ckfEligible = hasCaliforniaCkf(selectedPlant);
 const ckfApply = ckfEligible && getChecked("ckf_apply");
 const ckfSharePct = getNumber("ckf_share_pct");
@@ -5430,7 +6901,7 @@ if (ch2Apply && Number.isFinite(res.fortyfiveq_annual_value) && res.fortyfiveq_a
   if (msg) {
     msg.textContent = res.hasCI
       ? "LCFS CI found for this plant."
-      : "No LCFS CI found — using technology options (Chapter 3).";
+      : "No LCFS CI found - using technology options (Chapter 3).";
   }
   if (panel) panel.style.display = "block";
 
@@ -5469,9 +6940,10 @@ if (Number.isFinite(res.startCi)){
     miscReduction: doMisc ? misc : 0,
     pipelineScore,
     agReduction,
+    yieldScenarioImpact: res.yield_scenario_impact_g_per_mj,
     ckfAdjustment,
-    electricityBridge,
     dgsBridge,
+    electricityBridge,
     benchmarkKgPerMmbtu: bench_kg_per_mmbtu,
     maxRate
   });
@@ -5519,6 +6991,7 @@ if (Number.isFinite(res.startCi)){
   }
   return res;
 }
+
 
 function ensureFactorLevelsChart(){
   const chart = document.getElementById("factorLevelsChart");
@@ -5572,14 +7045,14 @@ function renderFactorLevelsChart(r){
 
   if (!Number.isFinite(factor)){
     marker.classList.add("isHidden");
-    if (label) label.textContent = "Plant factor: —";
+    if (label) label.textContent = "Plant factor: -";
     return;
   }
 
   if (factor <= 0){
     marker.classList.add("isHidden");
     if (label){
-      const rateText = Number.isFinite(rate) ? `$${fmt(rate, 5)}/gal` : "â€”";
+      const rateText = Number.isFinite(rate) ? `$${fmt(rate, 5)}/gal` : "-";
       label.textContent = `Plant factor: ${fmt(factor, 1)} | Rate: ${rateText}`;
     }
     return;
@@ -5591,11 +7064,10 @@ function renderFactorLevelsChart(r){
   marker.classList.remove("isHidden");
 
   if (label){
-    const rateText = Number.isFinite(rate) ? `$${fmt(rate, 5)}/gal` : "—";
+    const rateText = Number.isFinite(rate) ? `$${fmt(rate, 5)}/gal` : "-";
     label.textContent = `Plant factor: ${fmt(factor, 1)} | Rate: ${rateText}`;
   }
 }
-
 function renderOutputs(){
   const r = compute();
 
@@ -5609,6 +7081,8 @@ function renderOutputs(){
   const outFreightHub  = document.getElementById("outFreightHub");
   const outPayout      = document.getElementById("outPayout");
   const outPayoutDetail= document.getElementById("outPayoutDetail");
+  const scenarioGallonsTotal = document.getElementById("scenarioGallonsTotal");
+  const yieldScenarioImpact = document.getElementById("yieldScenarioImpact");
   const outTotalDiscountedValue = document.getElementById("outTotalDiscountedValue");
   const outFinalCreditValue = document.getElementById("outFinalCreditValue");
   const outFinalCreditValueDetail = document.getElementById("outFinalCreditValueDetail");
@@ -5630,18 +7104,18 @@ function renderOutputs(){
     const b = getNumber("ciBenchmark"); // kg/MMBtu
     benchEq.textContent = Number.isFinite(b)
       ? fmt(b / CONV_G_PER_MJ_TO_KG_PER_MMBTU, 2)
-      : "—";
+      : "-";
   }
 
   if (proxyCiKgmmbtu){
     proxyCiKgmmbtu.textContent = Number.isFinite(r.emissions_kg_per_mmbtu)
       ? fmt(r.emissions_kg_per_mmbtu, 2)
-      : "—";
+      : "-";
   }
   if (proxyCiGmj){
     proxyCiGmj.textContent = Number.isFinite(r.ci45z_g_per_mj)
       ? fmt(r.ci45z_g_per_mj, 2)
-      : "—";
+      : "-";
   }
 
   if (!out45zCi || !outRate) return;
@@ -5651,32 +7125,34 @@ function renderOutputs(){
   // ----------------------------
   if (!r.hasPlant){
     renderFactorLevelsChart(r);
-    out45zCi.textContent = "—";
-    outRate.textContent  = "—";
+    out45zCi.textContent = "-";
+    outRate.textContent  = "-";
 
-    if (outPayout) outPayout.textContent = "—";
-    if (outPayoutDetail) outPayoutDetail.textContent = "—";
-    if (outTotalDiscountedValue) outTotalDiscountedValue.textContent = "—";
-    if (outFinalCreditValue) outFinalCreditValue.textContent = "—";
-    if (outFinalCreditValueDetail) outFinalCreditValueDetail.textContent = "—";
-
-
-    if (outBiogenicCo2) outBiogenicCo2.textContent = "—";
-    if (out45qAnnualValue) out45qAnnualValue.textContent = "—";
-    if (out45qRemainingYearsPolicy) out45qRemainingYearsPolicy.textContent = "—";
-    if (out45qEffectiveYears) out45qEffectiveYears.textContent = "—";
-    if (out45qValuePerGal) out45qValuePerGal.textContent = "—";
-    if (out45qCreditPerTonPolicy) out45qCreditPerTonPolicy.textContent = "—";
+    if (outPayout) outPayout.textContent = "-";
+    if (outPayoutDetail) outPayoutDetail.textContent = "-";
+    if (scenarioGallonsTotal) scenarioGallonsTotal.textContent = "-";
+    if (yieldScenarioImpact) yieldScenarioImpact.textContent = "-";
+    if (outTotalDiscountedValue) outTotalDiscountedValue.textContent = "-";
+    if (outFinalCreditValue) outFinalCreditValue.textContent = "-";
+    if (outFinalCreditValueDetail) outFinalCreditValueDetail.textContent = "-";
 
 
+    if (outBiogenicCo2) outBiogenicCo2.textContent = "-";
+    if (out45qAnnualValue) out45qAnnualValue.textContent = "-";
+    if (out45qRemainingYearsPolicy) out45qRemainingYearsPolicy.textContent = "-";
+    if (out45qEffectiveYears) out45qEffectiveYears.textContent = "-";
+    if (out45qValuePerGal) out45qValuePerGal.textContent = "-";
+    if (out45qCreditPerTonPolicy) out45qCreditPerTonPolicy.textContent = "-";
 
-    if (outRateDetail) outRateDetail.textContent = "—";
-    if (outRateDetailNote) outRateDetailNote.textContent = "—";
-    if (outMilesHub) outMilesHub.textContent = "—";
-    if (outFreightHub) outFreightHub.textContent = "—";
-    if (outConvLine) outConvLine.textContent = "—";
-    if (out45zRemainingYears) out45zRemainingYears.textContent = "—";
-    if (out45qEffectiveYearsTop) out45qEffectiveYearsTop.textContent = "—";
+
+
+    if (outRateDetail) outRateDetail.textContent = "-";
+    if (outRateDetailNote) outRateDetailNote.textContent = "-";
+    if (outMilesHub) outMilesHub.textContent = "-";
+    if (outFreightHub) outFreightHub.textContent = "-";
+    if (outConvLine) outConvLine.textContent = "-";
+    if (out45zRemainingYears) out45zRemainingYears.textContent = "-";
+    if (out45qEffectiveYearsTop) out45qEffectiveYearsTop.textContent = "-";
     if (outTotalDiscountedValueNote) outTotalDiscountedValueNote.textContent = "Discounted 45Z & 45Q Value";
     return;
   }
@@ -5685,12 +7161,12 @@ function renderOutputs(){
   // Normal outputs
   // ----------------------------
   if (outMilesHub){
-    outMilesHub.textContent = Number.isFinite(r.milesNet) ? `${fmt(r.milesNet, 0)} mi` : "—";
+    outMilesHub.textContent = Number.isFinite(r.milesNet) ? `${fmt(r.milesNet, 0)} mi` : "-";
   }
   if (outFreightHub){
     outFreightHub.textContent = Number.isFinite(r.freightCi)
       ? `${r.freightCi >= 0 ? "+" : ""}${fmt(r.freightCi, 2)} g/MJ`
-      : "—";
+      : "-";
   }
 
   if (outBiogenicCo2){
@@ -5698,7 +7174,7 @@ function renderOutputs(){
     ? r.biogenic_co2_tons_per_year.toLocaleString(undefined, {
         maximumFractionDigits: 0
       })
-    : "—";
+    : "-";
 }
   
 
@@ -5709,37 +7185,37 @@ function renderOutputs(){
           currency: "USD",
           maximumFractionDigits: 0
         })
-      : "—";
+      : "-";
   }
 
 if (out45qRemainingYearsPolicy){
   out45qRemainingYearsPolicy.textContent = Number.isFinite(r.fortyfiveq_remaining_years_policy)
     ? fmt(r.fortyfiveq_remaining_years_policy, 1)
-    : "—";
+    : "-";
 }
 
 if (out45qCreditPerTonPolicy){
   out45qCreditPerTonPolicy.textContent = Number.isFinite(r.fortyfiveq_credit_per_ton)
     ? fmt(r.fortyfiveq_credit_per_ton, 2)
-    : "—";
+    : "-";
 }
 
 if (out45qEffectiveYears){
   out45qEffectiveYears.textContent = Number.isFinite(r.fortyfiveq_effective_years)
     ? fmt(r.fortyfiveq_effective_years, 1)
-    : "—";
+    : "-";
 }
 
 if (out45zRemainingYears){
   out45zRemainingYears.textContent = Number.isFinite(r.fortyfivez_remaining_years)
     ? fmt(r.fortyfivez_remaining_years, 1)
-    : "—";
+    : "-";
 }
 
 if (out45qEffectiveYearsTop){
   out45qEffectiveYearsTop.textContent = Number.isFinite(r.fortyfiveq_effective_years)
     ? fmt(r.fortyfiveq_effective_years, 1)
-    : "—";
+    : "-";
 }
 
 if (outTotalDiscountedValueNote){
@@ -5750,18 +7226,18 @@ if (outTotalDiscountedValueNote){
 if (out45qValuePerGal){
   out45qValuePerGal.textContent = Number.isFinite(r.fortyfiveq_value_per_gal)
     ? `$${fmt(r.fortyfiveq_value_per_gal, 4)}`
-    : "—";
+    : "-";
 }
 
 
 
   out45zCi.textContent = Number.isFinite(r.emissions_kg_per_mmbtu)
     ? fmt(r.emissions_kg_per_mmbtu, 2)
-    : "—";
+    : "-";
 
   outRate.textContent = Number.isFinite(r.rate)
     ? `$${fmt(r.rate, 5)}`
-    : "—";
+    : "-";
 
   renderFactorLevelsChart(r);
 
@@ -5770,22 +7246,35 @@ if (out45qValuePerGal){
       const nextBandLine = Number.isFinite(r.next_band_ci_reduction_kg_per_mmbtu)
         ? `\nNext Band: ${fmt(r.next_band_ci_reduction_kg_per_mmbtu, 2)} kg/MMBtu`
         : "";
+      const yieldLine = Number.isFinite(r.yield_scenario_impact_g_per_mj) && r.yield_scenario_impact_g_per_mj !== 0
+        ? `
+Yield scenario impact: ${r.yield_scenario_impact_g_per_mj >= 0 ? "-" : "+"}${fmt(Math.abs(r.yield_scenario_impact_g_per_mj), 2)} g/MJ`
+        : "";
       outConvLine.textContent =
-        `${fmt(r.ci45z_g_per_mj, 2)} g/MJ = ${fmt(r.emissions_kg_per_mmbtu, 2)} kg/MMBtu${nextBandLine}`;
+        `${fmt(r.ci45z_g_per_mj, 2)} g/MJ = ${fmt(r.emissions_kg_per_mmbtu, 2)} kg/MMBtu${yieldLine}${nextBandLine}`;
     } else {
-      outConvLine.textContent = "—";
+      outConvLine.textContent = "-";
     }
   }
 
   if (outRateDetail){
-    outRateDetail.textContent = r.rateDetail ? r.rateDetail : "—";
+    outRateDetail.textContent = r.rateDetail ? r.rateDetail : "-";
   }
   if (outRateDetailNote){
-    outRateDetailNote.textContent = "—";
+    outRateDetailNote.textContent = "-";
   }
 
   const cap = scenarioGallonsMgy();
   const gallonsPerYear = scenarioGallonsPerYear();
+  if (scenarioGallonsTotal){
+    scenarioGallonsTotal.textContent = Number.isFinite(cap) ? fmt(cap, 1) : "-";
+  }
+  if (yieldScenarioImpact){
+    const impact = r.yield_scenario_impact_g_per_mj;
+    yieldScenarioImpact.textContent = Number.isFinite(impact)
+      ? `${impact >= 0 ? "-" : "+"}${fmt(Math.abs(impact), 2)} CI`
+      : "-";
+  }
 
   let payout = NaN;
 
@@ -5800,9 +7289,9 @@ if (out45qValuePerGal){
       });
 
       if (outPayoutDetail){
-  const zYears = Number.isFinite(r.fortyfivez_remaining_years) ? fmt(r.fortyfivez_remaining_years, 1) : "—";
-  const qYears = Number.isFinite(r.fortyfiveq_effective_years) ? fmt(r.fortyfiveq_effective_years, 1) : "—";
-  const qPerGal = Number.isFinite(r.fortyfiveq_value_per_gal) ? fmt(r.fortyfiveq_value_per_gal, 4) : "—";
+  const zYears = Number.isFinite(r.fortyfivez_remaining_years) ? fmt(r.fortyfivez_remaining_years, 1) : "-";
+  const qYears = Number.isFinite(r.fortyfiveq_effective_years) ? fmt(r.fortyfiveq_effective_years, 1) : "-";
+  const qPerGal = Number.isFinite(r.fortyfiveq_value_per_gal) ? fmt(r.fortyfiveq_value_per_gal, 4) : "-";
 
   if (
     Number.isFinite(r.rate) &&
@@ -5812,16 +7301,16 @@ if (out45qValuePerGal){
     Number.isFinite(r.fortyfiveq_value_per_gal)
   ){
 outPayoutDetail.textContent =
-  `Total credit = 45Z annual payout: ${fmt(cap,1)} MMgy × $${fmt(r.rate,2)}/gal × ${zYears} years discounted at ${fmt(r.discount_rate_pct,1)}% + ` +
-  `45Q annual payout: ${fmt(cap,1)} MMgy × $${qPerGal}/gal × ${qYears} effective years discounted at ${fmt(r.discount_rate_pct,1)}%`;
+  `Total credit = 45Z annual payout: ${fmt(cap,1)} MMgy x $${fmt(r.rate,2)}/gal x ${zYears} years discounted at ${fmt(r.discount_rate_pct,1)}% + ` +
+  `45Q annual payout: ${fmt(cap,1)} MMgy x $${qPerGal}/gal x ${qYears} effective years discounted at ${fmt(r.discount_rate_pct,1)}%`;
   } else {
-    outPayoutDetail.textContent = "—";
+    outPayoutDetail.textContent = "-";
   }
 }
 
 
     } else {
-      outPayout.textContent = "—";
+      outPayout.textContent = "-";
       if (outPayoutDetail) outPayoutDetail.textContent = "Needs capacity + rate";
     }
   }
@@ -5845,7 +7334,7 @@ if (outTotalDiscountedValue){
         currency: "USD",
         maximumFractionDigits: 0
       })
-    : "—";
+    : "-";
 }
 
 if (outFinalCreditValue){
@@ -5860,10 +7349,10 @@ if (outFinalCreditValue){
 
     if (outFinalCreditValueDetail){
       outFinalCreditValueDetail.textContent =
-        `${totalDiscountedValue.toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0})} × ${fmt(discPct,1)}%`;
+        `${totalDiscountedValue.toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0})} x ${fmt(discPct,1)}%`;
     }
   } else {
-    outFinalCreditValue.textContent = "—";
+    outFinalCreditValue.textContent = "-";
     if (outFinalCreditValueDetail) outFinalCreditValueDetail.textContent = "Needs total discounted value + discount";
   }
 }
@@ -5930,7 +7419,6 @@ function wireEvents(){
     }
     syncFreightUI();
     syncElectricityBridgeUI();
-    syncDgsBridgeUI();
     
     renderPlantDetails();
     renderOutputs();
@@ -5943,18 +7431,14 @@ async function handlePlantSelectChange(){
 
   if (!chosenId){
     selectedPlant = null;
-    syncDgsBridgeUI();
     renderPathwayBenchmark().catch(e => console.error("BENCHMARK RENDER FAILED:", e));
     renderPlantDetails();
     renderOutputs();
     return;
   }
 
-  let summaryPlant = filteredPlants.find(p => plantId(p) === chosenId) || null;
-  summaryPlant = await withRegulatoryPathways(summaryPlant);
+  const summaryPlant = filteredPlants.find(p => plantId(p) === chosenId) || null;
   selectedPlant = summaryPlant;
-  logSelectedPlantRegulatory(selectedPlant);
-  syncDgsBridgeUI();
   renderPathwayBenchmark().catch(e => console.error("BENCHMARK RENDER FAILED:", e));
   renderPlantDetails();
   renderOutputs();
@@ -5964,17 +7448,14 @@ async function handlePlantSelectChange(){
     detailPlant = await fetchPlantDetail(chosenId);
   } catch (e) {
     if (requestSeq !== plantSelectionSeq) return;
-    console.error("PLANT DETAIL FETCH ERROR:", e);
-    alert("Plant detail fetch failed. See console.");
+    console.warn("Plant detail fetch failed; continuing with search summary row:", e);
     return;
   }
 
   if (requestSeq !== plantSelectionSeq) return;
   const currentId = String(document.getElementById("plantSelect")?.value || "").trim();
   if (currentId !== chosenId) return;
-  detailPlant = await withRegulatoryPathways(detailPlant, summaryPlant);
   selectedPlant = detailPlant;
-  logSelectedPlantRegulatory(selectedPlant);
 
   resetMiscOverride();
   syncCcsUI();
@@ -5994,7 +7475,6 @@ async function handlePlantSelectChange(){
   }
   syncFreightUI();
   syncElectricityBridgeUI();
-  syncDgsBridgeUI();
   renderEnhancedTechnology();
   renderPlantDetails();
   renderOutputs();
@@ -6016,6 +7496,24 @@ async function handlePlantSelectChange(){
     handlePlantSelectChange().catch(e => console.error("PLANT SELECT FAILED:", e));
   });
 
+  const operatingBtn = document.getElementById("operatingDetailBtn");
+  if (operatingBtn){
+    operatingBtn.addEventListener("click", openOperatingDetailModal);
+  }
+  const operatingClose = document.getElementById("operatingDetailClose");
+  if (operatingClose){
+    operatingClose.addEventListener("click", closeOperatingDetailModal);
+  }
+  const operatingModal = document.getElementById("operatingDetailModal");
+  if (operatingModal){
+    operatingModal.addEventListener("click", (event) => {
+      if (event.target === operatingModal) closeOperatingDetailModal();
+    });
+  }
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeOperatingDetailModal();
+  });
+
   // Freight checkbox: enable/disable freight controls + recompute
   onInput("applyFreight", () => {
     syncFreightUI();
@@ -6029,26 +7527,22 @@ async function handlePlantSelectChange(){
  });
 
   onInput("dgs_bridge_type", () => {
-    const typeEl = document.getElementById("dgs_bridge_type");
-    const scoreEl = document.getElementById("dgs_bridge_score");
-    if (typeEl && scoreEl){
-      const scores = { wet_baseline: 0, mixed: 1, dry_ddgs: 2, none: 0 };
-      const score = scores[typeEl.value] ?? 0;
-      scoreEl.value = score.toFixed(1);
-    }
+    const sel = document.getElementById("dgs_bridge_type");
+    const score = document.getElementById("dgs_bridge_score");
+    const selected = sel?.selectedOptions?.[0];
+    if (score && selected) score.value = selected.dataset.score ?? "0";
     renderOutputs();
   });
-
   // All other calc-driving inputs: recompute only
   const calcIds = [
     "caHub",
     "freightMultiplier","gPerMjPerMile",
     "subtractIluc","ilucValue",
-    "additionalGallons",
+    "additionalGallons","yieldImprovementGalBu",
     "ckf_apply","ckf_share_pct",
+    "dgs_bridge_apply","dgs_bridge_type","dgs_bridge_score",
     "applyMisc","ccsReduction",
     "ciBenchmark","maxRate",
-    "dgs_bridge_score",
     "ch2_pipeline_apply","ch2_pipeline_score",
     "ccs_in_service_date","ccs_ci_effective_date",
     "fortyfiveqStorageType",
@@ -6068,25 +7562,11 @@ async function handlePlantSelectChange(){
 
 
 
-  // OPTIONAL: wire click buttons (▲/▼)
+  // OPTIONAL: wire click buttons (+/-)
   const up = document.getElementById("miscUp");
   const dn = document.getElementById("miscDown");
   if (up) up.addEventListener("click", () => nudgeNumber("ccsReduction", +1.0));
   if (dn) dn.addEventListener("click", () => nudgeNumber("ccsReduction", -1.0));
-
-  const opClose = document.getElementById("operatingDetailClose");
-  const opModal = document.getElementById("operatingDetailModal");
-  const opOpen = document.getElementById("operatingDetailOpen");
-  if (opOpen) opOpen.addEventListener("click", () => setOperatingDetailOpen(true));
-  if (opClose) opClose.addEventListener("click", () => setOperatingDetailOpen(false));
-  if (opModal){
-    opModal.addEventListener("click", (event) => {
-      if (event.target === opModal) setOperatingDetailOpen(false);
-    });
-  }
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setOperatingDetailOpen(false);
-  });
 }
           
          
@@ -6321,7 +7801,7 @@ if (!benchmarkUniverseIds.length){
 }
   
   
-    // ✅ Diagnostics MUST be outside the map
+    // OK Diagnostics MUST be outside the map
     console.log("Loaded rows:", allPlants.length);
     console.log("Sample keys:", allPlants[0] ? Object.keys(allPlants[0]) : "(none)");
 
@@ -6357,5 +7837,3 @@ if (!benchmarkUniverseIds.length){
 </script>
 </body>
 </html>
-
-
